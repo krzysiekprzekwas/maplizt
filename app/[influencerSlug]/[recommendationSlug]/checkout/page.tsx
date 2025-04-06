@@ -132,10 +132,10 @@ export default function CheckoutPage() {
   const price = recommendation?.numeric_price || 0;
 
   return (
-    <div className="min-h-screen bg-[#f8f5ed]">
+    <div className="min-h-screen bg-[#f8f5ed] relative">
       <InfluencerHeader influencer={influencer} />
 
-      <div className="max-w-2xl mx-auto px-4 py-6">
+      <div className="max-w-2xl mx-auto px-4 py-6 relative z-20">
         <div className="flex gap-4 mb-6">
           <div className="w-[100px] h-[100px] rounded-lg overflow-hidden border-4 border-[#19191b]">
             <Image
@@ -239,6 +239,14 @@ export default function CheckoutPage() {
             {submitting ? 'Processing...' : (isFree ? "Get it for free" : "Pay now")}
           </button>
         </form>
+      </div>
+      
+      {/* Decorative circles */}
+      <div className="fixed bottom-6 right-4 w-40 h-40 opacity-80 z-10">
+        <div className="absolute bottom-0 right-0 w-20 h-20 bg-[#e47a5e] rounded-full"></div>
+        <div className="absolute bottom-20 right-0 w-20 h-20 bg-[#e47a5e] rounded-full"></div>
+        <div className="absolute bottom-0 right-20 w-20 h-20 bg-[#e47a5e] rounded-full"></div>
+        <div className="absolute bottom-20 right-20 w-20 h-20 bg-[#e47a5e] rounded-full"></div>
       </div>
     </div>
   )

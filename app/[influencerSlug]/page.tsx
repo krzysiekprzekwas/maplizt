@@ -28,8 +28,8 @@ export default async function InfluencerPage({ params }: Props) {
     </Head>
     <InfluencerHeader influencer={influencer} />
     
-    <div className="min-h-screen bg-[#f8f5ed] pb-20">
-      <div className="max-w-2xl mx-auto px-4 pt-16">
+    <div className="min-h-screen bg-[#f8f5ed] pb-20 relative">
+      <div className="max-w-2xl mx-auto px-4 pt-16 relative z-20">
 
           <div className="space-y-6">
             {influencer.recommendations.map((recommendation) => {
@@ -56,7 +56,7 @@ export default async function InfluencerPage({ params }: Props) {
       </div>
 
       {/* Decorative triangles */}
-      <div className="fixed bottom-0 right-0 w-32 h-32 opacity-50">
+      <div className="fixed bottom-0 right-0 w-32 h-32 opacity-50 z-10">
         <div className="absolute bottom-0 right-0 w-16 h-16 bg-[#ffdc9a]"></div>
         <div className="absolute bottom-16 right-0 w-16 h-16 bg-[#ffdc9a]"></div>
         <div className="absolute bottom-0 right-16 w-16 h-16 bg-[#ffdc9a]"></div>
