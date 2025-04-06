@@ -36,20 +36,34 @@ export default async function RecommendationPage({ params }: Props) {
           </div>
         </div>
 
-        <div className="mb-8">
-          <h2 className="text-xl font-bold  mb-2">What you get:</h2>
-          <p className="">{recommendation.description}</p>
-        </div>
-
-        <div className="rounded-lg overflow-hidden border-4 border-[#19191b] mb-8 neobrutalist-shadow">
-          <Image
-            src={recommendation.images?.[0] ?? "/recommendation_image_placeholder.jpg"}
-            alt={recommendation.title}
-            width={700}
-            height={400}
-            className="w-full h-auto object-cover"
-          />
-        </div>
+        {/* Replace the single image with a gallery when multiple images are available */}
+        {recommendation.images && recommendation.images.length > 0 ? (
+            <div className="mb-8">
+              <div className="flex overflow-x-auto pb-2 space-x-4 hide-scrollbar">
+                {recommendation.images.map((image, index) => (
+                  <div key={index} className="flex-shrink-0 w-64 h-48 rounded-lg overflow-hidden border-4 border-[#19191b] neobrutalist-shadow">
+                    <Image
+                      src={image ?? "/recommendation_image_placeholder.jpg"}
+                      alt={`${recommendation.title} - image ${index + 1}`}
+                      width={256}
+                      height={192}
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          ) : (
+          <div className="rounded-lg max-w-sm overflow-hidden border-4 border-[#19191b] mb-8 neobrutalist-shadow">
+            <Image
+              src="/recommendation_image_placeholder.jpg"
+              alt={recommendation.title}
+              width={700}
+              height={400}
+              className="w-full h-auto object-cover"
+            />
+          </div>
+        )}
 
         <div className="mb-8">
           <h2 className="text-xl font-bold  mb-2">Description:</h2>
