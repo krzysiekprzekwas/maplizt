@@ -22,6 +22,74 @@ export async function getInfluencer(slug: string) {
   return data as Influencer & { recommendations: Recommendation[] };
 }
 
+export async function getInfluencerByUserId(userId: string) {
+  const { data, error } = await supabase
+    .from('influencers')
+    .select('*')
+    .eq('user_id', userId)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data as Influencer | null;
+}
+
+export async function updateInfluencerProfile(
+  userId: string, 
+  profileData: { name?: string; slug?: string; handle?: string; description?: string; profile_image?: string }
+) {
+  // First check if slug is already taken (except by the current user)
+  if (profileData.slug) {
+    const { data: existingSlug, error: slugError } = await supabase
+      .from('influencers')
+      .select('id')
+      .eq('slug', profileData.slug)
+      .neq('user_id', userId)
+      .maybeSingle();
+
+    if (slugError) throw slugError;
+    if (existingSlug) throw new Error('This slug is already taken. Please choose another one.');
+  }
+
+  // Update the profile
+  const { data, error } = await supabase
+    .from('influencers')
+    .update(profileData)
+    .eq('user_id', userId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data as Influencer;
+}
+
+export async function createInfluencerProfile(
+  userId: string, 
+  profileData: { name: string; slug: string; handle: string; description?: string; profile_image?: string }
+) {
+  // Check if slug is already taken
+  const { data: existingSlug, error: slugError } = await supabase
+    .from('influencers')
+    .select('id')
+    .eq('slug', profileData.slug)
+    .maybeSingle();
+
+  if (slugError) throw slugError;
+  if (existingSlug) throw new Error('This slug is already taken. Please choose another one.');
+
+  // Create the profile
+  const { data, error } = await supabase
+    .from('influencers')
+    .insert({
+      ...profileData,
+      user_id: userId
+    })
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data as Influencer;
+}
+
 export async function getRecommendation(influencerSlug: string, recommendationSlug: string) {
   const { data, error } = await supabase
     .from('recommendations')

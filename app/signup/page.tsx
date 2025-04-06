@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { supabase } from "@/lib/supabase";
 
 export default function SignupPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -12,42 +13,66 @@ export default function SignupPage() {
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+    setSuccessMessage("");
 
     try {
-      // Here you would integrate with your auth system (e.g., Supabase)
-      // For now, just simulating a successful auth
-      
-      // Example code for Supabase (commented out):
-      // if (isLogin) {
-      //   const { error } = await supabase.auth.signInWithPassword({
-      //     email,
-      //     password,
-      //   });
-      //   if (error) throw error;
-      // } else {
-      //   const { error } = await supabase.auth.signUp({
-      //     email,
-      //     password,
-      //     options: {
-      //       data: { name },
-      //     },
-      //   });
-      //   if (error) throw error;
-      // }
-
-      // Simulate successful login/signup
-      setTimeout(() => {
-        router.push("/");
-      }, 1000);
+      if (isLogin) {
+        // Login with Supabase
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        
+        if (signInError) throw signInError;
+        
+        setSuccessMessage("Logged in successfully!");
+        setTimeout(() => {
+          router.push("/dashboard");
+        }, 1000);
+      } else {
+        // Sign up with Supabase
+        const { error: signUpError } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: { 
+              full_name: name 
+            },
+          },
+        });
+        
+        if (signUpError) throw signUpError;
+        
+        setSuccessMessage("Registration successful! Please check your email to confirm your account.");
+      }
     } catch (err: any) {
-      setError(err.message || "An error occurred");
+      console.error("Auth error:", err);
+      setError(err.message || "An error occurred during authentication");
+    } finally {
       setLoading(false);
+    }
+  };
+
+  const handleSocialAuth = async (provider: 'google' | 'apple') => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+      
+      if (error) throw error;
+    } catch (err: any) {
+      console.error(`${provider} auth error:`, err);
+      setError(err.message || `Error signing in with ${provider}`);
     }
   };
 
@@ -91,6 +116,12 @@ export default function SignupPage() {
           {error && (
             <div className="mb-6 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
               {error}
+            </div>
+          )}
+
+          {successMessage && (
+            <div className="mb-6 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
+              {successMessage}
             </div>
           )}
 
@@ -204,6 +235,7 @@ export default function SignupPage() {
             <div className="grid grid-cols-2 gap-3 mt-6">
               <button
                 type="button"
+                onClick={() => handleSocialAuth('google')}
                 className="py-3 px-4 border-2 border-[#19191b] rounded-lg flex justify-center items-center gap-2 bg-white hover:bg-gray-50 transition"
               >
                 <svg
@@ -241,6 +273,7 @@ export default function SignupPage() {
               </button>
               <button
                 type="button"
+                onClick={() => handleSocialAuth('apple')}
                 className="py-3 px-4 border-2 border-[#19191b] rounded-lg flex justify-center items-center gap-2 bg-white hover:bg-gray-50 transition"
               >
                 <svg
