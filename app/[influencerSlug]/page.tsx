@@ -1,11 +1,10 @@
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
-import { notFound } from "next/navigation"
+import { notFound, redirect } from "next/navigation"
 import InfluencerHeader from "@/components/influencer-header"
 import Head from "next/head"
 import { getInfluencer } from "@/lib/db"
 import { getRecommendationTypeStyle } from "@/lib/utils"
-
 
 type Props = {
   params: Promise<{ 
@@ -18,7 +17,7 @@ export default async function InfluencerPage({ params }: Props) {
   const influencer = await getInfluencer(influencerSlug)
 
   if (!influencer) {
-    notFound()
+    redirect('/notFound');
   }
 
   return (

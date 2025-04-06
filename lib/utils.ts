@@ -9,9 +9,9 @@ export function cn(...inputs: ClassValue[]) {
 export function getRecommendationTypeStyle(type: string): string {
   switch (type?.toLowerCase()) {
     case 'free':
-      return 'bg-[#97b5ec] text-white';
+      return 'bg-[#97b5ec] text-black';
     case 'paid':
-      return 'bg-[#7db48f] text-white';
+      return 'bg-[#7db48f] text-black';
     case 'premium':
       return 'bg-[#f7bdf6] text-black';
     default:

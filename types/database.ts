@@ -4,7 +4,7 @@ export type Influencer = {
   name: string;
   handle: string;
   description: string;
-  image_url: string;
+  profile_image: string;
   created_at: string;
   updated_at: string;
 };

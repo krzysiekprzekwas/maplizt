@@ -1,6 +1,5 @@
 import Link from "next/link"
 import InfluencerHeader from "@/components/influencer-header"
-import { Influencer, Recommendation } from "@/types/database"
 import { getRecommendation } from "@/lib/db"
 
 type Props = {

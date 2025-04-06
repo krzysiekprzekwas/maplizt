@@ -16,9 +16,10 @@ export async function getInfluencer(slug: string) {
     .from('influencers')
     .select('*, recommendations(*)')
     .eq('slug', slug)
-    .single();
+    .maybeSingle();
 
   if (error) throw error;
+  
   return data as Influencer & { recommendations: Recommendation[] };
 }
 

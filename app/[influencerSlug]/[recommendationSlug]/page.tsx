@@ -1,6 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
-import { notFound } from "next/navigation"
+import { redirect } from "next/navigation"
 import InfluencerHeader from "@/components/influencer-header"
 import { getRecommendationTypeStyle } from "@/lib/utils"
 import { getRecommendation } from "@/lib/db"
@@ -17,7 +17,7 @@ export default async function RecommendationPage({ params }: Props) {
   const recommendation = await getRecommendation(influencerSlug, recommendationSlug)
 
   if (!recommendation) {
-    notFound()
+    redirect('/notFound');
   }
 
   const typeStyle = getRecommendationTypeStyle(recommendation.type);
