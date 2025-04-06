@@ -27,16 +27,16 @@ export default async function InfluencerPage({ params }: { params: Promise<{ inf
           <div className="space-y-6">
             {influencer.recommendations.map((recommendation) => (
               <Link key={recommendation.slug} href={`/${influencer.slug}/${recommendation.slug}`} className="block">
-                  <div className="bg-white rounded-lg border-4 border-[#19191b] p-6 flex justify-between items-center neobrutalist-shadow">
+                  <div className="bg-white rounded-lg border-2 border-[#19191b] p-6 flex justify-between items-center neobrutalist-shadow">
                     <div className="flex-1">
-                      <h4 className="text-2xl font-bold text-[#19191b] mb-2">{recommendation.title}</h4>
-                      <p className="text-[#19191b] pr-4">{recommendation.description.substring(0, 100)}...</p>
+                      <h4 className="text-xl font-bold mb-2">{recommendation.title}</h4>
+                      <p className="text-sm pr-4">{recommendation.description.substring(0, 100)}...</p>
                     </div>
-                    <div className="flex items-center gap-4">
-                      <div className={`${recommendation.color} text-[#19191b] font-semibold px-6 py-2 rounded-full`}>
-                        {recommendation.price}
+                    <div className="flex flex-col items-end gap-4">
+                      <div className={`${recommendation.color} font-semibold px-6 py-2 rounded-full`}>
+                        <p className="text-sm">{recommendation.price}</p>
                       </div>
-                      <ArrowRight className="text-[#19191b] w-6 h-6" />
+                      <ArrowRight className="w-6 h-6" />
                     </div>
                   </div>
               </Link>

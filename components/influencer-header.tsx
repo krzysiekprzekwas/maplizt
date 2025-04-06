@@ -10,7 +10,7 @@ export default function InfluencerHeader({ influencer }: InfluencerHeaderProps) 
     <div className="bg-[#ffffff] border-b border-[#19191b]">
       <div className="p-4">
         <div className="flex items-center gap-4">
-          <div className="w-[80px] h-[80px] rounded-lg overflow-hidden border-4 border-[#19191b] neobrutalist-shadow">
+          <div className="w-[80px] h-[80px] rounded-lg overflow-hidden border-2 border-[#19191b] neobrutalist-shadow">
             <Image
               src={influencer.profileImage || "/avatar_placeholder.jpeg"}
               alt={influencer.name}
