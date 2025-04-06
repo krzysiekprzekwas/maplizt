@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createOrder } from '@/lib/db';
 import { Order } from '@/types/database';
+import { Resend } from 'resend';
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
   try {
@@ -67,6 +70,13 @@ export async function POST(request: NextRequest) {
     };
     
     const order = await createOrder(orderData);
+
+    resend.emails.send({
+      from: 'order@maplizt.kristof.pro',
+      to: body.email,
+      subject: `Order confirmed ${order.id}`,
+      html: '<p>To the moon we gooo!</p>'
+    });
     
     return NextResponse.json({ 
       success: true, 
