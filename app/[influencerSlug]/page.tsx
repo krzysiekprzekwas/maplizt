@@ -1,13 +1,36 @@
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
-import { getInfluencer } from "@/lib/data"
+import type { Influencer } from "@/lib/data"
 import { notFound } from "next/navigation"
 import InfluencerHeader from "@/components/influencer-header"
 import Head from "next/head"
 
-export default async function InfluencerPage({ params }: { params: Promise<{ influencerSlug: string }> }) {
+
+type Props = {
+  params: Promise<{ 
+    influencerSlug: string,
+  }>
+}
+
+async function getInfluencer(slug: string) {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/influencers/${slug}`, {
+    cache: 'no-store'
+  });
+  
+  if (!res.ok) {
+    if (res.status === 404) {
+      return null;
+    }
+    throw new Error('Failed to fetch influencer');
+  }
+  
+  const data = await res.json();
+  return data.influencer as Influencer;
+}
+
+export default async function InfluencerPage({ params }: Props) {
   const { influencerSlug } = await params
-  const influencer = getInfluencer(influencerSlug)
+  const influencer = await getInfluencer(influencerSlug)
 
   if (!influencer) {
     notFound()

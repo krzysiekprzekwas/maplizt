@@ -2,7 +2,7 @@
 import Link from "next/link"
 import { useParams, useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
-import { getRecommendation } from "@/lib/data"
+import type { Influencer, Recommendation } from "@/lib/data"
 import InfluencerHeader from "@/components/influencer-header"
 
 export default function ConfirmationPage() {
@@ -11,23 +11,42 @@ export default function ConfirmationPage() {
   const influencerSlug = params.influencerSlug as string
   const recommendationSlug = params.recommendationSlug as string
 
-  const [data, setData] = useState<any>(null)
+  const [data, setData] = useState<{ influencer: Influencer; recommendation: Recommendation } | null>(null)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     // Get data on the client side to avoid hydration issues
-    const result = getRecommendation(influencerSlug, recommendationSlug)
-    setData(result)
-    setLoading(false)
-  }, [influencerSlug, recommendationSlug])
+    const fetchData = async () => {
+      try {
+        const res = await fetch(`/api/influencers/${influencerSlug}/recommendations/${recommendationSlug}`);
+        
+        if (!res.ok) {
+          if (res.status === 404) {
+            router.push("/");
+            return;
+          }
+          throw new Error('Failed to fetch recommendation');
+        }
+        
+        const result = await res.json();
+        setData(result);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        router.push("/");
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchData();
+  }, [influencerSlug, recommendationSlug, router]);
 
   if (loading) {
     return <div className="min-h-screen bg-[#f8f5ed] flex items-center justify-center">Loading...</div>
   }
 
   if (!data) {
-    router.push("/")
-    return null
+    return null;
   }
 
   const { influencer, recommendation } = data

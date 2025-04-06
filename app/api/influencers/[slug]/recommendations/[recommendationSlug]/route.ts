@@ -3,10 +3,10 @@ import { getRecommendation } from '@/lib/data';
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { slug: string; recommendationSlug: string } }
+  { params }: { params: Promise<{ slug: string; recommendationSlug: string }> }
 ) {
   try {
-    const { slug, recommendationSlug } = params;
+    const { slug, recommendationSlug } = await params;
     const data = getRecommendation(slug, recommendationSlug);
     
     if (!data) {

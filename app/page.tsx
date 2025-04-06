@@ -1,8 +1,21 @@
 import Link from "next/link"
-import { getInfluencers } from "@/lib/data"
+import type { Influencer } from "@/lib/data"
 
-export default function HomePage() {
-  const influencers = getInfluencers()
+async function getInfluencers() {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/influencers`, {
+    cache: 'no-store'
+  });
+  
+  if (!res.ok) {
+    throw new Error('Failed to fetch influencers');
+  }
+  
+  const data = await res.json();
+  return data.influencers as Influencer[];
+}
+
+export default async function HomePage() {
+  const influencers = await getInfluencers()
 
   return (
     <div className="min-h-screen bg-[#f8f5ed] flex flex-col items-center justify-center p-4">

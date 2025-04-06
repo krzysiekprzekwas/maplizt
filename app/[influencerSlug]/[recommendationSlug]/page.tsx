@@ -1,6 +1,6 @@
 import Image from "next/image"
 import Link from "next/link"
-import { getRecommendation } from "@/lib/data"
+import type { Influencer, Recommendation } from "@/lib/data"
 import { notFound } from "next/navigation"
 import InfluencerHeader from "@/components/influencer-header"
 
@@ -11,9 +11,27 @@ type Props = {
   }>
 }
 
+async function getRecommendation(influencerSlug: string, recommendationSlug: string) {
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/influencers/${influencerSlug}/recommendations/${recommendationSlug}`,
+    {
+      cache: 'no-store'
+    }
+  );
+  
+  if (!res.ok) {
+    if (res.status === 404) {
+      return null;
+    }
+    throw new Error('Failed to fetch recommendation');
+  }
+  
+  return await res.json() as { influencer: Influencer; recommendation: Recommendation };
+}
+
 export default async function RecommendationPage({ params }: Props) {
   const { influencerSlug, recommendationSlug } = await params
-  const data = getRecommendation(influencerSlug, recommendationSlug)
+  const data = await getRecommendation(influencerSlug, recommendationSlug)
 
   if (!data) {
     notFound()
