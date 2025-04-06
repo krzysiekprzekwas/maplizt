@@ -12,7 +12,8 @@ export default async function RecommendationPage({
     recommendationSlug: string
   }
 }) {
-  const data = getRecommendation(params.influencerSlug, params.recommendationSlug)
+  const { influencerSlug, recommendationSlug } = await params
+  const data = getRecommendation(influencerSlug, recommendationSlug)
 
   if (!data) {
     notFound()
@@ -41,7 +42,7 @@ export default async function RecommendationPage({
           <p className="text-[#19191b]">{recommendation.whatYouGet}</p>
         </div>
 
-        <div className="rounded-lg overflow-hidden border-4 border-[#19191b] mb-8">
+        <div className="rounded-lg overflow-hidden border-4 border-[#19191b] mb-8 neobrutalist-shadow">
           <Image
             src={recommendation.image || "/placeholder.svg"}
             alt={recommendation.title}
@@ -62,13 +63,13 @@ export default async function RecommendationPage({
 
         <div className="flex gap-4">
           <Link href={`/${influencer.slug}`}>
-            <button className="bg-white text-[#19191b] font-bold py-4 px-6 rounded-lg border-4 border-[#19191b]">
+            <button className="bg-white text-[#19191b] font-bold py-4 px-6 rounded-lg border-4 border-[#19191b] neobrutalist-shadow">
               Back
             </button>
           </Link>
           <Link href={`/${influencer.slug}/${recommendation.slug}/checkout`} className="flex-1">
             <button
-              className={`w-full ${recommendation.color} text-[#19191b] font-bold text-xl py-4 rounded-lg border-4 border-[#19191b]`}
+              className={`w-full ${recommendation.color} text-[#19191b] font-bold text-xl py-4 rounded-lg border-4 border-[#19191b] neobrutalist-shadow`}
             >
               Get me
             </button>

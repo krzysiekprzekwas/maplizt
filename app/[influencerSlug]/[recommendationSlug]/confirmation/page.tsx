@@ -47,14 +47,14 @@ export default function ConfirmationPage() {
           <div className="space-y-4">
             <Link href="https://maps.google.com" target="_blank" className="block">
               <button
-                className={`w-full ${recommendation.color} text-[#19191b] font-bold text-xl py-4 rounded-lg border-4 border-[#19191b]`}
+                className={`w-full ${recommendation.color} text-[#19191b] font-bold text-xl py-4 rounded-lg border-4 border-[#19191b] neobrutalist-shadow`}
               >
                 Open in Google Maps
               </button>
             </Link>
 
             <Link href={`/${influencer.slug}`} className="block">
-              <button className="w-full bg-white text-[#19191b] font-bold text-xl py-4 rounded-lg border-4 border-[#19191b]">
+              <button className="w-full bg-white text-[#19191b] font-bold text-xl py-4 rounded-lg border-4 border-[#19191b] neobrutalist-shadow">
                 See other
               </button>
             </Link>

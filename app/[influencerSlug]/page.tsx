@@ -1,13 +1,12 @@
-import Image from "next/image"
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
 import { getInfluencer } from "@/lib/data"
 import { notFound } from "next/navigation"
 import InfluencerHeader from "@/components/influencer-header"
-import BrutalShadow from "@/components/brutal-shadow"
 
-export default function InfluencerPage({ params }: { params: { influencerSlug: string } }) {
-  const influencer = getInfluencer(params.influencerSlug)
+export default async function InfluencerPage({ params }: { params: { influencerSlug: string } }) {
+  const { influencerSlug } = await params
+  const influencer = getInfluencer(influencerSlug)
 
   if (!influencer) {
     notFound()
@@ -19,14 +18,12 @@ export default function InfluencerPage({ params }: { params: { influencerSlug: s
 
         <InfluencerHeader influencer={influencer} />
 
-
         <div className="border-t-2 border-[#19191b] pt-8">
 
           <div className="space-y-6">
             {influencer.recommendations.map((recommendation) => (
               <Link key={recommendation.slug} href={`/${influencer.slug}/${recommendation.slug}`} className="block">
-                <BrutalShadow>
-                  <div className="bg-white rounded-lg border-4 border-[#19191b] p-6 flex justify-between items-center">
+                  <div className="bg-white rounded-lg border-4 border-[#19191b] p-6 flex justify-between items-center neobrutalist-shadow">
                     <div className="flex-1">
                       <h4 className="text-2xl font-bold text-[#19191b] mb-2">{recommendation.title}</h4>
                       <p className="text-[#19191b] pr-4">{recommendation.description.substring(0, 100)}...</p>
@@ -38,7 +35,6 @@ export default function InfluencerPage({ params }: { params: { influencerSlug: s
                       <ArrowRight className="text-[#19191b] w-6 h-6" />
                     </div>
                   </div>
-                </BrutalShadow>
               </Link>
             ))}
           </div>

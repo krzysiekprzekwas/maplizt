@@ -92,7 +92,7 @@ export default function CheckoutPage() {
                 type="email"
                 id="email"
                 placeholder="your@email.com"
-                className="w-full p-4 border-4 border-[#19191b] rounded-lg bg-white text-[#19191b] pr-12"
+                className="w-full p-4 border-4 border-[#19191b] rounded-lg bg-white text-[#19191b] pr-12 neobrutalist-shadow"
                 required
               />
               <Mail className="absolute right-4 top-1/2 transform -translate-y-1/2 w-6 h-6 text-[#19191b]" />
@@ -203,14 +203,14 @@ export default function CheckoutPage() {
             <Link href={`/${influencerSlug}/${recommendationSlug}`}>
               <button
                 type="button"
-                className="bg-white text-[#19191b] font-bold py-4 px-6 rounded-lg border-4 border-[#19191b]"
+                className="bg-white text-[#19191b] font-bold py-4 px-6 rounded-lg border-4 border-[#19191b] neobrutalist-shadow"
               >
                 Back
               </button>
             </Link>
             <button
               type="submit"
-              className={`flex-1 ${recommendation.color} text-[#19191b] font-bold text-xl py-4 rounded-lg border-4 border-[#19191b]`}
+              className={`flex-1 ${recommendation.color} text-[#19191b] font-bold text-xl py-4 rounded-lg border-4 border-[#19191b] neobrutalist-shadow`}
             >
               {isFree ? "Get for Free" : "Buy"}
             </button>
