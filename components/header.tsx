@@ -4,7 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@/lib/auth-context";
 import { useState } from "react";
-import LoadingMarker from "./LoadingMarker";
+import LoadingMarker from "./loading-marker";
 
 export default function Header() {
   const { user, signOut, isLoading } = useAuth();
@@ -16,7 +16,7 @@ export default function Header() {
   };
 
   return (
-    <header className="border-b-2 border-[#19191b]">
+    <header className="border-b-2 border-[#19191b] bg-[#ffffff]">
       <div className="container mx-auto flex justify-between items-center py-4 px-4 md:px-6">
         <Link href="/" className="flex items-center gap-2">
           <Image src="/globe.svg" alt="Maplizt Logo" width={32} height={32} />

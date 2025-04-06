@@ -7,7 +7,7 @@ import Header from "@/components/header";
 import { supabase } from "@/lib/supabase";
 import { getInfluencerByUserId, updateInfluencerProfile, createInfluencerProfile } from "@/lib/db";
 import { Influencer } from "@/types/database";
-import LoadingMarker from "@/components/LoadingMarker";
+import LoadingMarker from "@/components/loading-marker";
 
 export default function AccountPage() {
   const { user, isLoading } = useAuth();

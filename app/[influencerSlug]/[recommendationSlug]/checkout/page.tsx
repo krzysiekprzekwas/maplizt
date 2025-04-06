@@ -10,7 +10,7 @@ import { useState, useEffect } from "react"
 import InfluencerHeader from "@/components/influencer-header"
 import { Influencer, Recommendation } from "@/types/database"
 import { getRecommendationTypeStyle } from "@/lib/utils"
-import LoadingMarker from "@/components/LoadingMarker"
+import LoadingMarker from "@/components/loading-marker"
 
 export default function CheckoutPage() {
   const params = useParams()

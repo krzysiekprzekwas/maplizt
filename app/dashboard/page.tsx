@@ -7,7 +7,7 @@ import Header from "@/components/header";
 import Link from "next/link";
 import Image from "next/image";
 import { Recommendation } from "@/types/database";
-import LoadingMarker from "@/components/LoadingMarker";
+import LoadingMarker from "@/components/loading-marker";
 
 export default function Dashboard() {
   const { user, isLoading } = useAuth();
