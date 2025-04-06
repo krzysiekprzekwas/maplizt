@@ -45,12 +45,6 @@ export default async function HomePage() {
                 >
                   Start For Free
                 </Link>
-                <Link 
-                  href="#how-it-works" 
-                  className="bg-white px-6 py-3 rounded-lg border-2 border-[#19191b] font-medium hover:bg-[#f8f5ed] transition text-center"
-                >
-                  How It Works
-                </Link>
               </div>
             </div>
             <div className="relative">
