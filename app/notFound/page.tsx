@@ -24,7 +24,7 @@ export default async function NotFoundPage() {
       </div>
 
       {/* Decorative circles */}
-      <div className="fixed bottom-0 right-0 w-40 h-40 opacity-80 z-10">
+      <div className="fixed bottom-6 right-4 w-40 h-40 opacity-80 z-10">
         <div className="absolute bottom-0 right-0 w-20 h-20 bg-[#e47a5e] rounded-full"></div>
         <div className="absolute bottom-20 right-0 w-20 h-20 bg-[#e47a5e] rounded-full"></div>
         <div className="absolute bottom-0 right-20 w-20 h-20 bg-[#e47a5e] rounded-full"></div>

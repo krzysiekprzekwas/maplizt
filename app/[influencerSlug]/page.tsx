@@ -55,12 +55,12 @@ export default async function InfluencerPage({ params }: Props) {
         </div>
       </div>
 
-      {/* Decorative triangles */}
-      <div className="fixed bottom-0 right-0 w-32 h-32 opacity-50 z-10">
-        <div className="absolute bottom-0 right-0 w-16 h-16 bg-[#ffdc9a]"></div>
-        <div className="absolute bottom-16 right-0 w-16 h-16 bg-[#ffdc9a]"></div>
-        <div className="absolute bottom-0 right-16 w-16 h-16 bg-[#ffdc9a]"></div>
-        <div className="absolute bottom-16 right-16 w-16 h-16 bg-[#ffdc9a]"></div>
+    {/* Decorative triangles */}
+      <div className="fixed bottom-6 right-4 w-40 h-40 opacity-80 z-10 grid grid-cols-2 grid-rows-2 gap-0">
+        <div className="w-0 h-0 border-l-[40px] border-t-[40px] border-l-transparent border-t-[#ffdc9a]"></div>
+        <div className="w-0 h-0 border-l-40 border-t-40 border-l-transparent border-t-[#ffdc9a]"></div>
+        <div className="w-0 h-0 border-l-40 border-t-40 border-l-transparent border-t-[#ffdc9a]"></div>
+        <div className="w-0 h-0 border-l-40 border-t-40 border-l-transparent border-t-[#ffdc9a]"></div>
       </div>
     </div>
     </div>

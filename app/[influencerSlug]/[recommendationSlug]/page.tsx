@@ -43,7 +43,7 @@ export default async function RecommendationPage({ params }: Props) {
 
         <div className="rounded-lg overflow-hidden border-4 border-[#19191b] mb-8 neobrutalist-shadow">
           <Image
-            src={recommendation.images[0] || "/placeholder.svg"}
+            src={recommendation.images?.[0] ?? "/recommendation_image_placeholder.jpg"}
             alt={recommendation.title}
             width={700}
             height={400}
@@ -59,22 +59,22 @@ export default async function RecommendationPage({ params }: Props) {
         </div>
 
         {/* Fixed bottom CTA bar */}
-<div className="fixed bottom-0 left-0 right-0 w-full px-4 py-4">
-  <div className="max-w-2xl mx-auto flex gap-4">
-    <Link href={`/${recommendation.influencers.slug}`}>
-      <button className="bg-white font-bold text-base py-2 px-4 rounded-lg border-2 border-[#19191b] neobrutalist-shadow">
-        Back
-      </button>
-    </Link>
-    <Link href={`/${recommendation.influencers.slug}/${recommendation.slug}/checkout`} className="flex-1">
-      <button
-        className={`w-full font-bold text-base py-2 rounded-lg border-2 border-[#19191b] neobrutalist-shadow ${typeStyle}`}
-      >
-        Get me
-      </button>
-    </Link>
-  </div>
-</div>
+        <div className="fixed bottom-0 left-0 right-0 w-full px-4 py-4">
+          <div className="max-w-2xl mx-auto flex gap-4">
+            <Link href={`/${recommendation.influencers.slug}`}>
+              <button className="bg-white font-bold text-base py-2 px-4 rounded-lg border-2 border-[#19191b] neobrutalist-shadow">
+                Back
+              </button>
+            </Link>
+            <Link href={`/${recommendation.influencers.slug}/${recommendation.slug}/checkout`} className="flex-1">
+              <button
+                className={`w-full font-bold text-base py-2 rounded-lg border-2 border-[#19191b] neobrutalist-shadow ${typeStyle}`}
+              >
+                Get me
+              </button>
+            </Link>
+          </div>
+        </div>
 
       </div>
     </div>

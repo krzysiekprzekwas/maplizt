@@ -58,7 +58,7 @@ export default async function OrderConfirmationPage({ params }: Props) {
           <div className="space-y-4">
             <Link href="https://maps.google.com" target="_blank" className="block">
               <button
-                className={`w-full font-bold text-xl py-4 rounded-lg border-4 border-[#19191b] neobrutalist-shadow`}
+                className={`w-full font-bold text-xl py-4 rounded-lg border-4 border-[#19191b] bg-[#c5bdf7] neobrutalist-shadow`}
               >
                 Open in Google Maps
               </button>

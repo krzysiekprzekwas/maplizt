@@ -13,8 +13,8 @@ export default function InfluencerHeader({ influencer }: InfluencerHeaderProps) 
   }
 
   return (
-    <div className="bg-[#ffffff] border-b border-[#19191b]">
-      <div className="p-4">
+    <div className="w-full border-b-2 border-[#19191b] bg-[#ffffff]">
+      <div className="p-4 max-w-2xl mx-auto">
         <div className="flex items-center gap-4">
           <Link href={`/${influencer.slug}`}>
             <div className="w-[80px] h-[80px] rounded-lg overflow-hidden border-2 border-[#19191b] neobrutalist-shadow">

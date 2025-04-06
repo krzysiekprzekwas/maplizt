@@ -126,7 +126,7 @@ export default function CheckoutPage() {
     }
   };
 
-  const imageUrl = recommendation?.images[0] || "/placeholder.svg";
+  const imageUrl = recommendation?.images?.[0] ??  "/recommendation_image_placeholder.jpg";
   const recommendationTitle = recommendation?.title || "";
   const price = recommendation?.numeric_price || 0;
 
@@ -151,7 +151,7 @@ export default function CheckoutPage() {
             <h1 className="text-xl font-bold ">{recommendationTitle}</h1>
             <div className="flex justify-between items-center mt-2">
               <div className={`text-base font-semibold px-4 py-1 rounded-full ${typeStyle}`}>
-                {isFree ? "Free" : `${price} zł`}
+                {`${recommendation.type} ${price} zł`}
               </div>
             </div>
           </div>
@@ -227,13 +227,20 @@ export default function CheckoutPage() {
               </>
             )}
           </div>
-          <button
-            type="submit"
-            disabled={submitting}
-            className={`w-full font-bold text-base py-3 rounded-lg border-2 border-[#19191b] neobrutalist-shadow ${typeStyle} ${submitting ? 'opacity-70 cursor-not-allowed' : ''}`}
-          >
-            {submitting ? 'Processing...' : (isFree ? "Get it for free" : "Pay now")}
-          </button>
+          <div className="max-w-2xl mx-auto flex gap-4">
+            <Link href={`/${influencer?.slug}`}>
+              <button className="bg-white font-bold text-base py-2 px-4 rounded-lg border-2 border-[#19191b] neobrutalist-shadow">
+                Back
+              </button>
+            </Link>
+            <button
+              type="submit"
+              disabled={submitting}
+              className={`w-full font-bold text-base py-2 rounded-lg border-2 border-[#19191b] neobrutalist-shadow ${typeStyle} ${submitting ? 'opacity-70 cursor-not-allowed' : ''}`}
+            >
+              {submitting ? 'Processing...' : (isFree ? "Get it for free" : "Pay now")}
+            </button>
+          </div>
         </form>
       </div>
       
