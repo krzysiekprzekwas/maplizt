@@ -4,14 +4,14 @@ import { getRecommendation } from "@/lib/data"
 import { notFound } from "next/navigation"
 import InfluencerHeader from "@/components/influencer-header"
 
-export default async function RecommendationPage({
-  params,
-}: {
-  params: {
+type Props = {
+  params: Promise<{
     influencerSlug: string
     recommendationSlug: string
-  }
-}) {
+  }>
+}
+
+export default async function RecommendationPage({ params }: Props) {
   const { influencerSlug, recommendationSlug } = await params
   const data = getRecommendation(influencerSlug, recommendationSlug)
 

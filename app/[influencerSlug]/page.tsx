@@ -4,7 +4,7 @@ import { getInfluencer } from "@/lib/data"
 import { notFound } from "next/navigation"
 import InfluencerHeader from "@/components/influencer-header"
 
-export default async function InfluencerPage({ params }: { params: { influencerSlug: string } }) {
+export default async function InfluencerPage({ params }: { params: Promise<{ influencerSlug: string }> }) {
   const { influencerSlug } = await params
   const influencer = getInfluencer(influencerSlug)
 
