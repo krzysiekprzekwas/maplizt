@@ -7,8 +7,8 @@ interface InfluencerHeaderProps {
 
 export default function InfluencerHeader({ influencer }: InfluencerHeaderProps) {
   return (
-    <div className="bg-[#f8f5ed] border-b border-[#19191b]">
-      <div className="px-4 pb-4">
+    <div className="bg-[#ffffff] border-b border-[#19191b]">
+      <div className="p-4">
         <div className="flex items-center gap-4">
           <div className="w-[80px] h-[80px] rounded-lg overflow-hidden border-4 border-[#19191b] neobrutalist-shadow">
             <Image

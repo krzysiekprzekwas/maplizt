@@ -122,10 +122,11 @@
 }
 
 .neobrutalist-shadow {
-  box-shadow: 6px 6px 0 0 #19191b;
+  box-shadow: 4px 4px 0 0 #19191b;
+  transition: all 0.15s ease-in-out;
 }
 
 .neobrutalist-shadow:hover {
   transform: translate(2px, 2px);
-  box-shadow: 4px 4px 0 0 #19191b;
+  box-shadow: 2px 2px 0 0 #19191b;
 }

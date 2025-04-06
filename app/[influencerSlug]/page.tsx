@@ -3,6 +3,7 @@ import Link from "next/link"
 import { getInfluencer } from "@/lib/data"
 import { notFound } from "next/navigation"
 import InfluencerHeader from "@/components/influencer-header"
+import Head from "next/head"
 
 export default async function InfluencerPage({ params }: { params: Promise<{ influencerSlug: string }> }) {
   const { influencerSlug } = await params
@@ -13,12 +14,15 @@ export default async function InfluencerPage({ params }: { params: Promise<{ inf
   }
 
   return (
+<div>
+    <Head>
+      <title>Maplizt | {influencer.name}</title>
+      <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+    </Head>
+    <InfluencerHeader influencer={influencer} />
+    
     <div className="min-h-screen bg-[#f8f5ed] pb-20">
       <div className="max-w-2xl mx-auto px-4 pt-16">
-
-        <InfluencerHeader influencer={influencer} />
-
-        <div className="border-t-2 border-[#19191b] pt-8">
 
           <div className="space-y-6">
             {influencer.recommendations.map((recommendation) => (
@@ -37,7 +41,6 @@ export default async function InfluencerPage({ params }: { params: Promise<{ inf
                   </div>
               </Link>
             ))}
-          </div>
         </div>
       </div>
 
@@ -48,6 +51,7 @@ export default async function InfluencerPage({ params }: { params: Promise<{ inf
         <div className="absolute bottom-0 right-16 w-16 h-16 bg-[#ffdc9a]"></div>
         <div className="absolute bottom-16 right-16 w-16 h-16 bg-[#ffdc9a]"></div>
       </div>
+    </div>
     </div>
   )
 }
