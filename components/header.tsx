@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useAuth } from "@/lib/auth-context";
 import { useState } from "react";
+import LoadingMarker from "./LoadingMarker";
 
 export default function Header() {
   const { user, signOut, isLoading } = useAuth();
@@ -45,7 +46,7 @@ export default function Header() {
 
         <div className="relative">
           {isLoading ? (
-            <div className="w-8 h-8 animate-pulse bg-gray-200 rounded-full"></div>
+            <LoadingMarker />
           ) : user ? (
             <div className="flex items-center gap-4">
               <div className="hidden md:block">

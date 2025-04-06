@@ -1,31 +1,57 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import Header from "@/components/header";
 import Link from "next/link";
 import Image from "next/image";
+import { Recommendation } from "@/types/database";
+import LoadingMarker from "@/components/LoadingMarker";
 
 export default function Dashboard() {
   const { user, isLoading } = useAuth();
   const router = useRouter();
+  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
+  const [loadingRecommendations, setLoadingRecommendations] = useState(false);
 
   // Redirect if not authenticated
   useEffect(() => {
     if (!isLoading && !user) {
       router.push("/signup");
+    } else if (user) {
+      // Fetch user's recommendations
+      fetchUserRecommendations();
     }
   }, [user, isLoading, router]);
 
-  if (isLoading) {
+  // Function to fetch user's recommendations from the API
+  const fetchUserRecommendations = async () => {
+    if (!user) return;
+    
+    setLoadingRecommendations(true);
+    try {
+      // Use fetch to call our API endpoint
+      const response = await fetch('/api/user/recommendations');
+      
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      setRecommendations(data.recommendations || []);
+    } catch (error) {
+      console.error("Error fetching recommendations:", error);
+    } finally {
+      setLoadingRecommendations(false);
+    }
+  };
+
+  if (isLoading || loadingRecommendations) {
     return (
       <div className="min-h-screen" style={{ backgroundColor: "#f8f5ed" }}>
         <Header />
-        <div className="container mx-auto px-4 py-16 flex items-center justify-center">
-          <div className="animate-spin w-8 h-8 border-4 border-[#8d65e3] border-t-transparent rounded-full"></div>
-          <span className="ml-3 text-gray-600">Loading...</span>
-        </div>
+        <LoadingMarker />
       </div>
     );
   }
@@ -44,7 +70,7 @@ export default function Dashboard() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-[#8d65e3]/10 p-6 rounded-lg border-2 border-[#19191b]">
               <h3 className="font-bold mb-2">Your Lists</h3>
-              <p className="text-3xl font-bold">0</p>
+              <p className="text-3xl font-bold">{recommendations.length}</p>
               <p className="text-sm text-gray-500">Recommendation lists created</p>
             </div>
             
@@ -73,21 +99,74 @@ export default function Dashboard() {
             </Link>
           </div>
           
-          <div className="py-10 flex flex-col items-center justify-center text-center">
-            <div className="w-24 h-24 bg-[#f8f5ed] rounded-full flex items-center justify-center mb-4">
-              <Image src="/globe.svg" alt="Empty" width={40} height={40} className="opacity-40" />
+          {recommendations.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {recommendations.map((recommendation) => (
+                <div 
+                  key={recommendation.id} 
+                  className="border-2 border-[#19191b] rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow"
+                >
+                  <div className="h-40 bg-gray-200 relative">
+                    {recommendation.images && recommendation.images[0] ? (
+                      <Image 
+                        src={recommendation.images[0]} 
+                        alt={recommendation.title} 
+                        fill 
+                        className="object-cover"
+                      />
+                    ) : (
+                      <Image
+                      src="/recommendation_image_placeholder.jpg"
+                      alt={recommendation.title}
+                      fill
+                      className="w-full h-auto object-cover"
+                      />
+                    )}
+                    <div className={`absolute top-2 left-2 px-2 py-1 rounded text-xs font-bold ${
+                      recommendation.type === 'Premium' 
+                        ? 'bg-[#f7bdf6]' 
+                        : recommendation.type === 'Paid' 
+                          ? 'bg-[#7db48f]' 
+                          : 'bg-[#97b5ec]'
+                    }`}>
+                      {recommendation.type}
+                      {recommendation.numeric_price > 0 && ` $${recommendation.numeric_price}`}
+                    </div>
+                  </div>
+                  <div className="p-4">
+                    <h3 className="font-bold text-lg mb-1">{recommendation.title}</h3>
+                    <p className="text-sm text-gray-500 line-clamp-2">{recommendation.description}</p>
+                    <div className="mt-4 flex justify-between items-center">
+                      <span className="text-xs text-gray-400">
+                        Created {new Date(recommendation.created_at).toLocaleDateString()}
+                      </span>
+                      <Link href={`/edit-list/${recommendation.slug}`}>
+                        <button className="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded transition">
+                          Edit
+                        </button>
+                      </Link>
+                    </div>
+                  </div>
+                </div>
+              ))}
             </div>
-            <h3 className="text-xl font-bold mb-2">No Lists Yet</h3>
-            <p className="text-gray-500 max-w-md mb-6">
-              You haven&apos;t created any recommendation lists yet. Create your first list to start sharing and monetizing your recommendations.
-            </p>
-            <Link
-              href="/create-list"
-              className="bg-[#8d65e3] text-white px-6 py-3 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition"
-            >
-              Create Your First List
-            </Link>
-          </div>
+          ) : (
+            <div className="py-10 flex flex-col items-center justify-center text-center">
+              <div className="w-24 h-24 bg-[#f8f5ed] rounded-full flex items-center justify-center mb-4">
+                <Image src="/globe.svg" alt="Empty" width={40} height={40} className="opacity-40" />
+              </div>
+              <h3 className="text-xl font-bold mb-2">No Lists Yet</h3>
+              <p className="text-gray-500 max-w-md mb-6">
+                You haven&apos;t created any recommendation lists yet. Create your first list to start sharing and monetizing your recommendations.
+              </p>
+              <Link
+                href="/create-list"
+                className="bg-[#8d65e3] text-white px-6 py-3 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition"
+              >
+                Create Your First List
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </div>

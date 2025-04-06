@@ -7,6 +7,7 @@ import Header from "@/components/header";
 import { supabase } from "@/lib/supabase";
 import { getInfluencerByUserId, updateInfluencerProfile, createInfluencerProfile } from "@/lib/db";
 import { Influencer } from "@/types/database";
+import LoadingMarker from "@/components/LoadingMarker";
 
 export default function AccountPage() {
   const { user, isLoading } = useAuth();
@@ -120,10 +121,7 @@ export default function AccountPage() {
     return (
       <div className="min-h-screen" style={{ backgroundColor: "#f8f5ed" }}>
         <Header />
-        <div className="container mx-auto px-4 py-16 flex items-center justify-center">
-          <div className="animate-spin w-8 h-8 border-4 border-[#8d65e3] border-t-transparent rounded-full"></div>
-          <span className="ml-3 text-gray-600">Loading...</span>
-        </div>
+        <LoadingMarker />
       </div>
     );
   }

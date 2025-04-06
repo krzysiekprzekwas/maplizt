@@ -10,6 +10,7 @@ import { useState, useEffect } from "react"
 import InfluencerHeader from "@/components/influencer-header"
 import { Influencer, Recommendation } from "@/types/database"
 import { getRecommendationTypeStyle } from "@/lib/utils"
+import LoadingMarker from "@/components/LoadingMarker"
 
 export default function CheckoutPage() {
   const params = useParams()
@@ -68,7 +69,7 @@ export default function CheckoutPage() {
   }, [influencerSlug, recommendationSlug, router]);
 
   if (loading) {
-    return <div className="min-h-screen bg-[#f8f5ed] flex items-center justify-center">Loading...</div>
+    return <LoadingMarker />
   }
 
   if (!recommendation || !influencer) {
