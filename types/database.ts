@@ -17,7 +17,7 @@ export type Recommendation = {
   description: string;
   type: string;
   numeric_price: number;
-  image_url: string;
+  images: string[];
   created_at: string;
   updated_at: string;
 };

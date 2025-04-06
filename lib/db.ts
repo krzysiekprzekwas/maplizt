@@ -43,4 +43,22 @@ export async function createOrder(orderData: Omit<Order, 'id' | 'created_at' | '
 
   if (error) throw error;
   return data as Order;
-} 
+}
+
+export async function getOrderDetails(orderId: string) {
+  const { data, error } = await supabase
+    .from('orders')
+    .select('*, recommendations(*, influencers(*))')
+    .eq('id', orderId)
+    .maybeSingle();
+
+  if (error || !data) {
+    return null;
+  }
+
+  return data as Order & {
+    recommendations: Recommendation & {
+      influencers: Influencer
+    }
+  };
+}

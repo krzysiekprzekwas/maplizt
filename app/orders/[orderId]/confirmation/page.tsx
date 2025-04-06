@@ -1,31 +1,12 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { supabase } from "@/lib/supabase"
-import { Order, Recommendation, Influencer } from "@/types/database"
 import InfluencerHeader from "@/components/influencer-header"
+import { getOrderDetails } from "@/lib/db"
 
 type Props = {
   params: Promise<{
     orderId: string
   }>
-}
-
-async function getOrderDetails(orderId: string) {
-  const { data, error } = await supabase
-    .from('orders')
-    .select('*, recommendations(*, influencers(*))')
-    .eq('id', orderId)
-    .single();
-
-  if (error || !data) {
-    return null;
-  }
-
-  return data as Order & {
-    recommendations: Recommendation & {
-      influencers: Influencer
-    }
-  };
 }
 
 export default async function OrderConfirmationPage({ params }: Props) {

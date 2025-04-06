@@ -43,7 +43,7 @@ export default async function RecommendationPage({ params }: Props) {
 
         <div className="rounded-lg overflow-hidden border-4 border-[#19191b] mb-8 neobrutalist-shadow">
           <Image
-            src={recommendation.image_url || "/placeholder.svg"}
+            src={recommendation.images[0] || "/placeholder.svg"}
             alt={recommendation.title}
             width={700}
             height={400}

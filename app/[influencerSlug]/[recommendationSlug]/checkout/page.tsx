@@ -126,8 +126,7 @@ export default function CheckoutPage() {
     }
   };
 
-  // Use optional chaining for recommendation properties to prevent undefined errors
-  const imageUrl = recommendation?.image_url || "/placeholder.svg";
+  const imageUrl = recommendation?.images[0] || "/placeholder.svg";
   const recommendationTitle = recommendation?.title || "";
   const price = recommendation?.numeric_price || 0;
 
@@ -136,7 +135,8 @@ export default function CheckoutPage() {
       <InfluencerHeader influencer={influencer} />
 
       <div className="max-w-2xl mx-auto px-4 py-6 relative z-20">
-        <div className="flex gap-4 mb-6">
+        <h2 className="text-2xl font-bold  mb-4">Shopping cart:</h2>
+        <div className="flex gap-4 mb-6 px-6">
           <div className="w-[100px] h-[100px] rounded-lg overflow-hidden border-4 border-[#19191b]">
             <Image
               src={imageUrl}
@@ -148,14 +148,10 @@ export default function CheckoutPage() {
           </div>
 
           <div className="flex-1">
-            <h1 className="text-2xl font-bold ">{recommendationTitle}</h1>
+            <h1 className="text-xl font-bold ">{recommendationTitle}</h1>
             <div className="flex justify-between items-center mt-2">
-              <div>
-                <p className="">Qty: 1</p>
-                <p className=" font-bold">{isFree ? "Free" : `Total: $${price}`}</p>
-              </div>
               <div className={`text-base font-semibold px-4 py-1 rounded-full ${typeStyle}`}>
-                {isFree ? "Free" : `$${price}`}
+                {isFree ? "Free" : `${price} zł`}
               </div>
             </div>
           </div>
