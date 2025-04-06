@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import { Database, Influencer, Recommendation } from '../types/database';
+import { Database, Influencer, Recommendation, Order } from '../types/database';
 
 export async function getInfluencers() {
   const { data, error } = await supabase
@@ -19,7 +19,6 @@ export async function getInfluencer(slug: string) {
     .maybeSingle();
 
   if (error) throw error;
-  
   return data as Influencer & { recommendations: Recommendation[] };
 }
 
@@ -29,8 +28,19 @@ export async function getRecommendation(influencerSlug: string, recommendationSl
     .select('*, influencers(*)')
     .eq('influencers.slug', influencerSlug)
     .eq('slug', recommendationSlug)
-    .single();
+    .maybeSingle();
 
   if (error) throw error;
   return data as Recommendation & { influencers: Influencer };
+}
+
+export async function createOrder(orderData: Omit<Order, 'id' | 'created_at' | 'updated_at'>) {
+  const { data, error } = await supabase
+    .from('orders')
+    .insert(orderData)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data as Order;
 } 

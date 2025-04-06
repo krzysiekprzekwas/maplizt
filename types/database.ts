@@ -22,6 +22,18 @@ export type Recommendation = {
   updated_at: string;
 };
 
+export type Order = {
+  id: string;
+  recommendation_id: string;
+  email: string;
+  card_number?: string;
+  card_expiry?: string;
+  card_cvc?: string;
+  status: 'pending' | 'completed' | 'failed';
+  created_at: string;
+  updated_at: string;
+};
+
 export type Database = {
   public: {
     Tables: {
@@ -34,6 +46,11 @@ export type Database = {
         Row: Recommendation;
         Insert: Omit<Recommendation, 'id' | 'created_at' | 'updated_at'>;
         Update: Partial<Omit<Recommendation, 'id' | 'created_at' | 'updated_at'>>;
+      };
+      orders: {
+        Row: Order;
+        Insert: Omit<Order, 'id' | 'created_at' | 'updated_at'>;
+        Update: Partial<Omit<Order, 'id' | 'created_at' | 'updated_at'>>;
       };
     };
   };

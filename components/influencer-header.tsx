@@ -7,6 +7,11 @@ interface InfluencerHeaderProps {
 }
 
 export default function InfluencerHeader({ influencer }: InfluencerHeaderProps) {
+
+  if (!influencer) {
+    return null;
+  }
+
   return (
     <div className="bg-[#ffffff] border-b border-[#19191b]">
       <div className="p-4">
