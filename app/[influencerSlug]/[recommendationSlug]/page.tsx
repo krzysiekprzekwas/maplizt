@@ -25,14 +25,12 @@ export default async function RecommendationPage({ params }: Props) {
     <div className="min-h-screen bg-[#f8f5ed]">
       <InfluencerHeader influencer={influencer} />
 
-      <div className="max-w-2xl mx-auto px-4 py-6">
+      <div className="max-w-2xl mx-auto px-4 py-6 pb-40">
         <div className="flex justify-between items-start mb-6">
-          <h1 className="text-4xl font-bold text-[#19191b] leading-tight">
-            {recommendation.title.split(" ").slice(0, 2).join(" ")}
-            <br />
-            {recommendation.title.split(" ").slice(2).join(" ")}
+          <h1 className="text-2xl font-bold  leading-tight">
+            {recommendation.title}
           </h1>
-          <div className={`${recommendation.color} text-[#19191b] font-semibold px-6 py-2 rounded-full`}>
+          <div className={`${recommendation.color} text-base font-semibold px-6 py-2 rounded-full`}>
             {recommendation.price}
           </div>
         </div>
@@ -61,20 +59,24 @@ export default async function RecommendationPage({ params }: Props) {
           </div>
         </div>
 
-        <div className="flex gap-4">
-          <Link href={`/${influencer.slug}`}>
-            <button className="bg-white text-[#19191b] font-bold py-4 px-6 rounded-lg border-4 border-[#19191b] neobrutalist-shadow">
-              Back
-            </button>
-          </Link>
-          <Link href={`/${influencer.slug}/${recommendation.slug}/checkout`} className="flex-1">
-            <button
-              className={`w-full ${recommendation.color} text-[#19191b] font-bold text-xl py-4 rounded-lg border-4 border-[#19191b] neobrutalist-shadow`}
-            >
-              Get me
-            </button>
-          </Link>
-        </div>
+        {/* Fixed bottom CTA bar */}
+<div className="fixed bottom-0 left-0 right-0 w-full px-4 py-4">
+  <div className="max-w-2xl mx-auto flex gap-4">
+    <Link href={`/${influencer.slug}`}>
+      <button className="bg-white font-bold text-base py-2 px-4 rounded-lg border-2 border-[#19191b] neobrutalist-shadow">
+        Back
+      </button>
+    </Link>
+    <Link href={`/${influencer.slug}/${recommendation.slug}/checkout`} className="flex-1">
+      <button
+        className={`w-full ${recommendation.color} font-bold text-base py-2 rounded-lg border-2 border-[#19191b] neobrutalist-shadow`}
+      >
+        Get me
+      </button>
+    </Link>
+  </div>
+</div>
+
       </div>
     </div>
   )

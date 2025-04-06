@@ -127,6 +127,11 @@
 }
 
 .neobrutalist-shadow:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 0 #19191b;
+}
+
+.neobrutalist-shadow:active {
   transform: translate(2px, 2px);
   box-shadow: 2px 2px 0 0 #19191b;
 }
