@@ -7,7 +7,7 @@ export async function GET(
 ) {
   try {
     const { slug } = await params;
-    const influencer = getInfluencer(slug);
+    const influencer = await getInfluencer(slug);
     
     if (!influencer) {
       return NextResponse.json(

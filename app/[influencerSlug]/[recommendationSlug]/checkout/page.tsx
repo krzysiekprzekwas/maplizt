@@ -17,7 +17,8 @@ export default function CheckoutPage() {
   const influencerSlug = params.influencerSlug as string
   const recommendationSlug = params.recommendationSlug as string
 
-  const [data, setData] = useState<{ influencer: Influencer; recommendation: Recommendation } | null>(null)
+  const [recommendation, setRecommendation] = useState<Recommendation | null>(null)
+  const [influencer, setInfluencer] = useState<Influencer | null>(null)
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -28,28 +29,36 @@ export default function CheckoutPage() {
     card_cvc: ''
   })
 
-  // Calculate isFree from data instead of using a separate state
-  const isFree = data?.recommendation?.numeric_price === 0
+  // Calculate isFree from recommendation data
+  const isFree = recommendation?.numeric_price === 0
 
   useEffect(() => {
+    console.log("Fetching data for:", influencerSlug, recommendationSlug);
     // Get data on the client side to avoid hydration issues
     const fetchData = async () => {
       try {
+        // Fetch recommendation data which also includes influencer data
         const res = await fetch(`/api/influencers/${influencerSlug}/recommendations/${recommendationSlug}`);
-        
         if (!res.ok) {
           if (res.status === 404) {
             router.push("/");
             return;
           }
-          throw new Error('Failed to fetch recommendation');
+          throw new Error('Failed to fetch data');
         }
         
-        const result = await res.json();
-        setData(result);
+        const data = await res.json();
+        console.log("API response:", data);
+        
+        if (!data || !data.recommendation || !data.influencer) {
+          throw new Error('Invalid data returned from API');
+        }
+        
+        setInfluencer(data.influencer);
+        setRecommendation(data.recommendation);
       } catch (error) {
         console.error('Error fetching data:', error);
-        router.push("/");
+        setError('Failed to load recommendation data');
       } finally {
         setLoading(false);
       }
@@ -62,11 +71,12 @@ export default function CheckoutPage() {
     return <div className="min-h-screen bg-[#f8f5ed] flex items-center justify-center">Loading...</div>
   }
 
-  if (!data) {
-    return null;
+  if (!recommendation || !influencer) {
+    return <div className="min-h-screen bg-[#f8f5ed] flex items-center justify-center">
+      {error || "Could not load recommendation"}
+    </div>;
   }
 
-  const { influencer, recommendation } = data
   const typeStyle = getRecommendationTypeStyle(isFree ? 'free' : 'paid');
 
   // Handle form input changes

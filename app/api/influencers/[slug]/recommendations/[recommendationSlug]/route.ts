@@ -1,13 +1,29 @@
-import { getRecommendation } from '@/lib/db';
+import { getInfluencer } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
+import { supabase } from '@/lib/supabase';
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string; recommendationSlug: string }> }
 ) {
   try {
-    const { slug, recommendationSlug } = await params;
-    const recommendation = getRecommendation(slug, recommendationSlug);
+    const resolvedParams = await params;
+    const { slug, recommendationSlug } = resolvedParams;
+    
+    // Get the influencer first
+    const influencerData = await getInfluencer(slug);
+    
+    if (!influencerData) {
+      return NextResponse.json(
+        { error: 'Influencer not found' },
+        { status: 404 }
+      );
+    }
+    
+    // Find the recommendation from the influencer's recommendations array
+    const recommendation = influencerData.recommendations.find(
+      (rec) => rec.slug === recommendationSlug
+    );
     
     if (!recommendation) {
       return NextResponse.json(
@@ -15,7 +31,18 @@ export async function GET(
         { status: 404 }
       );
     }
-    return NextResponse.json(recommendation);
+    
+    // Return both influencer and recommendation
+    return NextResponse.json({
+      influencer: {
+        id: influencerData.id,
+        slug: influencerData.slug,
+        name: influencerData.name,
+        handle: influencerData.handle,
+        profile_image: influencerData.profile_image
+      },
+      recommendation
+    });
   } catch (error) {
     console.error('Error fetching recommendation:', error);
     return NextResponse.json(
