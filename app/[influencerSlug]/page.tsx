@@ -1,31 +1,16 @@
 import { ArrowRight } from "lucide-react"
 import Link from "next/link"
-import type { Influencer } from "@/lib/data"
 import { notFound } from "next/navigation"
 import InfluencerHeader from "@/components/influencer-header"
 import Head from "next/head"
+import { getInfluencer } from "@/lib/db"
+import { getRecommendationTypeStyle } from "@/lib/utils"
 
 
 type Props = {
   params: Promise<{ 
     influencerSlug: string,
   }>
-}
-
-async function getInfluencer(slug: string) {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || ''}/api/influencers/${slug}`, {
-    cache: 'no-store'
-  });
-  
-  if (!res.ok) {
-    if (res.status === 404) {
-      return null;
-    }
-    throw new Error('Failed to fetch influencer');
-  }
-  
-  const data = await res.json();
-  return data.influencer as Influencer;
 }
 
 export default async function InfluencerPage({ params }: Props) {
@@ -48,22 +33,26 @@ export default async function InfluencerPage({ params }: Props) {
       <div className="max-w-2xl mx-auto px-4 pt-16">
 
           <div className="space-y-6">
-            {influencer.recommendations.map((recommendation) => (
-              <Link key={recommendation.slug} href={`/${influencer.slug}/${recommendation.slug}`} className="block">
-                  <div className="bg-white rounded-lg border-2 border-[#19191b] p-6 flex justify-between items-center neobrutalist-shadow">
-                    <div className="flex-1">
-                      <h4 className="text-xl font-bold mb-2">{recommendation.title}</h4>
-                      <p className="text-sm pr-4">{recommendation.description.substring(0, 100)}...</p>
-                    </div>
-                    <div className="flex flex-col items-end gap-4">
-                      <div className={`${recommendation.color} font-semibold px-6 py-2 rounded-full`}>
-                        <p className="text-sm">{recommendation.price}</p>
+            {influencer.recommendations.map((recommendation) => {
+              const typeStyle = getRecommendationTypeStyle(recommendation.type);
+              
+              return (
+                <Link key={recommendation.slug} href={`/${influencer.slug}/${recommendation.slug}`} className="block">
+                    <div className="bg-white rounded-lg border-2 border-[#19191b] p-6 flex justify-between items-center neobrutalist-shadow">
+                      <div className="flex-1">
+                        <h4 className="text-xl font-bold mb-2">{recommendation.title}</h4>
+                        <p className="text-sm pr-4">{recommendation.description.substring(0, 100)}...</p>
                       </div>
-                      <ArrowRight className="w-6 h-6" />
+                      <div className="flex flex-col items-end gap-4">
+                        <div className={`font-semibold px-6 py-2 rounded-full ${typeStyle}`}>
+                          <p className="text-sm">{recommendation.type} {recommendation.numeric_price} zł</p>
+                        </div>
+                        <ArrowRight className="w-6 h-6" />
+                      </div>
                     </div>
-                  </div>
-              </Link>
-            ))}
+                </Link>
+              );
+            })}
         </div>
       </div>
 

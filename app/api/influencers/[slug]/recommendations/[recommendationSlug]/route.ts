@@ -1,5 +1,5 @@
+import { getRecommendation } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
-import { getRecommendation } from '@/lib/data';
 
 export async function GET(
   request: NextRequest,
@@ -7,16 +7,15 @@ export async function GET(
 ) {
   try {
     const { slug, recommendationSlug } = await params;
-    const data = getRecommendation(slug, recommendationSlug);
+    const recommendation = getRecommendation(slug, recommendationSlug);
     
-    if (!data) {
+    if (!recommendation) {
       return NextResponse.json(
         { error: 'Recommendation not found' },
         { status: 404 }
       );
     }
-    
-    return NextResponse.json(data);
+    return NextResponse.json(recommendation);
   } catch (error) {
     console.error('Error fetching recommendation:', error);
     return NextResponse.json(

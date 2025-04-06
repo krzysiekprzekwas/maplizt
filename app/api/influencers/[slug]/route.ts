@@ -1,5 +1,5 @@
+import { getInfluencer } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
-import { getInfluencer } from '@/lib/data';
 
 export async function GET(
   request: NextRequest,
@@ -15,8 +15,7 @@ export async function GET(
         { status: 404 }
       );
     }
-    
-    return NextResponse.json({ influencer });
+    return NextResponse.json(influencer);
   } catch (error) {
     console.error('Error fetching influencer:', error);
     return NextResponse.json(

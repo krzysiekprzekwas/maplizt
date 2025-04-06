@@ -1,64 +1,31 @@
-"use client"
 import Link from "next/link"
-import { useParams, useRouter } from "next/navigation"
-import { useState, useEffect } from "react"
-import type { Influencer, Recommendation } from "@/lib/data"
 import InfluencerHeader from "@/components/influencer-header"
+import { Influencer, Recommendation } from "@/types/database"
+import { getRecommendation } from "@/lib/db"
 
-export default function ConfirmationPage() {
-  const params = useParams()
-  const router = useRouter()
-  const influencerSlug = params.influencerSlug as string
-  const recommendationSlug = params.recommendationSlug as string
+type Props = {
+  params: Promise<{
+    influencerSlug: string
+    recommendationSlug: string
+  }>
+}
 
-  const [data, setData] = useState<{ influencer: Influencer; recommendation: Recommendation } | null>(null)
-  const [loading, setLoading] = useState(true)
+export default async function ConfirmationPage({ params }: Props) {
+  const { influencerSlug, recommendationSlug } = await params
+  const recommendation = await getRecommendation(influencerSlug, recommendationSlug)
 
-  useEffect(() => {
-    // Get data on the client side to avoid hydration issues
-    const fetchData = async () => {
-      try {
-        const res = await fetch(`/api/influencers/${influencerSlug}/recommendations/${recommendationSlug}`);
-        
-        if (!res.ok) {
-          if (res.status === 404) {
-            router.push("/");
-            return;
-          }
-          throw new Error('Failed to fetch recommendation');
-        }
-        
-        const result = await res.json();
-        setData(result);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        router.push("/");
-      } finally {
-        setLoading(false);
-      }
-    };
-    
-    fetchData();
-  }, [influencerSlug, recommendationSlug, router]);
-
-  if (loading) {
-    return <div className="min-h-screen bg-[#f8f5ed] flex items-center justify-center">Loading...</div>
-  }
-
-  if (!data) {
+  if (!recommendation) {
     return null;
   }
 
-  const { influencer, recommendation } = data
-
   return (
     <div className="min-h-screen bg-[#f8f5ed]">
-      <InfluencerHeader influencer={influencer}/>
+      <InfluencerHeader influencer={recommendation.influencers}/>
 
       <div className="max-w-2xl mx-auto px-4 py-6">
         <div className="max-w-lg mx-auto text-center py-12">
-          <h1 className="text-5xl font-bold text-[#19191b] mb-8">Amazing!</h1>
-          <p className="text-[#19191b] text-lg mb-16">
+          <h1 className="text-5xl font-bold  mb-8">Amazing!</h1>
+          <p className=" text-lg mb-16">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus sed dui a massa laoreet imperdiet. Aenean
             venenatis tortor ut lorem elementum, et dignissim tellus rhoncus. Nullam porttitor et lectus a volutpat.
           </p>
@@ -66,14 +33,14 @@ export default function ConfirmationPage() {
           <div className="space-y-4">
             <Link href="https://maps.google.com" target="_blank" className="block">
               <button
-                className={`w-full ${recommendation.color} text-[#19191b] font-bold text-xl py-4 rounded-lg border-4 border-[#19191b] neobrutalist-shadow`}
+                className={`w-full font-bold text-xl py-4 rounded-lg border-4 border-[#19191b] neobrutalist-shadow`}
               >
                 Open in Google Maps
               </button>
             </Link>
 
-            <Link href={`/${influencer.slug}`} className="block">
-              <button className="w-full bg-white text-[#19191b] font-bold text-xl py-4 rounded-lg border-4 border-[#19191b] neobrutalist-shadow">
+            <Link href={`/${recommendation.influencers.slug}`} className="block">
+              <button className="w-full bg-white  font-bold text-xl py-4 rounded-lg border-4 border-[#19191b] neobrutalist-shadow">
                 See other
               </button>
             </Link>

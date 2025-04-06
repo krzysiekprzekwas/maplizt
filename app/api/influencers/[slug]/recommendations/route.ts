@@ -1,5 +1,5 @@
+import { getInfluencer } from '@/lib/db';
 import { NextRequest, NextResponse } from 'next/server';
-import { getInfluencer } from '@/lib/data';
 
 export async function GET(
   request: NextRequest,
@@ -7,7 +7,7 @@ export async function GET(
 ) {
   try {
     const { slug } = await params;
-    const influencer = getInfluencer(slug);
+    const influencer = await getInfluencer(slug);
     
     if (!influencer) {
       return NextResponse.json(

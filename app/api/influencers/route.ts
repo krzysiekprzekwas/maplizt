@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
-import { getInfluencers } from '@/lib/data';
+import { getInfluencers } from '@/lib/db';
 
 export async function GET() {
   try {
-    const influencers = getInfluencers();
-    return NextResponse.json({ influencers });
+    const influencers = await getInfluencers();
+    return NextResponse.json(influencers);
   } catch (error) {
     console.error('Error fetching influencers:', error);
     return NextResponse.json(
