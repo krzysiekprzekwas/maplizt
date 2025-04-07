@@ -1,5 +1,5 @@
 import { supabase } from './supabase';
-import { Database, Influencer, Recommendation, Order } from '../types/database';
+import { Influencer, Recommendation, Order } from '../types/database';
 
 export async function getInfluencers() {
   const { data, error } = await supabase
@@ -27,6 +27,17 @@ export async function getInfluencerByUserId(userId: string) {
     .from('influencers')
     .select('*')
     .eq('user_id', userId)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data as Influencer | null;
+}
+
+export async function getInfluencerById(influencer_id: string) {
+  const { data, error } = await supabase
+    .from('influencers')
+    .select('*')
+    .eq('id', influencer_id)
     .maybeSingle();
 
   if (error) throw error;
@@ -161,4 +172,25 @@ export async function updateRecommendation(recommendation: Partial<Recommendatio
 
   if (error) throw error;
   return data as Recommendation;
+}
+
+export async function deleteRecommendationById(id: string) {
+  // Delete the recommendation
+  const { error: deleteError } = await supabase
+    .from('recommendations')
+    .delete()
+    .eq('id', id);    
+      
+  if (deleteError) throw deleteError;
+  return deleteError;
+}
+
+export async function deleteStoredImageByPath(filePath: string) {
+  // Delete the object
+  const { error: deleteError } = await supabase.storage
+  .from('recommendation-images')
+  .remove([filePath]);
+      
+  if (deleteError) throw deleteError;
+  return deleteError;
 }

@@ -36,6 +36,7 @@ export default function EditRecommendationPage({ params }: Props) {
   const [isCheckingSlug, setIsCheckingSlug] = useState(false);
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [recommendationId, setRecommendationId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -218,6 +219,42 @@ export default function EditRecommendationPage({ params }: Props) {
       setError(error instanceof Error ? error.message : "An unknown error occurred");
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  // Add delete handler
+  const handleDelete = async () => {
+    if (!recommendationId) return;
+    
+    if (!confirm("Are you sure you want to delete this recommendation? This action cannot be undone.")) {
+      return;
+    }
+    
+    setIsDeleting(true);
+    setError(null);
+    
+    try {
+      const response = await fetch(`/api/recommendations/${recommendationId}`, {
+        method: "DELETE",
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to delete recommendation");
+      }
+      
+      setSuccess("Recommendation deleted successfully!");
+      
+      // Redirect to dashboard after a short delay
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 1500);
+    } catch (error) {
+      console.error("Error deleting recommendation:", error);
+      setError(error instanceof Error ? error.message : "An unknown error occurred");
+    } finally {
+      setIsDeleting(false);
     }
   };
 
@@ -413,21 +450,32 @@ export default function EditRecommendationPage({ params }: Props) {
               </div>
             )}
             
-            <div className="flex justify-end gap-4 mt-8">
+            <div className="flex justify-between gap-4 mt-8">
               <button
                 type="button"
-                className="px-6 py-3 bg-white text-[#19191b] rounded-lg border-2 border-[#19191b] font-medium hover:bg-gray-100 transition"
-                onClick={() => router.push("/dashboard")}
+                className="px-6 py-3 bg-red-500 text-white rounded-lg border-2 border-red-600 font-medium hover:bg-red-600 transition"
+                onClick={handleDelete}
+                disabled={isDeleting}
               >
-                Cancel
+                {isDeleting ? "Deleting..." : "Delete List"}
               </button>
-              <button
-                type="submit"
-                className="px-6 py-3 bg-[#19191b] text-white rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition"
-                disabled={isSubmitting || !!slugError}
-              >
-                {isSubmitting ? "Updating..." : "Update List"}
-              </button>
+              
+              <div className="flex gap-4 ml-auto">
+                <button
+                  type="button"
+                  className="px-6 py-3 bg-white text-[#19191b] rounded-lg border-2 border-[#19191b] font-medium hover:bg-gray-100 transition"
+                  onClick={() => router.push("/dashboard")}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="px-6 py-3 bg-[#19191b] text-white rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition"
+                  disabled={isSubmitting || !!slugError}
+                >
+                  {isSubmitting ? "Saving..." : "Update List"}
+                </button>
+              </div>
             </div>
           </form>
         </div>

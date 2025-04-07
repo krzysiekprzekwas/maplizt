@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getInfluencerByUserId, getRecommendationById, updateRecommendation } from "@/lib/db";
+import { deleteRecommendationById, deleteStoredImageByPath, getInfluencerById, getInfluencerByUserId, getRecommendationById, updateRecommendation } from "@/lib/db";
 import { handleApiAuth } from "@/lib/server-utils";
 
 export async function PUT(
@@ -96,6 +96,120 @@ export async function PUT(
       console.error("Error updating recommendation:", error);
       return NextResponse.json(
         { error: "Failed to update recommendation" },
+        { status: 500 }
+      );
+    }
+  });
+}
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  return handleApiAuth(request, async (userId) => {
+    try {
+
+      const { id } = await params;
+      // Get the existing recommendation
+      const recommendation = await getRecommendationById(id);
+      if (!recommendation) {
+        return NextResponse.json(
+          { error: "Recommendation not found" },
+          { status: 404 }
+        );
+      }
+
+      // Get the owner influencer 
+      const influencer = await getInfluencerById(recommendation.influencer_id);
+      if (!influencer) {
+        return NextResponse.json(
+          { error: "Issue with recommendation" },
+          { status: 404 }
+        );
+      }
+
+      // Verify ownership
+      if (influencer.user_id !== userId) {
+        return NextResponse.json(
+          { error: 'You do not have permission to view this recommendation' },
+          { status: 403 }
+        );
+      }
+
+      // Delete images from storage if they're not the placeholder
+      if (recommendation.images && recommendation.images.length > 0) {
+        for (const imageUrl of recommendation.images) {
+          if (imageUrl && !imageUrl.includes('recommendation_image_placeholder.jpg')) {
+            // Extract the path from the URL
+            const urlParts = imageUrl.split('/storage/v1/object/public/recommendation-images/');
+            if (urlParts.length > 1) {
+              const filePath = urlParts[1];
+              await deleteStoredImageByPath(filePath);
+            }
+          }
+        }
+      }
+
+      // Delete the recommendation
+      const deleteError = await deleteRecommendationById(id);
+
+      if (deleteError) {
+        return NextResponse.json(
+          { error: 'Failed to delete recommendation' },
+          { status: 500 }
+        );
+      }
+
+      return NextResponse.json({ success: true });
+    } catch (error) {
+      console.error('Delete error:', error);
+      return NextResponse.json(
+        { error: 'Internal server error' },
+        { status: 500 }
+      );
+    }
+  });
+}
+
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  return handleApiAuth(request, async (userId) => {
+    try {
+
+      const { id } = await params;
+      // Get the existing recommendation
+      const recommendation = await getRecommendationById(id);
+      if (!recommendation) {
+        return NextResponse.json(
+          { error: "Recommendation not found" },
+          { status: 404 }
+        );
+      }
+
+      // Get the owner influencer 
+      const influencer = await getInfluencerById(recommendation.influencer_id);
+      if (!influencer) {
+        return NextResponse.json(
+          { error: "Issue with recommendation" },
+          { status: 404 }
+        );
+      }
+
+      // Verify ownership
+      if (influencer.user_id !== userId) {
+        return NextResponse.json(
+          { error: 'You do not have permission to view this recommendation' },
+          { status: 403 }
+        );
+      }
+
+      return NextResponse.json(recommendation);
+    } catch (error) {
+      console.error('Fetch error:', error);
+      return NextResponse.json(
+        { error: 'Internal server error' },
         { status: 500 }
       );
     }
