@@ -149,7 +149,7 @@ export default function Dashboard() {
                       <span className="text-xs text-gray-400">
                         Created {new Date(recommendation.created_at).toLocaleDateString()}
                       </span>
-                      <Link href={`/edit-list/${recommendation.slug}`}>
+                      <Link href={`/dashboard/recommendation/edit/${recommendation.slug}`}>
                         <button className="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded transition">
                           Edit
                         </button>
@@ -169,7 +169,7 @@ export default function Dashboard() {
                 You haven&apos;t created any recommendation lists yet. Create your first list to start sharing and monetizing your recommendations.
               </p>
               <Link
-                href="/dashboard/create-list"
+                href="/dashboard/recommendation/create"
                 className="bg-[#8d65e3] text-white px-6 py-3 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition"
               >
                 Create Your First List

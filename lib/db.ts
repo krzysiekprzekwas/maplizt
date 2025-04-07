@@ -130,3 +130,35 @@ export async function getOrderDetails(orderId: string) {
     }
   };
 }
+
+export async function getRecommendationById(id: string) {
+  const { data, error } = await supabase
+    .from('recommendations')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle();
+
+  if (error) throw error;
+  return data as Recommendation;
+}
+
+export async function updateRecommendation(recommendation: Partial<Recommendation> & { id: string }) {
+  const { data, error } = await supabase
+    .from('recommendations')
+    .update({
+      title: recommendation.title,
+      slug: recommendation.slug,
+      description: recommendation.description,
+      type: recommendation.type,
+      numeric_price: recommendation.numeric_price,
+      images: recommendation.images,
+      googleMapsLink: recommendation.googleMapsLink,
+      updated_at: new Date().toISOString()
+    })
+    .eq('id', recommendation.id)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data as Recommendation;
+}

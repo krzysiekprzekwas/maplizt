@@ -9,15 +9,18 @@ export type Influencer = {
   updated_at: string;
 };
 
+export type RecommendationType = "Free" | "Paid" | "Premium";
+
 export type Recommendation = {
   id: string;
   slug: string;
   influencer_id: string;
   title: string;
   description: string;
-  type: string;
+  type: RecommendationType;
   numeric_price: number;
   images: string[];
+  googleMapsLink: string;
   created_at: string;
   updated_at: string;
 };
