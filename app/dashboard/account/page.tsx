@@ -251,7 +251,7 @@ export default function AccountPage() {
                   />
                 </div>
                 <p className="mt-2 text-sm text-gray-500">
-                  Only lowercase letters, numbers, and hyphens. This will be your public profile URL.
+                  This will be your public profile URL
                 </p>
               </div>
               
@@ -260,7 +260,7 @@ export default function AccountPage() {
                   htmlFor="influencerHandle"
                   className="block text-[#19191b] font-medium mb-2"
                 >
-                  Social Handle
+                  Handle
                 </label>
                 <div className="flex items-center">
                   <span className="text-gray-500 mr-2">@</span>
@@ -269,10 +269,13 @@ export default function AccountPage() {
                     type="text"
                     className="flex-grow px-4 py-3 rounded-lg border-2 border-[#19191b] focus:outline-none focus:ring-2 focus:ring-[#8d65e3]/50"
                     value={influencerHandle}
-                    onChange={(e) => setInfluencerHandle(e.target.value)}
-                    placeholder="yourhandle"
+                    onChange={(e) => setInfluencerHandle(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
+                    placeholder="your_handle"
                   />
                 </div>
+                <p className="mt-2 text-sm text-gray-500">
+                  This will be your public handle
+                </p>
               </div>
               
               <button
@@ -282,44 +285,9 @@ export default function AccountPage() {
                 }`}
                 disabled={updatingInfluencer}
               >
-                {updatingInfluencer 
-                  ? "Saving..." 
-                  : influencer 
-                    ? "Update Influencer Profile" 
-                    : "Create Influencer Profile"
-                }
+                {updatingInfluencer ? "Updating..." : influencer ? "Update Influencer Profile" : "Create Influencer Profile"}
               </button>
-              
-              {influencer && (
-                <p className="mt-4 text-sm text-gray-600">
-                  Your public profile: <a href={`/${influencerSlug}`} className="text-[#8d65e3] hover:underline">maplizt.com/{influencerSlug}</a>
-                </p>
-              )}
             </form>
-          </div>
-          
-          <div className="border-t border-gray-200 pt-8">
-            <h2 className="text-xl font-bold mb-4">Security</h2>
-            <div className="mb-6">
-              <button
-                onClick={() => router.push("/change-password")}
-                className="bg-white text-[#19191b] px-6 py-3 rounded-lg border-2 border-[#19191b] font-medium hover:bg-[#f8f5ed] transition"
-              >
-                Change Password
-              </button>
-            </div>
-            
-            <div className="pt-6 border-t border-gray-200">
-              <h3 className="text-red-600 font-bold mb-2">Danger Zone</h3>
-              <button
-                className="text-red-600 px-6 py-3 rounded-lg border-2 border-red-600 font-medium hover:bg-red-50 transition"
-              >
-                Delete Account
-              </button>
-              <p className="mt-2 text-sm text-gray-500">
-                This action is irreversible. All your data will be permanently deleted.
-              </p>
-            </div>
           </div>
         </div>
       </div>

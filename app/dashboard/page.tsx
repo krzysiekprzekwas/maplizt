@@ -67,6 +67,15 @@ export default function Dashboard() {
           <h1 className="text-3xl font-bold mb-4">Welcome, {user.user_metadata.full_name || user.email}!</h1>
           <p className="text-lg mb-6">This is your personal dashboard where you can manage your Maplizt recommendations and monitor your earnings.</p>
           
+          <div className="flex justify-end mb-6">
+            <Link
+              href="/dashboard/account"
+              className="text-[#8d65e3] hover:text-[#6d45c3] font-medium transition"
+            >
+              Account Settings →
+            </Link>
+          </div>
+          
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div className="bg-[#8d65e3]/10 p-6 rounded-lg border-2 border-[#19191b]">
               <h3 className="font-bold mb-2">Your Lists</h3>
@@ -92,7 +101,7 @@ export default function Dashboard() {
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold">Your Recommendation Lists</h2>
             <Link
-              href="/create-list"
+              href="/dashboard/create-list"
               className="bg-[#19191b] text-white px-4 py-2 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition"
             >
               Create New List
@@ -160,7 +169,7 @@ export default function Dashboard() {
                 You haven&apos;t created any recommendation lists yet. Create your first list to start sharing and monetizing your recommendations.
               </p>
               <Link
-                href="/create-list"
+                href="/dashboard/create-list"
                 className="bg-[#8d65e3] text-white px-6 py-3 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition"
               >
                 Create Your First List
