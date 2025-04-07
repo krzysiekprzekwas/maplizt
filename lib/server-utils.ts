@@ -48,4 +48,54 @@ export async function handleApiAuth(request: NextRequest, handler: (userId: stri
     console.error('Authentication error:', error);
     return NextResponse.json({ error: 'Authentication failed' }, { status: 500 });
   }
+}
+
+/**
+ * Checks if a slug is available for a specific influencer
+ * @param supabase Supabase client
+ * @param influencerId The influencer ID to check against
+ * @param slug The slug to check
+ * @returns Object with availability status and any error
+ */
+export async function checkSlugAvailability(
+  supabase: any,
+  influencerId: string,
+  slug: string
+) {
+  try {
+    // Validate slug format
+    if (!/^[a-z0-9-]+$/.test(slug)) {
+      return {
+        available: false,
+        error: 'Slug can only contain lowercase letters, numbers, and hyphens'
+      };
+    }
+    
+    // Check if the slug is already taken by this influencer
+    const { data: existingRecommendation, error: slugCheckError } = await supabase
+      .from('recommendations')
+      .select('id')
+      .eq('influencer_id', influencerId)
+      .eq('slug', slug)
+      .maybeSingle();
+    
+    if (slugCheckError) {
+      console.error('Error checking slug:', slugCheckError);
+      return {
+        available: false,
+        error: 'Failed to check slug availability'
+      };
+    }
+    
+    return {
+      available: !existingRecommendation,
+      error: existingRecommendation ? 'A recommendation with this slug already exists' : null
+    };
+  } catch (error) {
+    console.error('Error checking slug availability:', error);
+    return {
+      available: false,
+      error: 'Failed to check slug availability'
+    };
+  }
 } 
