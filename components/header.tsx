@@ -90,7 +90,7 @@ export default function Header() {
                         Dashboard
                       </Link>
                       <Link
-                        href="/account"
+                        href="/dashboard/account"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#f8f5ed] rounded transition"
                         onClick={() => setIsMenuOpen(false)}
                       >

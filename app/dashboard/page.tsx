@@ -101,7 +101,7 @@ export default function Dashboard() {
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold">Your Recommendation Lists</h2>
             <Link
-              href="/dashboard/create-list"
+              href="/dashboard/recommendation/create"
               className="bg-[#19191b] text-white px-4 py-2 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition"
             >
               Create New List
