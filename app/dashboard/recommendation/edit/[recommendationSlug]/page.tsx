@@ -21,6 +21,7 @@ export default function EditRecommendationPage({ params }: Props) {
   // Form state
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
+  const [originalSlug, setOriginalSlug] = useState("");
   const [description, setDescription] = useState("");
   const [type, setType] = useState<RecommendationType>("Free");
   const [price, setPrice] = useState(0);
@@ -70,6 +71,7 @@ export default function EditRecommendationPage({ params }: Props) {
         // Populate form fields with recommendation data
         setTitle(recommendation.title);
         setSlug(recommendation.slug);
+        setOriginalSlug(recommendation.slug);
         setDescription(recommendation.description);
         setType(recommendation.type);
         setPrice(recommendation.numeric_price);
@@ -102,7 +104,7 @@ export default function EditRecommendationPage({ params }: Props) {
   // Check if slug is available
   useEffect(() => {
     const checkSlugAvailability = async () => {
-      if (!slug || slug.length < 3) return;
+      if (!slug || slug.length < 3 || slug == originalSlug) return;
       
       setIsCheckingSlug(true);
       setSlugError(null);
