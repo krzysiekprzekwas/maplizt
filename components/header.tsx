@@ -6,7 +6,11 @@ import { useAuth } from "@/lib/auth-context";
 import { useState } from "react";
 import LoadingMarker from "./loading-marker";
 
-export default function Header() {
+interface HeaderProps {
+  hideNav?: boolean;
+}
+
+export default function Header({ hideNav = false }: HeaderProps) {
   const { user, signOut, isLoading } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -22,7 +26,7 @@ export default function Header() {
           <Image src="/maplizt-logo.png" alt="Maplizt Logo" width={128} height={64} className=" rounded-lg border-4 border-[#19191b] neobrutalist-shadow"/>
         </Link>
 
-        {!user && (
+        {!user && !hideNav && (
           <nav className="hidden md:flex items-center gap-8">
             <Link
               href="#features"
@@ -110,12 +114,14 @@ export default function Header() {
               </div>
             </div>
           ) : (
-            <Link
-              href="/signup"
-              className="bg-[#8d65e3] text-white px-4 py-2 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition"
-            >
-              Get Started
-            </Link>
+            !hideNav && (
+              <Link
+                href="/signup"
+                className="bg-[#8d65e3] text-white px-4 py-2 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition"
+              >
+                Get Started
+              </Link>
+            )
           )}
         </div>
       </div>

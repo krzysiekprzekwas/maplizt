@@ -2,9 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
+import Header from "@/components/header";
 
 export default function SignupPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -78,15 +78,7 @@ export default function SignupPage() {
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: "#f8f5ed" }}>
-      {/* Header */}
-      <header className="border-b-2 border-[#19191b]">
-        <div className="container mx-auto flex justify-between items-center py-4 px-4 md:px-6">
-          <Link href="/" className="flex items-center gap-2">
-            <Image src="/globe.svg" alt="Maplizt Logo" width={32} height={32} />
-            <span className="text-2xl font-bold">Maplizt</span>
-          </Link>
-        </div>
-      </header>
+      <Header hideNav={true} />
 
       <div className="container mx-auto px-4 py-16 max-w-md">
         <div className="bg-white rounded-lg border-4 border-[#19191b] p-8 shadow-[8px_8px_0px_0px_#19191b]">
