@@ -193,6 +193,12 @@ export default function HomePage() {
                   <svg className="w-5 h-5 text-[#8d65e3]" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
                   </svg>
+                  <span><b>10% commision</b> on paid recommendation</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <svg className="w-5 h-5 text-[#8d65e3]" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd"></path>
+                  </svg>
                   <span>Maplizt branding</span>
                 </li>
               </ul>
@@ -208,11 +214,11 @@ export default function HomePage() {
             {/* Pro Plan */}
             <div className="bg-[#8d65e3]/10 p-8 rounded-lg border-2 border-[#19191b] relative neobrutalist-shadow">
               <div className="absolute -top-4 right-4 bg-[#8d65e3] text-white px-4 py-1 rounded-lg text-sm font-medium border-2 border-[#19191b]">
-                POPULAR
+                Soon
               </div>
               <h3 className="text-2xl font-bold mb-2">Pro</h3>
               <p className="text-lg mb-6">For serious creators</p>
-              <p className="text-4xl font-bold mb-6">$19<span className="text-lg font-normal">/month</span></p>
+              <p className="text-4xl font-bold mb-6">$?<span className="text-lg font-normal">/month</span></p>
               
               <ul className="mb-8 space-y-3">
                 <li className="flex items-center gap-2">
@@ -246,13 +252,6 @@ export default function HomePage() {
                   <span>Priority support</span>
                 </li>
               </ul>
-              
-              <Link 
-                href="/signup" 
-                className="block w-full bg-[#8d65e3] text-white text-center py-3 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition"
-              >
-                Upgrade to Pro
-              </Link>
             </div>
           </div>
         </div>
@@ -285,18 +284,6 @@ export default function HomePage() {
                 <span className="text-xl font-bold">Maplizt</span>
               </div>
               <p className="text-sm text-gray-300 mb-4">The easiest way to monetize your location-based recommendations.</p>
-              <div className="flex gap-4">
-                <a href="#" className="text-gray-300 hover:text-white transition">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"></path>
-                  </svg>
-                </a>
-                <a href="#" className="text-gray-300 hover:text-white transition">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
-                  </svg>
-                </a>
-              </div>
             </div>
             
             <div>
@@ -305,7 +292,6 @@ export default function HomePage() {
                 <li><Link href="#features" className="text-gray-300 hover:text-white transition">Features</Link></li>
                 <li><Link href="#pricing" className="text-gray-300 hover:text-white transition">Pricing</Link></li>
                 <li><Link href="#" className="text-gray-300 hover:text-white transition">Testimonials</Link></li>
-                <li><Link href="#" className="text-gray-300 hover:text-white transition">FAQ</Link></li>
               </ul>
             </div>
             
@@ -313,8 +299,6 @@ export default function HomePage() {
               <h4 className="font-bold mb-4">Company</h4>
               <ul className="space-y-2">
                 <li><Link href="#" className="text-gray-300 hover:text-white transition">About</Link></li>
-                <li><Link href="#" className="text-gray-300 hover:text-white transition">Blog</Link></li>
-                <li><Link href="#" className="text-gray-300 hover:text-white transition">Careers</Link></li>
                 <li><Link href="#" className="text-gray-300 hover:text-white transition">Contact</Link></li>
               </ul>
             </div>
