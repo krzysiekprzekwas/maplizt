@@ -117,7 +117,7 @@ export default function Header({ hideNav = false }: HeaderProps) {
             !hideNav && (
               <Link
                 href="/signup"
-                className="bg-[#8d65e3] text-white px-4 py-2 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition"
+                className="bg-[#8d65e3] text-white px-4 py-2 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition neobrutalist-shadow"
               >
                 Get Started
               </Link>

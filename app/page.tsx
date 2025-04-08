@@ -61,7 +61,7 @@ export default function HomePage() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Feature 1 */}
-            <div className="bg-[#f8f5ed] p-6 rounded-lg border-2 border-[#19191b]">
+            <div className="bg-[#f8f5ed] p-6 rounded-lg border-2 border-[#19191b] neobrutalist-shadow">
               <div className="w-12 h-12 bg-[#8d65e3]/20 rounded-lg flex items-center justify-center mb-4">
                 <Image src="/globe.svg" alt="Map Feature" width={24} height={24} />
               </div>
@@ -70,7 +70,7 @@ export default function HomePage() {
             </div>
             
             {/* Feature 2 */}
-            <div className="bg-[#f8f5ed] p-6 rounded-lg border-2 border-[#19191b]">
+            <div className="bg-[#f8f5ed] p-6 rounded-lg border-2 border-[#19191b] neobrutalist-shadow">
               <div className="w-12 h-12 bg-[#7db48f]/20 rounded-lg flex items-center justify-center mb-4">
                 <Image src="/window.svg" alt="Monetize Feature" width={24} height={24} />
               </div>
@@ -79,7 +79,7 @@ export default function HomePage() {
             </div>
             
             {/* Feature 3 */}
-            <div className="bg-[#f8f5ed] p-6 rounded-lg border-2 border-[#19191b]">
+            <div className="bg-[#f8f5ed] p-6 rounded-lg border-2 border-[#19191b] neobrutalist-shadow">
               <div className="w-12 h-12 bg-[#97b5ec]/20 rounded-lg flex items-center justify-center mb-4">
                 <Image src="/file.svg" alt="Analytics Feature" width={24} height={24} />
               </div>
@@ -88,7 +88,7 @@ export default function HomePage() {
             </div>
             
             {/* Feature 4 */}
-            <div className="md:col-span-2 lg:col-span-3 bg-[#f7bdf6]/20 p-6 rounded-lg border-2 border-[#19191b] mt-4">
+            <div className="md:col-span-2 lg:col-span-3 bg-[#f7bdf6]/20 p-6 rounded-lg border-2 border-[#19191b] mt-4 neobrutalist-shadow">
               <div className="flex flex-col lg:flex-row items-center gap-6">
                 <Image src="/globe.svg" alt="No Technical Skills" width={64} height={64} className="bg-white p-3 rounded-lg border-2 border-[#19191b]" />
                 <div>
@@ -111,7 +111,7 @@ export default function HomePage() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Testimonial 1 */}
-            <div className="bg-white p-6 rounded-lg border-2 border-[#19191b]">
+            <div className="bg-white p-6 rounded-lg border-2 border-[#19191b] neobrutalist-shadow">
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#19191b]">
                   <Image src="/avatar_placeholder.jpeg" alt="User" width={48} height={48} className="object-cover" />
@@ -125,7 +125,7 @@ export default function HomePage() {
             </div>
             
             {/* Testimonial 2 */}
-            <div className="bg-white p-6 rounded-lg border-2 border-[#19191b]">
+            <div className="bg-white p-6 rounded-lg border-2 border-[#19191b] neobrutalist-shadow">
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#19191b]">
                   <Image src="/avatar_placeholder.jpeg" alt="User" width={48} height={48} className="object-cover" />
@@ -139,7 +139,7 @@ export default function HomePage() {
             </div>
             
             {/* Testimonial 3 */}
-            <div className="bg-white p-6 rounded-lg border-2 border-[#19191b]">
+            <div className="bg-white p-6 rounded-lg border-2 border-[#19191b] neobrutalist-shadow">
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-12 rounded-full overflow-hidden border-2 border-[#19191b]">
                   <Image src="/avatar_placeholder.jpeg" alt="User" width={48} height={48} className="object-cover" />
@@ -165,7 +165,7 @@ export default function HomePage() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {/* Free Plan */}
-            <div className="bg-[#f8f5ed] p-8 rounded-lg border-2 border-[#19191b]">
+            <div className="bg-[#f8f5ed] p-8 rounded-lg border-2 border-[#19191b] neobrutalist-shadow">
               <h3 className="text-2xl font-bold mb-2">Free</h3>
               <p className="text-lg mb-6">Perfect for getting started</p>
               <p className="text-4xl font-bold mb-6">$0<span className="text-lg font-normal">/month</span></p>
@@ -206,7 +206,7 @@ export default function HomePage() {
             </div>
             
             {/* Pro Plan */}
-            <div className="bg-[#8d65e3]/10 p-8 rounded-lg border-2 border-[#19191b] relative">
+            <div className="bg-[#8d65e3]/10 p-8 rounded-lg border-2 border-[#19191b] relative neobrutalist-shadow">
               <div className="absolute -top-4 right-4 bg-[#8d65e3] text-white px-4 py-1 rounded-lg text-sm font-medium border-2 border-[#19191b]">
                 POPULAR
               </div>
