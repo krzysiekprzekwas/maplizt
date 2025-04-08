@@ -58,7 +58,6 @@ export async function GET(req: NextRequest) {
             name: full_name,
             slug: slug,
             handle: handle,
-            description: '',
             profile_image: ''
           });
         } catch (error) {

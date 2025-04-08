@@ -46,7 +46,7 @@ export async function getInfluencerById(influencer_id: string) {
 
 export async function updateInfluencerProfile(
   userId: string, 
-  profileData: { name?: string; slug?: string; handle?: string; description?: string; profile_image?: string }
+  profileData: { name?: string; slug?: string; handle?: string; profile_image?: string }
 ) {
   // First check if slug is already taken (except by the current user)
   if (profileData.slug) {
@@ -75,7 +75,7 @@ export async function updateInfluencerProfile(
 
 export async function createInfluencerProfile(
   userId: string, 
-  profileData: { name: string; slug: string; handle: string; description?: string; profile_image?: string }
+  profileData: { name: string; slug: string; handle: string; profile_image?: string }
 ) {
   // Check if slug is already taken
   const { data: existingSlug, error: slugError } = await supabase

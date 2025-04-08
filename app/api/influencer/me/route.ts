@@ -41,7 +41,6 @@ export async function PUT(request: NextRequest) {
           name: name.trim(),
           slug: slug.trim(),
           handle: handle.trim(),
-          description: description?.trim(),
           profile_image: profile_image
         });
       } else {
@@ -50,7 +49,6 @@ export async function PUT(request: NextRequest) {
           name: name.trim(),
           slug: slug.trim(),
           handle: handle.trim(),
-          description: description?.trim() || '',
           profile_image: profile_image || ''
         });
       }
