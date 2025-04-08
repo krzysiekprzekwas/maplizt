@@ -4,14 +4,14 @@ import { handleApiAuth } from "@/lib/server-utils";
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ recommendationId: string }> }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   return handleApiAuth(request, async (userId) => {
     try {
       // Get the recommendation ID from the URL
 
-      const { recommendationId } = await params;
-      if (!recommendationId) {
+      const { id } = await params;
+      if (!id) {
         return NextResponse.json(
           { error: "Recommendation ID is required" },
           { status: 400 }
@@ -28,7 +28,7 @@ export async function PUT(
       }
   
       // Get the existing recommendation
-      const existingRecommendation = await getRecommendationById(recommendationId);
+      const existingRecommendation = await getRecommendationById(id);
       if (!existingRecommendation) {
         return NextResponse.json(
           { error: "Recommendation not found" },
@@ -81,7 +81,7 @@ export async function PUT(
   
       // Update the recommendation
       const updatedRecommendation = await updateRecommendation({
-        id: recommendationId,
+        id: id,
         title,
         slug,
         description,

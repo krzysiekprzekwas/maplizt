@@ -8,8 +8,8 @@ export async function middleware(req: NextRequest) {
   // Create supabase client using the new ssr package
   const supabase = createMiddlewareSupabaseClient(req, res);
   
-  // This refreshes the user's session and retrieves fresh session data
-  await supabase.auth.getSession();
+  // Get authenticated user data
+  await supabase.auth.getUser();
   
   // Add security headers
   // Content-Security-Policy

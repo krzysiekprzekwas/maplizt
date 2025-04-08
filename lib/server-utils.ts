@@ -35,15 +35,17 @@ export async function handleApiAuth(request: NextRequest, handler: (userId: stri
   );
   
   try {
-    // Get session
-    const { data: { session } } = await supabase.auth.getSession();
+
     
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    // Get authenticated user data
+    const { data: { user } } = await supabase.auth.getUser();
+    
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 401 });
     }
     
     // Call the handler with the user ID
-    return await handler(session.user.id);
+    return await handler(user.id);
   } catch (error) {
     console.error('Authentication error:', error);
     return NextResponse.json({ error: 'Authentication failed' }, { status: 500 });

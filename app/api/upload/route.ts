@@ -25,9 +25,11 @@ export async function POST(request: NextRequest) {
       }
     );
 
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+
+    // Get authenticated user data
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) {
+      return NextResponse.json({ error: 'User not found' }, { status: 401 });
     }
 
     const formData = await request.formData();
@@ -55,7 +57,7 @@ export async function POST(request: NextRequest) {
 
     // Generate a unique file name
     const fileExt = file.name.split('.').pop();
-    const fileName = `${session.user.id}/${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+    const fileName = `${user.id}/${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
 
     // Convert File to Buffer for Supabase storage
     const arrayBuffer = await file.arrayBuffer();
