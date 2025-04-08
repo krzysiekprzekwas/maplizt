@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createOrder } from '@/lib/db';
+import { createOrder, getRecommendationById, getOrderDetails, getInfluencerById } from '@/lib/db';
 import { Order } from '@/types/database';
 import { Resend } from 'resend';
+import fs from 'fs';
+import path from 'path';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -70,12 +72,61 @@ export async function POST(request: NextRequest) {
     };
     
     const order = await createOrder(orderData);
+    
+    // Get recommendation details for the email
+    const recommendation = await getRecommendationById(body.recommendation_id);
+    
+    if (!recommendation) {
+      console.error('Recommendation not found for order:', order.id);
+      return NextResponse.json({ 
+        success: true, 
+        order_id: order.id,
+        redirect_url: `/orders/${order.id}/confirmation`
+      });
+    }
+    
+    // Get the influencer who created this recommendation
+    const influencer = await getInfluencerById(recommendation.influencer_id);
+    
+    if (!influencer) {
+      console.error('Influencer not found for recommendation:', recommendation.id);
+    }
+    
+    // Read the email template
+    const templatePath = path.join(process.cwd(), 'email-templates', 'order-confirmation.html');
+    let emailHtml = fs.readFileSync(templatePath, 'utf8');
+    
+    // Get the first image from the recommendation or use a default
+    const recommendationImage = recommendation.images && recommendation.images.length > 0 
+      ? recommendation.images[0] 
+      : 'https://maplizt.com/default-recommendation.jpg';
+    
+    // Format the date
+    const orderDate = new Date().toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+    
+    // Replace template variables
+    emailHtml = emailHtml
+      .replace(/{{name}}/g, body.name || 'there')
+      .replace(/{{email}}/g, body.email)
+      .replace(/{{recommendationTitle}}/g, recommendation.title)
+      .replace(/{{recommendationImage}}/g, recommendationImage)
+      .replace(/{{recommendationDescription}}/g, recommendation.description)
+      .replace(/{{googleMapsLink}}/g, recommendation.googleMapsLink)
+      .replace(/{{orderId}}/g, order.id)
+      .replace(/{{orderDate}}/g, orderDate)
+      .replace(/{{orderAmount}}/g, recommendation.numeric_price.toString())
+      .replace(/{{creatorName}}/g, influencer ? influencer.name : 'Maplizt Creator');
 
+    // Send the email
     resend.emails.send({
       from: 'order@maplizt.kristof.pro',
       to: body.email,
-      subject: `Order confirmed ${order.id}`,
-      html: '<p>To the moon we gooo!</p>'
+      subject: `Your Maplizt Purchase: ${recommendation.title}`,
+      html: emailHtml
     });
     
     return NextResponse.json({ 
