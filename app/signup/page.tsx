@@ -11,6 +11,7 @@ export default function SignupPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [slug, setSlug] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
@@ -43,7 +44,8 @@ export default function SignupPage() {
           password,
           options: {
             data: { 
-              full_name: name 
+              full_name: name,
+              slug: slug
             },
           },
         });
@@ -65,7 +67,7 @@ export default function SignupPage() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
+          redirectTo: `${window.location.origin}/api/auth/callback`,
         },
       });
       
@@ -119,23 +121,49 @@ export default function SignupPage() {
 
           <form onSubmit={handleSubmit}>
             {!isLogin && (
-              <div className="mb-6">
-                <label
-                  htmlFor="name"
-                  className="block text-[#19191b] font-medium mb-2"
-                >
-                  Name
-                </label>
-                <input
-                  id="name"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-3 rounded-lg border-2 border-[#19191b] focus:outline-none focus:ring-2 focus:ring-[#8d65e3]/50"
-                  placeholder="Your full name"
-                  required={!isLogin}
-                />
-              </div>
+              <>
+                <div className="mb-6">
+                  <label
+                    htmlFor="name"
+                    className="block text-[#19191b] font-medium mb-2"
+                  >
+                    Name
+                  </label>
+                  <input
+                    id="name"
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full px-4 py-3 rounded-lg border-2 border-[#19191b] focus:outline-none focus:ring-2 focus:ring-[#8d65e3]/50"
+                    placeholder="Your full name"
+                    required={!isLogin}
+                  />
+                </div>
+                
+                <div className="mb-6">
+                  <label
+                    htmlFor="slug"
+                    className="block text-[#19191b] font-medium mb-2"
+                  >
+                    Profile URL
+                  </label>
+                  <div className="flex items-center">
+                    <span className="text-gray-500 mr-2">maplizt.com/</span>
+                    <input
+                      id="slug"
+                      type="text"
+                      value={slug}
+                      onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+                      className="flex-grow px-4 py-3 rounded-lg border-2 border-[#19191b] focus:outline-none focus:ring-2 focus:ring-[#8d65e3]/50"
+                      placeholder="your-profile-url"
+                      required={!isLogin}
+                    />
+                  </div>
+                  <p className="mt-2 text-sm text-gray-500">
+                    This will be your public profile URL
+                  </p>
+                </div>
+              </>
             )}
 
             <div className="mb-6">
