@@ -39,7 +39,7 @@ export default async function RecommendationPage({ params }: Props) {
         {/* Replace the single image with a gallery when multiple images are available */}
         {recommendation.images && recommendation.images.length > 0 ? (
             <div className="mb-8">
-              <div className="flex overflow-x-auto pb-2 space-x-4 hide-scrollbar">
+              <div className="flex overflow-x-auto p-2 space-x-4 hide-scrollbar">
                 {recommendation.images.map((image, index) => (
                   <div key={index} className="flex-shrink-0 w-64 h-48 rounded-lg overflow-hidden border-4 border-[#19191b] brutal-shadow-all">
                     <Image
