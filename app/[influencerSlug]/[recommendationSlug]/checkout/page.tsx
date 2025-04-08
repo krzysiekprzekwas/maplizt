@@ -230,14 +230,14 @@ export default function CheckoutPage() {
           </div>
           <div className="max-w-2xl mx-auto flex gap-4">
             <Link href={`/${influencer?.slug}`}>
-              <button className="bg-white font-bold text-base py-2 px-4 rounded-lg border-2 border-[#19191b] neobrutalist-shadow">
+              <button className="bg-white font-bold text-base py-2 px-4 rounded-lg border-2 border-[#19191b] brutal-shadow-all">
                 Back
               </button>
             </Link>
             <button
               type="submit"
               disabled={submitting}
-              className={`w-full font-bold text-base py-2 rounded-lg border-2 border-[#19191b] neobrutalist-shadow ${typeStyle} ${submitting ? 'opacity-70 cursor-not-allowed' : ''}`}
+              className={`w-full font-bold text-base py-2 rounded-lg border-2 border-[#19191b] brutal-shadow-all ${typeStyle} ${submitting ? 'opacity-70 cursor-not-allowed' : ''}`}
             >
               {submitting ? 'Processing...' : (isFree ? "Get it for free" : "Pay now")}
             </button>

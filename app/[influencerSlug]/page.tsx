@@ -37,7 +37,7 @@ export default async function InfluencerPage({ params }: Props) {
               
               return (
                 <Link key={recommendation.slug} href={`/${influencer.slug}/${recommendation.slug}`} className="block">
-                    <div className="bg-white rounded-lg border-2 border-[#19191b] p-6 flex justify-between items-center neobrutalist-shadow">
+                    <div className="bg-white rounded-lg border-2 border-[#19191b] p-6 flex justify-between items-center brutal-shadow-all">
                       <div className="flex-1">
                         <h4 className="text-xl font-bold mb-2">{recommendation.title}</h4>
                         <p className="text-sm pr-4">{recommendation.description.substring(0, 100)}...</p>

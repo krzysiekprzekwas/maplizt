@@ -15,7 +15,7 @@ export default async function NotFoundPage() {
           <div className="space-y-4">
 
             <Link href={`/`} className="block">
-              <button className="w-full bg-white  font-bold text-xl py-4 rounded-lg border-4 border-[#19191b] neobrutalist-shadow">
+              <button className="w-full bg-white  font-bold text-xl py-4 rounded-lg border-4 border-[#19191b] brutal-shadow-all">
                 Home
               </button>
             </Link>

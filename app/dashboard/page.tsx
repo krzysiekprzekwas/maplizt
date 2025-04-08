@@ -10,7 +10,7 @@ import { Recommendation } from "@/types/database";
 import LoadingMarker from "@/components/loading-marker";
 
 export default function Dashboard() {
-  const { user, isLoading } = useAuth();
+  const { user, influencer, isLoading } = useAuth();
   const router = useRouter();
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [loadingRecommendations, setLoadingRecommendations] = useState(false);
@@ -63,9 +63,27 @@ export default function Dashboard() {
       <Header />
       
       <div className="container mx-auto px-4 py-16">
-        <div className="bg-white rounded-lg border-4 border-[#19191b] p-8 neobrutalist-shadow mb-8">
+        <div className="bg-white rounded-lg border-4 border-[#19191b] p-8 brutal-shadow-all mb-8">
           <h1 className="text-3xl font-bold mb-4">Welcome, {user.user_metadata.full_name || user.email}!</h1>
           <p className="text-lg mb-6">This is your personal dashboard where you can manage your Maplizt recommendations and monitor your earnings.</p>
+          
+          <div className="bg-gray-50 p-4 rounded-lg border-2 border-[#19191b] brutal-shadow-all mb-6">
+            <p className="text-sm text-gray-600">
+              <span className="font-medium">Your public page:</span> 
+              {influencer ? (
+                <a 
+                  href={`/${influencer.slug}`} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="text-[#8d65e3] hover:text-[#6d45c3] ml-1"
+                >
+                  maplizt.com/{influencer.slug}
+                </a>
+              ) : (
+                <span className="text-gray-400 ml-1">Loading...</span>
+              )}
+            </p>
+          </div>
           
           <div className="flex justify-end mb-6">
             <Link
@@ -97,7 +115,7 @@ export default function Dashboard() {
           </div>
         </div>
         
-        <div className="bg-white rounded-lg border-4 border-[#19191b] p-8 neobrutalist-shadow">
+        <div className="bg-white rounded-lg border-4 border-[#19191b] p-8 brutal-shadow-all">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold">Your Recommendation Lists</h2>
             <Link
@@ -113,7 +131,7 @@ export default function Dashboard() {
               {recommendations.map((recommendation) => (
                 <div 
                   key={recommendation.id} 
-                  className="border-2 border-[#19191b] rounded-lg overflow-hidden shadow-md neobrutalist-shadow transition-shadow"
+                  className="border-2 border-[#19191b] rounded-lg overflow-hidden shadow-md brutal-shadow-all transition-shadow"
                 >
                   <div className="h-40 bg-gray-200 relative">
                     {recommendation.images && recommendation.images[0] ? (

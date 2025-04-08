@@ -17,7 +17,7 @@ export default function InfluencerHeader({ influencer }: InfluencerHeaderProps) 
       <div className="p-4 max-w-2xl mx-auto">
         <div className="flex items-center gap-4">
           <Link href={`/${influencer.slug}`}>
-            <div className="w-[80px] h-[80px] rounded-lg overflow-hidden border-2 border-[#19191b] neobrutalist-shadow">
+            <div className="w-[80px] h-[80px] rounded-lg overflow-hidden border-2 border-[#19191b] brutal-shadow-all">
               <Image
                 src={influencer.profile_image || "/avatar_placeholder.jpeg"}
                 alt={influencer.name}

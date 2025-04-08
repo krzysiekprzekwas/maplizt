@@ -121,17 +121,27 @@
   }
 }
 
-.neobrutalist-shadow {
+.brutal-shadow-hover {
   box-shadow: 4px 4px 0 0 #19191b;
   transition: all 0.15s ease-in-out;
 }
 
-.neobrutalist-shadow:hover {
+.brutal-shadow-hover:hover {
   transform: translate(-2px, -2px);
   box-shadow: 6px 6px 0 0 #19191b;
 }
 
-.neobrutalist-shadow:active {
+.brutal-shadow-all {
+  box-shadow: 4px 4px 0 0 #19191b;
+  transition: all 0.15s ease-in-out;
+}
+
+.brutal-shadow-all:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 0 #19191b;
+}
+
+.brutal-shadow-all:active {
   transform: translate(2px, 2px);
   box-shadow: 2px 2px 0 0 #19191b;
 }

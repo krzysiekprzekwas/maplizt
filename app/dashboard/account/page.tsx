@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import Header from "@/components/header";
 import { supabase } from "@/lib/supabase";
-import { getInfluencerByUserId, updateInfluencerProfile, createInfluencerProfile } from "@/lib/db";
 import { Influencer } from "@/types/database";
 import LoadingMarker from "@/components/loading-marker";
 
@@ -36,7 +35,11 @@ export default function AccountPage() {
       // Fetch influencer profile
       const fetchInfluencer = async () => {
         try {
-          const data = await getInfluencerByUserId(user.id);
+          const response = await fetch('/api/influencer/me');
+          if (!response.ok) {
+            throw new Error('Failed to fetch influencer profile');
+          }
+          const data = await response.json();
           setInfluencer(data);
           if (data) {
             setInfluencerName(data.name || "");
@@ -87,28 +90,27 @@ export default function AccountPage() {
       if (!influencerSlug.trim()) throw new Error("Slug is required");
       if (!influencerHandle.trim()) throw new Error("Handle is required");
       
-      // Create or update
-      if (influencer) {
-        // Update existing profile
-        const updatedProfile = await updateInfluencerProfile(user.id, {
+      // Update or create influencer profile via API
+      const response = await fetch('/api/influencer/me', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           name: influencerName.trim(),
           slug: influencerSlug.trim(),
           handle: influencerHandle.trim()
-        });
-        
-        setInfluencer(updatedProfile);
-        setInfluencerSuccess("Influencer profile updated successfully!");
-      } else {
-        // Create new profile
-        const newProfile = await createInfluencerProfile(user.id, {
-          name: influencerName.trim(),
-          slug: influencerSlug.trim(),
-          handle: influencerHandle.trim()
-        });
-        
-        setInfluencer(newProfile);
-        setInfluencerSuccess("Influencer profile created successfully!");
+        })
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to update influencer profile');
       }
+
+      const updatedProfile = await response.json();
+      setInfluencer(updatedProfile);
+      setInfluencerSuccess("Influencer profile updated successfully!");
     } catch (error: any) {
       console.error("Error updating influencer profile:", error);
       setInfluencerError(error.message || "Error updating influencer profile");
@@ -133,7 +135,7 @@ export default function AccountPage() {
       <Header />
       
       <div className="container mx-auto px-4 py-16 max-w-3xl">
-        <div className="bg-white rounded-lg border-4 border-[#19191b] p-8 neobrutalist-shadow">
+        <div className="bg-white rounded-lg border-4 border-[#19191b] p-8 brutal-shadow-all">
           <h1 className="text-3xl font-bold mb-6">Account Settings</h1>
           
           {successMessage && (

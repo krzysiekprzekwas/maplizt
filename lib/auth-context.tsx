@@ -9,10 +9,13 @@ import React, {
 } from "react";
 import { User, Session } from "@supabase/supabase-js";
 import { supabase } from "./supabase";
+import { Influencer } from "@/types/database";
+import { getInfluencerByUserId } from "./db";
 
 interface AuthContextProps {
   user: User | null;
   session: Session | null;
+  influencer: Influencer | null;
   isLoading: boolean;
   signOut: () => Promise<void>;
 }
@@ -21,6 +24,7 @@ const AuthContext = createContext<AuthContextProps | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
+  const [influencer, setInfluencer] = useState<Influencer | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -35,6 +39,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         // Get authenticated user data
         const { data: { user } } = await supabase.auth.getUser();
         setUser(user);
+
+        if(user){
+          const influencer = await getInfluencerByUserId(user?.id);
+          setInfluencer(influencer);
+        }
+
       } catch (error) {
         console.error("Error initializing auth:", error);
       } finally {
@@ -71,7 +81,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, isLoading, signOut }}>
+    <AuthContext.Provider value={{ user, session, influencer, isLoading, signOut }}>
       {children}
     </AuthContext.Provider>
   );

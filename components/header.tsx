@@ -23,7 +23,7 @@ export default function Header({ hideNav = false }: HeaderProps) {
     <header className="border-b-2 border-[#19191b] bg-[#ffffff]">
       <div className="container mx-auto flex justify-between items-center py-4 px-4 md:px-6">
         <Link href={user ? "/dashboard" : "/"} className="flex items-center gap-2">
-          <Image src="/maplizt-logo.png" alt="Maplizt Logo" width={128} height={64} className="rounded-lg border-4 border-[#19191b] neobrutalist-shadow"/>
+          <Image src="/maplizt-logo.png" alt="Maplizt Logo" width={128} height={64} className="rounded-lg border-2 border-[#19191b] brutal-shadow-all"/>
         </Link>
 
         {!user && !hideNav && (
@@ -54,19 +54,10 @@ export default function Header({ hideNav = false }: HeaderProps) {
             <LoadingMarker />
           ) : user ? (
             <div className="flex items-center gap-4">
-              <div className="hidden md:block">
-                <p className="text-sm font-medium text-gray-500">
-                  Signed in as 
-                  <span className="text-[#19191b] ml-1">
-                    {user.email}
-                  </span>
-                </p>
-              </div>
-              
               <div className="relative">
                 <button
                   onClick={() => setIsMenuOpen(!isMenuOpen)}
-                  className="flex items-center justify-center h-10 w-10 rounded-full bg-[#8d65e3]/10 border-2 border-[#19191b] overflow-hidden"
+                  className="flex brutal-shadow-all items-center justify-center h-10 w-10 rounded-full bg-[#8d65e3]/10 border-2 border-[#19191b] overflow-hidden"
                 >
                   {user.user_metadata.avatar_url ? (
                     <Image
@@ -85,7 +76,7 @@ export default function Header({ hideNav = false }: HeaderProps) {
                 {isMenuOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg border-2 border-[#19191b] shadow-lg overflow-hidden z-10">
                     <div className="p-3 border-b border-gray-100">
-                      <p className="text-sm font-medium">{user.email}</p>
+                      <p className="text-sm font-medium">{user.user_metadata.full_name}</p>
                     </div>
                     <div className="p-2">
                       <Link
@@ -117,7 +108,7 @@ export default function Header({ hideNav = false }: HeaderProps) {
             !hideNav && (
               <Link
                 href="/signup"
-                className="inline-block bg-[#8d65e3] text-white px-4 py-2 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition neobrutalist-shadow"
+                className="inline-block bg-[#8d65e3] text-white px-4 py-2 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition brutal-shadow-all"
               >
                 Get Started
               </Link>
