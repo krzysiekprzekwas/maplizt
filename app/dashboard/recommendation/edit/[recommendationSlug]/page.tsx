@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import Header from "@/components/header";
 import LoadingMarker from "@/components/loading-marker";
@@ -274,7 +274,7 @@ export default function EditRecommendationPage({ params }: Props) {
       <Header />
       
       <div className="container mx-auto px-4 py-16 max-w-3xl">
-        <div className="bg-white rounded-lg border-4 border-[#19191b] p-8 brutal-shadow-all">
+        <div className="bg-white rounded-lg border-4 border-[#19191b] p-8 brutal-shadow-hover">
           <h1 className="text-3xl font-bold mb-6">Edit Recommendation List</h1>
           
           {error && (

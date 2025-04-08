@@ -215,7 +215,7 @@ export default function CreateListPage() {
       <Header />
       
       <div className="container mx-auto px-4 py-16 max-w-3xl">
-        <div className="bg-white rounded-lg border-4 border-[#19191b] p-8 brutal-shadow-all">
+        <div className="bg-white rounded-lg border-4 border-[#19191b] p-8 brutal-shadow-hover">
           <h1 className="text-3xl font-bold mb-6">Create New Recommendation List</h1>
           
           {error && (

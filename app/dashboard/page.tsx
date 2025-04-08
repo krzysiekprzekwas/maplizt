@@ -63,7 +63,7 @@ export default function Dashboard() {
       <Header />
       
       <div className="container mx-auto px-4 py-16">
-        <div className="bg-white rounded-lg border-4 border-[#19191b] p-8 brutal-shadow-all mb-8">
+        <div className="bg-white rounded-lg border-4 border-[#19191b] p-8 brutal-shadow-hover mb-8">
           <h1 className="text-3xl font-bold mb-4">Welcome, {user.user_metadata.full_name || user.email}!</h1>
           <p className="text-lg mb-6">This is your personal dashboard where you can manage your Maplizt recommendations and monitor your earnings.</p>
           
@@ -115,7 +115,7 @@ export default function Dashboard() {
           </div>
         </div>
         
-        <div className="bg-white rounded-lg border-4 border-[#19191b] p-8 brutal-shadow-all">
+        <div className="bg-white rounded-lg border-4 border-[#19191b] p-8 brutal-shadow-hover">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold">Your Recommendation Lists</h2>
             <Link
@@ -129,52 +129,52 @@ export default function Dashboard() {
           {recommendations.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {recommendations.map((recommendation) => (
-                <div 
+                <Link 
                   key={recommendation.id} 
-                  className="border-2 border-[#19191b] rounded-lg overflow-hidden shadow-md brutal-shadow-all transition-shadow"
+                  href={`/dashboard/recommendation/edit/${recommendation.slug}`}
+                  className="block"
                 >
-                  <div className="h-40 bg-gray-200 relative">
-                    {recommendation.images && recommendation.images[0] ? (
-                      <Image 
-                        src={recommendation.images[0]} 
-                        alt={recommendation.title} 
-                        fill 
-                        className="object-cover"
-                      />
-                    ) : (
-                      <Image
-                      src="/recommendation_image_placeholder.jpg"
-                      alt={recommendation.title}
-                      fill
-                      className="w-full h-auto object-cover"
-                      />
-                    )}
-                    <div className={`absolute top-2 left-2 px-2 py-1 rounded text-xs font-bold ${
-                      recommendation.type === 'Premium' 
-                        ? 'bg-[#f7bdf6]' 
-                        : recommendation.type === 'Paid' 
-                          ? 'bg-[#7db48f]' 
-                          : 'bg-[#97b5ec]'
-                    }`}>
-                      {recommendation.type}
-                      {recommendation.numeric_price > 0 && ` $${recommendation.numeric_price}`}
+                  <div 
+                    className="border-2 border-[#19191b] rounded-lg overflow-hidden shadow-md brutal-shadow-all transition-shadow hover:shadow-lg"
+                  >
+                    <div className="h-40 bg-gray-200 relative">
+                      {recommendation.images && recommendation.images[0] ? (
+                        <Image 
+                          src={recommendation.images[0]} 
+                          alt={recommendation.title} 
+                          fill 
+                          className="object-cover"
+                        />
+                      ) : (
+                        <Image
+                        src="/recommendation_image_placeholder.jpg"
+                        alt={recommendation.title}
+                        fill
+                        className="w-full h-auto object-cover"
+                        />
+                      )}
+                      <div className={`absolute top-2 left-2 px-2 py-1 rounded text-xs font-bold ${
+                        recommendation.type === 'Premium' 
+                          ? 'bg-[#f7bdf6]' 
+                          : recommendation.type === 'Paid' 
+                            ? 'bg-[#7db48f]' 
+                            : 'bg-[#97b5ec]'
+                      }`}>
+                        {recommendation.type}
+                        {recommendation.numeric_price > 0 && ` $${recommendation.numeric_price}`}
+                      </div>
+                    </div>
+                    <div className="p-4">
+                      <h3 className="font-bold text-lg mb-1">{recommendation.title}</h3>
+                      <p className="text-sm text-gray-500 line-clamp-2">{recommendation.description}</p>
+                      <div className="mt-4">
+                        <span className="text-xs text-gray-400">
+                          Created {new Date(recommendation.created_at).toLocaleDateString()}
+                        </span>
+                      </div>
                     </div>
                   </div>
-                  <div className="p-4">
-                    <h3 className="font-bold text-lg mb-1">{recommendation.title}</h3>
-                    <p className="text-sm text-gray-500 line-clamp-2">{recommendation.description}</p>
-                    <div className="mt-4 flex justify-between items-center">
-                      <span className="text-xs text-gray-400">
-                        Created {new Date(recommendation.created_at).toLocaleDateString()}
-                      </span>
-                      <Link href={`/dashboard/recommendation/edit/${recommendation.slug}`}>
-                        <button className="text-xs bg-gray-100 hover:bg-gray-200 px-2 py-1 rounded transition">
-                          Edit
-                        </button>
-                      </Link>
-                    </div>
-                  </div>
-                </div>
+                </Link>
               ))}
             </div>
           ) : (
