@@ -7,6 +7,7 @@ import Header from "@/components/header";
 import LoadingMarker from "@/components/loading-marker";
 import { RecommendationType } from "@/types/database";
 import { getInfluencerByUserId, getRecommendation } from "@/lib/db";
+import ImageUpload from "@/components/image-upload";
 
 type Props = {
   params: Promise<{ 
@@ -449,6 +450,17 @@ export default function EditRecommendationPage({ params }: Props) {
                 </p>
               </div>
             )}
+            
+            <div className="mb-6">
+              <label className="block text-[#19191b] font-medium mb-2">
+                Images (Max 3)
+              </label>
+              <ImageUpload 
+                images={images} 
+                setImages={setImages} 
+                maxImages={3} 
+              />
+            </div>
             
             <div className="flex justify-between gap-4 mt-8">
               <button
