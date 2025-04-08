@@ -7,6 +7,7 @@ import Header from "@/components/header";
 import { supabase } from "@/lib/supabase";
 import { Influencer } from "@/types/database";
 import LoadingMarker from "@/components/loading-marker";
+import ImageUpload from "@/components/image-upload";
 
 export default function AccountPage() {
   const { user, isLoading } = useAuth();
@@ -21,6 +22,7 @@ export default function AccountPage() {
   const [influencerName, setInfluencerName] = useState("");
   const [influencerSlug, setInfluencerSlug] = useState("");
   const [influencerHandle, setInfluencerHandle] = useState("");
+  const [influencerProfileImage, setInfluencerProfileImage] = useState("");
   const [updatingInfluencer, setUpdatingInfluencer] = useState(false);
   const [influencerSuccess, setInfluencerSuccess] = useState("");
   const [influencerError, setInfluencerError] = useState("");
@@ -45,6 +47,7 @@ export default function AccountPage() {
             setInfluencerName(data.name || "");
             setInfluencerSlug(data.slug || "");
             setInfluencerHandle(data.handle || "");
+            setInfluencerProfileImage(data.profile_image || "");
           }
         } catch (error) {
           console.error("Error fetching influencer profile:", error);
@@ -99,7 +102,8 @@ export default function AccountPage() {
         body: JSON.stringify({
           name: influencerName.trim(),
           slug: influencerSlug.trim(),
-          handle: influencerHandle.trim()
+          handle: influencerHandle.trim(),
+          profile_image: influencerProfileImage
         })
       });
 
@@ -217,6 +221,18 @@ export default function AccountPage() {
             )}
             
             <form onSubmit={handleUpdateInfluencer}>
+              <div className="mb-6">
+                <label className="block text-[#19191b] font-medium mb-2">
+                  Profile Image
+                </label>
+                <ImageUpload 
+                  images={influencerProfileImage ? [influencerProfileImage] : []}
+                  setImages={(images) => setInfluencerProfileImage(images.length > 0 ? images[0] : '')}
+                  singleImage={true}
+                  imageClassName="w-32 h-32 object-cover rounded-full border-2 border-[#19191b]"
+                />
+              </div>
+              
               <div className="mb-6">
                 <label
                   htmlFor="influencerName"

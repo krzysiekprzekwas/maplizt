@@ -5,12 +5,16 @@ interface ImageUploadProps {
   images: string[];
   setImages: (images: string[]) => void;
   maxImages?: number;
+  singleImage?: boolean;
+  imageClassName?: string;
 }
 
 export default function ImageUpload({ 
   images, 
   setImages, 
-  maxImages = 3 
+  maxImages = 3,
+  singleImage = false,
+  imageClassName = "w-32 h-32 object-cover rounded-lg border-2 border-[#19191b]"
 }: ImageUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
@@ -21,7 +25,7 @@ export default function ImageUpload({
     if (!files) return;
 
     // Check if we've reached the maximum number of images
-    if (images.length + files.length > maxImages) {
+    if (!singleImage && images.length + files.length > maxImages) {
       setUploadError(`Maximum ${maxImages} images allowed`);
       return;
     }
@@ -30,12 +34,19 @@ export default function ImageUpload({
     setUploadError(null);
 
     try {
-      const uploadPromises = Array.from(files).map(file => 
-        uploadImage(file)
-      );
+      if (singleImage) {
+        // Only upload the first file for single image mode
+        const uploadedUrl = await uploadImage(files[0]);
+        setImages([uploadedUrl]);
+      } else {
+        // Upload all files for multiple image mode
+        const uploadPromises = Array.from(files).map(file => 
+          uploadImage(file)
+        );
 
-      const uploadedUrls = await Promise.all(uploadPromises);
-      setImages([...images, ...uploadedUrls]);
+        const uploadedUrls = await Promise.all(uploadPromises);
+        setImages([...images, ...uploadedUrls]);
+      }
     } catch (error: any) {
       console.error('Upload error:', error);
       setUploadError(error.message);
@@ -46,20 +57,24 @@ export default function ImageUpload({
 
   // Add image removal handler
   const handleRemoveImage = (index: number) => {
-    setImages(images.filter((_, i) => i !== index));
+    if (singleImage) {
+      setImages([]);
+    } else {
+      setImages(images.filter((_, i) => i !== index));
+    }
   };
 
   return (
     <div className="space-y-4">
       {/* Image preview */}
       {images.length > 0 && (
-        <div className="flex flex-wrap gap-4">
+        <div className={`flex ${singleImage ? '' : 'flex-wrap'} gap-4`}>
           {images.map((url, index) => (
             <div key={url} className="relative">
               <img
                 src={url}
                 alt={`Preview ${index + 1}`}
-                className="w-32 h-32 object-cover rounded-lg border-2 border-[#19191b]"
+                className={imageClassName}
               />
               <button
                 type="button"
@@ -74,13 +89,13 @@ export default function ImageUpload({
       )}
 
       {/* Upload button */}
-      {images.length < maxImages && (
+      {(!singleImage && images.length < maxImages) || (singleImage && images.length === 0) ? (
         <div>
           <input
             type="file"
             id="images"
             accept=".jpg,.jpeg,.png,.webp"
-            multiple
+            multiple={!singleImage}
             onChange={handleFileUpload}
             className="hidden"
             disabled={isUploading}
@@ -91,10 +106,10 @@ export default function ImageUpload({
               isUploading ? 'opacity-50 cursor-not-allowed' : ''
             }`}
           >
-            {isUploading ? 'Uploading...' : 'Upload Images'}
+            {isUploading ? 'Uploading...' : singleImage ? (images.length > 0 ? 'Change Image' : 'Upload Image') : 'Upload Images'}
           </label>
         </div>
-      )}
+      ) : null}
 
       {uploadError && (
         <p className="text-red-500 text-sm mt-2">{uploadError}</p>
