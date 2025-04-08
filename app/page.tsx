@@ -29,15 +29,15 @@ export default function HomePage() {
               </div>
             </div>
             <div className="relative">
-              <div className="w-full h-[400px] bg-white rounded-lg border-4 border-[#19191b] overflow-hidden shadow-[8px_8px_0px_0px_#19191b]">
+              <div className="w-full h-[400px] bg-white rounded-lg neobrutalist-shadow">
                 <Image 
                   src="/recommendation_image_placeholder.jpg" 
                   alt="Maplizt in action" 
                   fill 
-                  className="object-cover opacity-75" 
+                  className="rounded-lg border-4 border-[#19191b]" 
                 />
-                <div className="absolute inset-0 flex flex-col items-center justify-center p-6 bg-gradient-to-t from-[#19191b]/40 to-transparent">
-                  <div className="bg-white p-4 rounded-lg border-2 border-[#19191b] shadow-lg w-full max-w-xs">
+                <div className="absolute rounded-lg inset-0 flex flex-col items-center justify-center p-6">
+                  <div className="bg-white p-4 rounded-lg border-2 border-[#19191b] shadow-lg w-full max-w-xs neobrutalist-shadow">
                     <h3 className="font-bold mb-2">Munich's Best Cafés</h3>
                     <p className="text-sm mb-3">Discover 8 perfect spots to work & enjoy breakfast</p>
                     <div className="h-24 bg-[#97b5ec]/20 rounded border border-[#19191b]/30 flex items-center justify-center">

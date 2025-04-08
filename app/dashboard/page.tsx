@@ -63,7 +63,7 @@ export default function Dashboard() {
       <Header />
       
       <div className="container mx-auto px-4 py-16">
-        <div className="bg-white rounded-lg border-4 border-[#19191b] p-8 shadow-[8px_8px_0px_0px_#19191b] mb-8">
+        <div className="bg-white rounded-lg border-4 border-[#19191b] p-8 neobrutalist-shadow mb-8">
           <h1 className="text-3xl font-bold mb-4">Welcome, {user.user_metadata.full_name || user.email}!</h1>
           <p className="text-lg mb-6">This is your personal dashboard where you can manage your Maplizt recommendations and monitor your earnings.</p>
           
@@ -97,7 +97,7 @@ export default function Dashboard() {
           </div>
         </div>
         
-        <div className="bg-white rounded-lg border-4 border-[#19191b] p-8 shadow-[8px_8px_0px_0px_#19191b]">
+        <div className="bg-white rounded-lg border-4 border-[#19191b] p-8 neobrutalist-shadow">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold">Your Recommendation Lists</h2>
             <Link
@@ -113,7 +113,7 @@ export default function Dashboard() {
               {recommendations.map((recommendation) => (
                 <div 
                   key={recommendation.id} 
-                  className="border-2 border-[#19191b] rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow"
+                  className="border-2 border-[#19191b] rounded-lg overflow-hidden shadow-md neobrutalist-shadow transition-shadow"
                 >
                   <div className="h-40 bg-gray-200 relative">
                     {recommendation.images && recommendation.images[0] ? (

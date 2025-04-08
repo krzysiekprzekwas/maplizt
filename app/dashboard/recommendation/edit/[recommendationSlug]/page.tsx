@@ -274,7 +274,7 @@ export default function EditRecommendationPage({ params }: Props) {
       <Header />
       
       <div className="container mx-auto px-4 py-16 max-w-3xl">
-        <div className="bg-white rounded-lg border-4 border-[#19191b] p-8 shadow-[8px_8px_0px_0px_#19191b]">
+        <div className="bg-white rounded-lg border-4 border-[#19191b] p-8 neobrutalist-shadow">
           <h1 className="text-3xl font-bold mb-6">Edit Recommendation List</h1>
           
           {error && (
