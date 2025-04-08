@@ -236,7 +236,8 @@ export default function SignupPage() {
               <button
                 type="button"
                 onClick={() => handleSocialAuth('google')}
-                className="py-3 px-4 border-2 border-[#19191b] rounded-lg flex justify-center items-center gap-2 bg-white hover:bg-gray-50 transition"
+                className="py-3 px-4 border-2 border-[#19191b] rounded-lg flex justify-center items-center gap-2 bg-white hover:bg-gray-50 transition opacity-50 cursor-not-allowed"
+                disabled
               >
                 <svg
                   width="20"
@@ -274,7 +275,8 @@ export default function SignupPage() {
               <button
                 type="button"
                 onClick={() => handleSocialAuth('apple')}
-                className="py-3 px-4 border-2 border-[#19191b] rounded-lg flex justify-center items-center gap-2 bg-white hover:bg-gray-50 transition"
+                className="py-3 px-4 border-2 border-[#19191b] rounded-lg flex justify-center items-center gap-2 bg-white hover:bg-gray-50 transition opacity-50 cursor-not-allowed"
+                disabled
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -292,6 +294,10 @@ export default function SignupPage() {
                 </svg>
                 <span>Apple</span>
               </button>
+            </div>
+            
+            <div className="mt-4 text-center text-sm text-gray-500">
+              Social login options are currently unavailable
             </div>
           </div>
         </div>
