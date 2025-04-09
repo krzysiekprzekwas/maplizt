@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { createServerClient } from '@supabase/ssr';
 import { createInfluencerProfile } from '@/lib/db';
 
 export async function POST(request: NextRequest) {
@@ -14,6 +14,25 @@ export async function POST(request: NextRequest) {
         { status: 400 }
       );
     }
+
+    // Create server client
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          get(name: string) {
+            return request.cookies.get(name)?.value;
+          },
+          set(name: string, value: string, options: any) {
+            request.cookies.set({ name, value, ...options });
+          },
+          remove(name: string, options: any) {
+            request.cookies.set({ name, value: '', ...options });
+          }
+        }
+      }
+    );
 
     // Sign up user with Supabase
     const { data: { user }, error: signUpError } = await supabase.auth.signUp({
