@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import Header from "@/components/header";
 import LoadingMarker from "@/components/loading-marker";
-import { uploadImage } from '@/lib/storage';
 import ImageUpload from "@/components/image-upload";
 
 type RecommendationType = "Free" | "Paid" | "Premium";
@@ -29,8 +28,7 @@ export default function CreateListPage() {
   const [success, setSuccess] = useState<string | null>(null);
   const [slugError, setSlugError] = useState<string | null>(null);
   const [isCheckingSlug, setIsCheckingSlug] = useState(false);
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadError, setUploadError] = useState<string | null>(null);
+  const [isManuallyEditingSlug, setIsManuallyEditingSlug] = useState(false);
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -41,25 +39,25 @@ export default function CreateListPage() {
 
   // Generate slug from title
   useEffect(() => {
-    if (title && !slug) {
+    if (!isManuallyEditingSlug && title) {
       const generatedSlug = title
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/(^-|-$)/g, "");
       setSlug(generatedSlug);
     }
-  }, [title, slug]);
+  }, [title, isManuallyEditingSlug]);
 
   // Check if slug is available
   useEffect(() => {
     const checkSlugAvailability = async () => {
-      if (!slug || slug.length < 3) return;
+      if (!slug) return;
       
       setIsCheckingSlug(true);
       setSlugError(null);
       
       try {
-        const response = await fetch(`/api/check-slug?slug=${slug}`);
+        const response = await fetch(`/api/recommendations/check-slug?slug=${slug}`);
         const data = await response.json();
         
         if (!response.ok) {
@@ -67,7 +65,7 @@ export default function CreateListPage() {
         }
         
         if (!data.available) {
-          setSlugError("This URL is already taken. Please choose another one.");
+          setSlugError(data.error || "This URL is already taken. Please choose another one.");
         }
       } catch (error) {
         console.error("Error checking slug:", error);
@@ -230,7 +228,15 @@ export default function CreateListPage() {
                   type="text"
                   className="flex-grow px-4 py-3 rounded-lg border-2 border-[#19191b] focus:outline-none focus:ring-2 focus:ring-[#8d65e3]/50"
                   value={slug}
-                  onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+                  onChange={(e) => {
+                    setIsManuallyEditingSlug(true);
+                    setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''));
+                  }}
+                  onBlur={() => {
+                    if (!slug) {
+                      setIsManuallyEditingSlug(false);
+                    }
+                  }}
                   placeholder="best-coffee-shops-berlin"
                   required
                 />
@@ -240,6 +246,9 @@ export default function CreateListPage() {
               )}
               {slugError && (
                 <p className="mt-2 text-sm text-red-500">{slugError}</p>
+              )}
+              {!isCheckingSlug && !slugError && slug && (
+                <p className="mt-2 text-sm text-green-500">This URL is available!</p>
               )}
               <p className="mt-2 text-sm text-gray-500">
                 Only lowercase letters, numbers, and hyphens. This will be your public URL.

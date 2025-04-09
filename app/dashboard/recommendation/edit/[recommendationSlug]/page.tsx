@@ -38,6 +38,7 @@ export default function EditRecommendationPage({ params }: Props) {
   const [isLoadingData, setIsLoadingData] = useState(true);
   const [recommendationId, setRecommendationId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isManuallyEditingSlug, setIsManuallyEditingSlug] = useState(false);
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -94,19 +95,19 @@ export default function EditRecommendationPage({ params }: Props) {
 
   // Generate slug from title
   useEffect(() => {
-    if (title && !slug) {
+    if (!isManuallyEditingSlug && title) {
       const generatedSlug = title
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, "-")
         .replace(/(^-|-$)/g, "");
       setSlug(generatedSlug);
     }
-  }, [title, slug]);
+  }, [title, isManuallyEditingSlug]);
 
   // Check if slug is available
   useEffect(() => {
     const checkSlugAvailability = async () => {
-      if (!slug || slug.length < 3 || slug == originalSlug) return;
+      if (!slug || slug.length < 3 || slug === originalSlug) return;
       
       setIsCheckingSlug(true);
       setSlugError(null);
@@ -120,7 +121,7 @@ export default function EditRecommendationPage({ params }: Props) {
         }
         
         if (!data.available) {
-          setSlugError("This URL is already taken. Please choose another one.");
+          setSlugError(data.error || "This URL is already taken. Please choose another one.");
         }
       } catch (error) {
         console.error("Error checking slug:", error);
@@ -132,7 +133,7 @@ export default function EditRecommendationPage({ params }: Props) {
     
     const debounceTimer = setTimeout(checkSlugAvailability, 500);
     return () => clearTimeout(debounceTimer);
-  }, [slug]);
+  }, [slug, originalSlug]);
 
   // Handle price change based on type
   useEffect(() => {
@@ -323,7 +324,15 @@ export default function EditRecommendationPage({ params }: Props) {
                   type="text"
                   className="flex-grow px-4 py-3 rounded-lg border-2 border-[#19191b] focus:outline-none focus:ring-2 focus:ring-[#8d65e3]/50"
                   value={slug}
-                  onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+                  onChange={(e) => {
+                    setIsManuallyEditingSlug(true);
+                    setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''));
+                  }}
+                  onBlur={() => {
+                    if (!slug) {
+                      setIsManuallyEditingSlug(false);
+                    }
+                  }}
                   placeholder="best-coffee-shops-berlin"
                   required
                 />
@@ -333,6 +342,9 @@ export default function EditRecommendationPage({ params }: Props) {
               )}
               {slugError && (
                 <p className="mt-2 text-sm text-red-500">{slugError}</p>
+              )}
+              {!isCheckingSlug && !slugError && slug && slug !== originalSlug && (
+                <p className="mt-2 text-sm text-green-500">This URL is available!</p>
               )}
               <p className="mt-2 text-sm text-gray-500">
                 Only lowercase letters, numbers, and hyphens. This will be your public URL.
