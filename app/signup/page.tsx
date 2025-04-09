@@ -38,51 +38,27 @@ export default function SignupPage() {
           router.push("/dashboard");
         }, 1000);
       } else {
-        // Sign up with Supabase
-        const { data: { user }, error: signUpError } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            data: { 
-              full_name: name,
-              slug: slug
-            },
+        // Sign up using our custom registration endpoint
+        const response = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
           },
+          body: JSON.stringify({
+            email,
+            password,
+            name,
+            slug
+          })
         });
-        
-        if (signUpError) throw signUpError;
 
-        if (user) {
-          try {
-            // Generate handle from name
-            const handle = name.toLowerCase().replace(/\s+/g, '_');
-            
-            // Create influencer profile immediately
-            const response = await fetch('/api/influencer/me', {
-              method: 'PUT',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                name: name,
-                slug: slug,
-                handle: handle,
-                profile_image: ''
-              })
-            });
+        const data = await response.json();
 
-            if (!response.ok) {
-              const error = await response.json();
-              throw new Error(error.error || 'Failed to create influencer profile');
-            }
-          } catch (error: any) {
-            console.error('Error creating influencer profile:', error);
-            setError(error.message || 'Failed to create influencer profile');
-            return;
-          }
+        if (!response.ok) {
+          throw new Error(data.error || 'Registration failed');
         }
-        
-        setSuccessMessage("Registration successful! Please check your email to confirm your account.");
+
+        setSuccessMessage(data.message);
       }
     } catch (err: any) {
       console.error("Auth error:", err);
