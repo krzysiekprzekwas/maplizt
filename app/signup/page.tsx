@@ -28,7 +28,7 @@ export default function SignupPage() {
         // Login with Supabase
         const { error: signInError } = await supabase.auth.signInWithPassword({
           email,
-          password,
+          password
         });
         
         if (signInError) throw signInError;
@@ -39,7 +39,7 @@ export default function SignupPage() {
         }, 1000);
       } else {
         // Sign up with Supabase
-        const { error: signUpError } = await supabase.auth.signUp({
+        const { data: { user }, error: signUpError } = await supabase.auth.signUp({
           email,
           password,
           options: {
@@ -51,6 +51,36 @@ export default function SignupPage() {
         });
         
         if (signUpError) throw signUpError;
+
+        if (user) {
+          try {
+            // Generate handle from name
+            const handle = name.toLowerCase().replace(/\s+/g, '_');
+            
+            // Create influencer profile immediately
+            const response = await fetch('/api/influencer/me', {
+              method: 'PUT',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                name: name,
+                slug: slug,
+                handle: handle,
+                profile_image: ''
+              })
+            });
+
+            if (!response.ok) {
+              const error = await response.json();
+              throw new Error(error.error || 'Failed to create influencer profile');
+            }
+          } catch (error: any) {
+            console.error('Error creating influencer profile:', error);
+            setError(error.message || 'Failed to create influencer profile');
+            return;
+          }
+        }
         
         setSuccessMessage("Registration successful! Please check your email to confirm your account.");
       }
