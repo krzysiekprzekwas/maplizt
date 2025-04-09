@@ -2,10 +2,9 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
-import Header from "@/components/header";
-
 export default function SignupPage() {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
@@ -71,17 +70,38 @@ export default function SignupPage() {
     try {
       if (isLogin) {
         // Login with Supabase
-        const { error: signInError } = await supabase.auth.signInWithPassword({
+        const { data, error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password
         });
         
         if (signInError) throw signInError;
+       
+        if (!data?.session) {
+          console.error("No session in login response");
+          throw new Error("No session received after login");
+        }
         
         setSuccessMessage("Logged in successfully!");
-        setTimeout(() => {
-          router.push("/dashboard");
-        }, 1000);
+        
+        // Force a session refresh to ensure we have the latest session
+        const { data: { session }, error: refreshError } = await supabase.auth.getSession();
+        
+        if (refreshError) {
+          console.error("Session refresh error:", refreshError);
+          throw refreshError;
+        }
+        
+        if (!session) {
+          console.error("No session after refresh");
+          throw new Error("Failed to establish session");
+        }
+
+        // Wait for auth state to update
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        // Use replace instead of push to prevent back navigation to login
+        router.replace("/dashboard");
       } else {
         // Validate form
         if (!name.trim()) {
@@ -144,10 +164,19 @@ export default function SignupPage() {
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: "#f8f5ed" }}>
-      <Header hideNav={true} />
-
       <div className="container mx-auto px-4 py-16 max-w-md">
         <div className="bg-white rounded-lg border-4 border-[#19191b] p-8 brutal-shadow-hover">
+          <div className="flex justify-center items-center mb-8">
+            <Link href="/">
+              <Image 
+                src="/maplizt-logo-full.svg" 
+                alt="Maplizt Logo" 
+                width={128} 
+                height={64} 
+                className="rounded-lg border-2 border-[#19191b] brutal-shadow-all" 
+              />
+            </Link>
+          </div>
           <div className="flex mb-8 border-b-2 border-[#19191b]">
             <button
               className={`w-1/2 pb-4 text-lg font-medium text-center ${
