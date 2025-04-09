@@ -6,14 +6,15 @@ import { useAuth } from "@/lib/auth-context";
 import Header from "@/components/header";
 import Link from "next/link";
 import Image from "next/image";
-import { Recommendation } from "@/types/database";
+import { Influencer, Recommendation } from "@/types/database";
 import LoadingMarker from "@/components/loading-marker";
 
 export default function Dashboard() {
-  const { user, influencer, isLoading } = useAuth();
+  const { user, isLoading } = useAuth();
   const router = useRouter();
   const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
   const [loadingRecommendations, setLoadingRecommendations] = useState(false);
+  const [influencer, setInfluencer] = useState<Influencer | null>(null);
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -22,8 +23,21 @@ export default function Dashboard() {
     } else if (user) {
       // Fetch user's recommendations
       fetchUserRecommendations();
+
+      // Fetch influencer profile
+      fetchInfluencer();
     }
   }, [user, isLoading, router]);
+
+      // Fetch influencer profile
+  const fetchInfluencer = async () => {
+      const response = await fetch('/api/influencers/me');
+      if (!response.ok) {
+        throw new Error('Failed to fetch influencer profile');
+      }
+      const data = await response.json();
+      setInfluencer(data);
+  }
 
   // Function to fetch user's recommendations from the API
   const fetchUserRecommendations = async () => {

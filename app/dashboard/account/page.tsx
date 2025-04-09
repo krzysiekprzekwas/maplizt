@@ -41,7 +41,7 @@ export default function AccountPage() {
       // Fetch influencer profile
       const fetchInfluencer = async () => {
         try {
-          const response = await fetch('/api/influencer/me');
+          const response = await fetch('/api/influencers/me');
           if (!response.ok) {
             throw new Error('Failed to fetch influencer profile');
           }
