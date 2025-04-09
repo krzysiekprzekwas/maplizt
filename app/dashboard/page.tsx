@@ -199,7 +199,7 @@ export default function Dashboard() {
           ) : (
             <div className="py-10 flex flex-col items-center justify-center text-center">
               <div className="w-24 h-24 bg-[#f8f5ed] rounded-full flex items-center justify-center mb-4">
-                <Image src="/maplizt-logo-icon.svg.svg" alt="Empty" width={40} height={40} className="opacity-40" />
+                <Image src="/maplizt-logo-icon.svg" alt="Empty" width={40} height={40} className="opacity-40" />
               </div>
               <h3 className="text-xl font-bold mb-2">No Lists Yet</h3>
               <p className="text-gray-500 max-w-md mb-6">
