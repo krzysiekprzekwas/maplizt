@@ -101,6 +101,13 @@ export async function createInfluencerProfile(
   return data as Influencer;
 }
 
+export async function incrementRecommendationViewCount(recommendationId: string) {
+  const { error } = await supabase
+    .rpc('increment_recommendation_view_count', { recommendation_id: recommendationId });
+  
+  if (error) throw error;
+}
+
 export async function getRecommendation(influencerSlug: string, recommendationSlug: string) {
   const { data, error } = await supabase
     .from('recommendations')
@@ -110,6 +117,12 @@ export async function getRecommendation(influencerSlug: string, recommendationSl
     .maybeSingle();
 
   if (error) throw error;
+  
+  // Increment view count when recommendation is viewed
+  if (data) {
+    await incrementRecommendationViewCount(data.id);
+  }
+  
   return data as Recommendation & { influencers: Influencer };
 }
 

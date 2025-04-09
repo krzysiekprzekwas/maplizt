@@ -109,7 +109,9 @@ export default function Dashboard() {
             
             <div className="bg-[#97b5ec]/10 p-6 rounded-lg border-2 border-[#19191b]">
               <h3 className="font-bold mb-2">Views</h3>
-              <p className="text-3xl font-bold">0</p>
+              <p className="text-3xl font-bold">
+                {recommendations.reduce((total, rec) => total + (rec.view_count || 0), 0)}
+              </p>
               <p className="text-sm text-gray-500">Total views across all lists</p>
             </div>
           </div>
@@ -167,9 +169,12 @@ export default function Dashboard() {
                     <div className="p-4">
                       <h3 className="font-bold text-lg mb-1">{recommendation.title}</h3>
                       <p className="text-sm text-gray-500 line-clamp-2">{recommendation.description}</p>
-                      <div className="mt-4">
+                      <div className="mt-4 flex justify-between items-center">
                         <span className="text-xs text-gray-400">
                           Created {new Date(recommendation.created_at).toLocaleDateString()}
+                        </span>
+                        <span className="text-xs text-gray-600">
+                          {recommendation.view_count || 0} views
                         </span>
                       </div>
                     </div>
