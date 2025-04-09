@@ -32,6 +32,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Get session and user on initial load
     const initializeAuth = async () => {
       try {
+        // Set a timeout to prevent infinite loading
+        const timeoutId = setTimeout(() => {
+          setIsLoading(false);
+        }, 5000); // 5 second timeout
+
         // Get session
         const { data: { session } } = await supabase.auth.getSession();
         setSession(session);
@@ -45,8 +50,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           setInfluencer(influencer);
         }
 
+        clearTimeout(timeoutId);
       } catch (error) {
         console.error("Error initializing auth:", error);
+        setUser(null);
+        setSession(null);
+        setInfluencer(null);
       } finally {
         setIsLoading(false);
       }
@@ -57,17 +66,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Listen for auth changes
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       async (_event, session) => {
-        setSession(session);
-        
-        // Get authenticated user data when auth state changes
-        if (session) {
-          const { data: { user } } = await supabase.auth.getUser();
-          setUser(user);
-        } else {
+        try {
+          setSession(session);
+          
+          // Get authenticated user data when auth state changes
+          if (session) {
+            const { data: { user } } = await supabase.auth.getUser();
+            setUser(user);
+          } else {
+            setUser(null);
+            setInfluencer(null);
+          }
+        } catch (error) {
+          console.error("Error handling auth state change:", error);
           setUser(null);
+          setSession(null);
+          setInfluencer(null);
+        } finally {
+          setIsLoading(false);
         }
-        
-        setIsLoading(false);
       }
     );
 
