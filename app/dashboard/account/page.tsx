@@ -26,6 +26,10 @@ export default function AccountPage() {
   const [updatingInfluencer, setUpdatingInfluencer] = useState(false);
   const [influencerSuccess, setInfluencerSuccess] = useState("");
   const [influencerError, setInfluencerError] = useState("");
+  const [isCheckingSlug, setIsCheckingSlug] = useState(false);
+  const [slugError, setSlugError] = useState<string | null>(null);
+  const [isManuallyEditingSlug, setIsManuallyEditingSlug] = useState(false);
+  const [originalSlug, setOriginalSlug] = useState("");
 
   // Redirect if not authenticated
   useEffect(() => {
@@ -46,6 +50,7 @@ export default function AccountPage() {
           if (data) {
             setInfluencerName(data.name || "");
             setInfluencerSlug(data.slug || "");
+            setOriginalSlug(data.slug || "");
             setInfluencerHandle(data.handle || "");
             setInfluencerProfileImage(data.profile_image || "");
           }
@@ -57,6 +62,48 @@ export default function AccountPage() {
       fetchInfluencer();
     }
   }, [user, isLoading, router]);
+
+  // Generate slug from name
+  useEffect(() => {
+    if (!isManuallyEditingSlug && influencerName) {
+      const generatedSlug = influencerName
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "");
+      setInfluencerSlug(generatedSlug);
+    }
+  }, [influencerName, isManuallyEditingSlug]);
+
+  // Check if slug is available
+  useEffect(() => {
+    const checkSlugAvailability = async () => {
+      if (!influencerSlug || influencerSlug === originalSlug) return;
+      
+      setIsCheckingSlug(true);
+      setSlugError(null);
+      
+      try {
+        const response = await fetch(`/api/influencers/check-slug?slug=${influencerSlug}`);
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.error || "Failed to check slug availability");
+        }
+        
+        if (!data.available) {
+          setSlugError(data.error || "This URL is already taken. Please choose another one.");
+        }
+      } catch (error) {
+        console.error("Error checking slug:", error);
+        setSlugError("Failed to check URL availability");
+      } finally {
+        setIsCheckingSlug(false);
+      }
+    };
+    
+    const debounceTimer = setTimeout(checkSlugAvailability, 500);
+    return () => clearTimeout(debounceTimer);
+  }, [influencerSlug, originalSlug]);
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -92,6 +139,7 @@ export default function AccountPage() {
       if (!influencerName.trim()) throw new Error("Name is required");
       if (!influencerSlug.trim()) throw new Error("Slug is required");
       if (!influencerHandle.trim()) throw new Error("Handle is required");
+      if (slugError) throw new Error("Please fix the URL slug error before submitting");
       
       // Update or create influencer profile via API
       const response = await fetch('/api/influencer/me', {
@@ -114,6 +162,7 @@ export default function AccountPage() {
 
       const updatedProfile = await response.json();
       setInfluencer(updatedProfile);
+      setOriginalSlug(updatedProfile.slug);
       setInfluencerSuccess("Influencer profile updated successfully!");
     } catch (error: any) {
       console.error("Error updating influencer profile:", error);
@@ -264,10 +313,27 @@ export default function AccountPage() {
                     type="text"
                     className="flex-grow px-4 py-3 rounded-lg border-2 border-[#19191b] focus:outline-none focus:ring-2 focus:ring-[#8d65e3]/50"
                     value={influencerSlug}
-                    onChange={(e) => setInfluencerSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
-                    placeholder="your-unique-slug"
+                    onChange={(e) => {
+                      setIsManuallyEditingSlug(true);
+                      setInfluencerSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''));
+                    }}
+                    onBlur={() => {
+                      if (!influencerSlug) {
+                        setIsManuallyEditingSlug(false);
+                      }
+                    }}
+                    placeholder="your-profile-url"
                   />
                 </div>
+                {isCheckingSlug && (
+                  <p className="mt-2 text-sm text-gray-500">Checking availability...</p>
+                )}
+                {slugError && (
+                  <p className="mt-2 text-sm text-red-500">{slugError}</p>
+                )}
+                {!isCheckingSlug && !slugError && influencerSlug && influencerSlug !== originalSlug && (
+                  <p className="mt-2 text-sm text-green-500">This URL is available!</p>
+                )}
                 <p className="mt-2 text-sm text-gray-500">
                   This will be your public profile URL
                 </p>

@@ -53,13 +53,13 @@ export async function handleApiAuth(request: NextRequest, handler: (userId: stri
 }
 
 /**
- * Checks if a slug is available for a specific influencer
+ * Checks if a recommendation slug is available for a specific influencer
  * @param supabase Supabase client
  * @param influencerId The influencer ID to check against
  * @param slug The slug to check
  * @returns Object with availability status and any error
  */
-export async function checkSlugAvailability(
+export async function checkRecommendationSlugAvailability(
   supabase: any,
   influencerId: string,
   slug: string

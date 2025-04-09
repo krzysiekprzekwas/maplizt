@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabase";
@@ -15,7 +15,52 @@ export default function SignupPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
+  const [isCheckingSlug, setIsCheckingSlug] = useState(false);
+  const [slugError, setSlugError] = useState<string | null>(null);
+  const [isManuallyEditingSlug, setIsManuallyEditingSlug] = useState(false);
   const router = useRouter();
+
+  // Generate slug from name
+  useEffect(() => {
+    if (!isManuallyEditingSlug && name) {
+      const generatedSlug = name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "");
+      setSlug(generatedSlug);
+    }
+  }, [name, isManuallyEditingSlug]);
+
+  // Check if slug is available
+  useEffect(() => {
+    const checkSlugAvailability = async () => {
+      if (!slug) return;
+      
+      setIsCheckingSlug(true);
+      setSlugError(null);
+      
+      try {
+        const response = await fetch(`/api/influencers/check-slug?slug=${slug}`);
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.error || "Failed to check slug availability");
+        }
+        
+        if (!data.available) {
+          setSlugError(data.error || "This URL is already taken. Please choose another one.");
+        }
+      } catch (error) {
+        console.error("Error checking slug:", error);
+        setSlugError("Failed to check URL availability");
+      } finally {
+        setIsCheckingSlug(false);
+      }
+    };
+    
+    const debounceTimer = setTimeout(checkSlugAvailability, 500);
+    return () => clearTimeout(debounceTimer);
+  }, [slug]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -38,6 +83,19 @@ export default function SignupPage() {
           router.push("/dashboard");
         }, 1000);
       } else {
+        // Validate form
+        if (!name.trim()) {
+          throw new Error("Name is required");
+        }
+        
+        if (!slug.trim()) {
+          throw new Error("URL slug is required");
+        }
+        
+        if (slugError) {
+          throw new Error("Please fix the URL slug error before submitting");
+        }
+
         // Sign up using our custom registration endpoint
         const response = await fetch('/api/auth/register', {
           method: 'POST',
@@ -89,7 +147,7 @@ export default function SignupPage() {
       <Header hideNav={true} />
 
       <div className="container mx-auto px-4 py-16 max-w-md">
-        <div className="bg-white rounded-lg border-4 border-[#19191b] p-8 brutal-shadow-all">
+        <div className="bg-white rounded-lg border-4 border-[#19191b] p-8 brutal-shadow-hover">
           <div className="flex mb-8 border-b-2 border-[#19191b]">
             <button
               className={`w-1/2 pb-4 text-lg font-medium text-center ${
@@ -159,12 +217,29 @@ export default function SignupPage() {
                       id="slug"
                       type="text"
                       value={slug}
-                      onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''))}
+                      onChange={(e) => {
+                        setIsManuallyEditingSlug(true);
+                        setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ''));
+                      }}
+                      onBlur={() => {
+                        if (!slug) {
+                          setIsManuallyEditingSlug(false);
+                        }
+                      }}
                       className="flex-grow px-4 py-3 rounded-lg border-2 border-[#19191b] focus:outline-none focus:ring-2 focus:ring-[#8d65e3]/50"
                       placeholder="your-profile-url"
                       required={!isLogin}
                     />
                   </div>
+                  {isCheckingSlug && (
+                    <p className="mt-2 text-sm text-gray-500">Checking availability...</p>
+                  )}
+                  {slugError && (
+                    <p className="mt-2 text-sm text-red-500">{slugError}</p>
+                  )}
+                  {!isCheckingSlug && !slugError && slug && (
+                    <p className="mt-2 text-sm text-green-500">This URL is available!</p>
+                  )}
                   <p className="mt-2 text-sm text-gray-500">
                     This will be your public profile URL
                   </p>

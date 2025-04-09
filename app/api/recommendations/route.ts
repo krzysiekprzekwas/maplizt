@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
-import { handleApiAuth, checkSlugAvailability } from '@/lib/server-utils';
+import { handleApiAuth, checkRecommendationSlugAvailability } from '@/lib/server-utils';
 
 export async function POST(request: NextRequest) {
   return handleApiAuth(request, async (userId) => {
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
       }
       
       // Check slug availability using the utility function
-      const { available, error: slugError } = await checkSlugAvailability(
+      const { available, error: slugError } = await checkRecommendationSlugAvailability(
         supabase,
         influencer.id,
         body.slug
