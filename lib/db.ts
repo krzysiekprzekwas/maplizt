@@ -46,7 +46,14 @@ export async function getInfluencerById(influencer_id: string) {
 
 export async function updateInfluencerProfile(
   userId: string, 
-  profileData: { name?: string; slug?: string; handle?: string; profile_image?: string }
+  profileData: { 
+    name?: string; 
+    slug?: string; 
+    handle?: string; 
+    profile_image?: string; 
+    stripe_account_id?: string;
+    stripe_account_status?: 'active' | 'pending';
+  }
 ) {
   // First check if slug is already taken (except by the current user)
   if (profileData.slug) {

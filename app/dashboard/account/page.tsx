@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import Header from "@/components/header";
 import { supabase } from "@/lib/supabase";
@@ -12,10 +12,12 @@ import ImageUpload from "@/components/image-upload";
 export default function AccountPage() {
   const { user, isLoading } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [fullName, setFullName] = useState("");
   const [updating, setUpdating] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const [stripeLoading, setStripeLoading] = useState(false);
   
   // Influencer profile states
   const [influencer, setInfluencer] = useState<Influencer | null>(null);
@@ -104,6 +106,44 @@ export default function AccountPage() {
     const debounceTimer = setTimeout(checkSlugAvailability, 500);
     return () => clearTimeout(debounceTimer);
   }, [influencerSlug, originalSlug]);
+
+  // Add this to your useEffect that runs on mount
+  useEffect(() => {
+    // Check for Stripe success/error params
+    if (searchParams.get('stripe_success') === 'true') {
+      setSuccessMessage('Stripe account connected successfully!');
+    } else if (searchParams.get('stripe_refresh') === 'true') {
+      // User was redirected back to refresh the connection
+      handleStripeConnect();
+    }
+  }, [searchParams]);
+
+  // Add this function to handle Stripe connection
+  const handleStripeConnect = async () => {
+    setStripeLoading(true);
+    setErrorMessage('');
+    
+    try {
+      const response = await fetch('/api/stripe/connect', {
+        method: 'POST',
+        headers: {
+          'user-email': user?.email || '',
+        },
+      });
+      
+      if (!response.ok) {
+        throw new Error('Failed to create Stripe Connect account');
+      }
+      
+      const { url } = await response.json();
+      window.location.href = url;
+    } catch (error: any) {
+      console.error('Stripe Connect error:', error);
+      setErrorMessage(error.message || 'Failed to connect Stripe account');
+    } finally {
+      setStripeLoading(false);
+    }
+  };
 
   const handleUpdateProfile = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -372,6 +412,33 @@ export default function AccountPage() {
                 {updatingInfluencer ? "Updating..." : influencer ? "Update Influencer Profile" : "Create Influencer Profile"}
               </button>
             </form>
+          </div>
+
+          <div className="border-t border-gray-200 pt-8 mb-8">
+            <h2 className="text-xl font-bold mb-4">Payment Settings</h2>
+            
+            <div className="bg-gray-50 p-6 rounded-lg border-2 border-[#19191b] mb-6">
+              <h3 className="text-lg font-medium mb-2">Stripe Connect Account</h3>
+              <p className="text-gray-600 mb-4">
+                {influencer?.stripe_account_id 
+                  ? "Your Stripe account is connected. You can receive payments for your recommendations."
+                  : "Connect your Stripe account to receive payments for your recommendations."}
+              </p>
+              
+              <button
+                onClick={handleStripeConnect}
+                disabled={stripeLoading}
+                className={`bg-[#8d65e3] text-white px-6 py-3 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition ${
+                  stripeLoading ? "opacity-70 cursor-not-allowed" : ""
+                }`}
+              >
+                {stripeLoading 
+                  ? "Connecting..." 
+                  : influencer?.stripe_account_id 
+                    ? "Update Stripe Account"
+                    : "Connect Stripe Account"}
+              </button>
+            </div>
           </div>
         </div>
       </div>
