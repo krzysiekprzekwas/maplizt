@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/lib/auth-context";
 import Header from "@/components/header";
@@ -9,7 +9,7 @@ import { Influencer } from "@/types/database";
 import LoadingMarker from "@/components/loading-marker";
 import ImageUpload from "@/components/image-upload";
 
-export default function AccountPage() {
+function AccountPageContent() {
   const { user, isLoading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -221,7 +221,7 @@ export default function AccountPage() {
     );
   }
 
-  if (!user) return null; // This shouldn't show because of the redirect
+  if (!user) return null;
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#f8f5ed" }}>
@@ -443,5 +443,18 @@ export default function AccountPage() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function AccountPage() {
+  return (
+    <Suspense fallback={
+      <div className="min-h-screen" style={{ backgroundColor: "#f8f5ed" }}>
+        <Header />
+        <LoadingMarker />
+      </div>
+    }>
+      <AccountPageContent />
+    </Suspense>
   );
 } 
