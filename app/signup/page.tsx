@@ -162,6 +162,27 @@ export default function SignupPage() {
     }
   };
 
+  const handleForgotPassword = async () => {
+    setLoading(true);
+    setError("");
+    setSuccessMessage("");
+
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/reset-password`,
+      });
+
+      if (error) throw error;
+
+      setSuccessMessage("Password reset instructions have been sent to your email.");
+    } catch (err: any) {
+      console.error("Error sending reset password email:", err);
+      setError(err.message || "An error occurred while sending reset instructions");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <main className="min-h-screen" style={{ backgroundColor: "#f8f5ed" }}>
       <div className="container mx-auto px-4 py-16 max-w-md">
@@ -328,12 +349,12 @@ export default function SignupPage() {
 
             {isLogin && (
               <div className="mt-4 text-center">
-                <Link
-                  href="#"
+                <button
+                  onClick={handleForgotPassword}
                   className="text-[#8d65e3] hover:underline font-medium"
                 >
                   Forgot password?
-                </Link>
+                </button>
               </div>
             )}
           </form>
