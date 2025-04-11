@@ -113,7 +113,7 @@ export default function EditRecommendationPage({ params }: Props) {
       setSlugError(null);
       
       try {
-        const response = await fetch(`/api/check-slug?slug=${slug}`);
+        const response = await fetch(`/api/recommendations/check-slug?slug=${slug}`);
         const data = await response.json();
         
         if (!response.ok) {

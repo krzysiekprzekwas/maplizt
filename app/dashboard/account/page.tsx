@@ -182,7 +182,7 @@ function AccountPageContent() {
       if (slugError) throw new Error("Please fix the URL slug error before submitting");
       
       // Update or create influencer profile via API
-      const response = await fetch('/api/influencer/me', {
+      const response = await fetch('/api/influencers/me', {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

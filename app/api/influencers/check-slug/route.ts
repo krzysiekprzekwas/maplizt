@@ -1,6 +1,25 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
+// List of system pages that cannot be used as slugs
+const SYSTEM_PAGES = [
+  'dashboard',
+  'signup',
+  'login',
+  'reset-password',
+  'api',
+  'privacy',
+  'terms',
+  'about',
+  'contact',
+  'help',
+  'faq',
+  'blog',
+  'pricing',
+  'features',
+  'testimonials'
+];
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -18,6 +37,16 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(
         { error: 'Slug can only contain lowercase letters, numbers, and hyphens' },
         { status: 400 }
+      );
+    }
+    
+    // Check if slug is a system page
+    if (SYSTEM_PAGES.includes(slug)) {
+      return NextResponse.json(
+        { 
+          available: false,
+          error: 'This URL is reserved for system use. Please choose another one.'
+        }
       );
     }
     
