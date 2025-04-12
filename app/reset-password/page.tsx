@@ -27,13 +27,23 @@ export default function ResetPasswordPage() {
     }
 
     try {
-      const { error } = await supabase.auth.updateUser({
-        password: password
+      const response = await fetch('/api/user/password', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          password
+        })
       });
 
-      if (error) throw error;
+      const data = await response.json();
 
-      setSuccessMessage("Password has been reset successfully!");
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to reset password');
+      }
+
+      setSuccessMessage(data.message);
       setTimeout(() => {
         router.push("/signup");
       }, 2000);

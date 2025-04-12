@@ -152,12 +152,23 @@ function AccountPageContent() {
     setErrorMessage("");
 
     try {
-      const { error } = await supabase.auth.updateUser({
-        data: { full_name: fullName }
+      const response = await fetch('/api/user/profile', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          fullName
+        })
       });
 
-      if (error) throw error;
-      setSuccessMessage("Profile updated successfully!");
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to update profile');
+      }
+
+      setSuccessMessage(data.message);
     } catch (error: any) {
       console.error("Error updating profile:", error);
       setErrorMessage(error.message || "Error updating profile");
