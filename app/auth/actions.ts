@@ -4,10 +4,13 @@ import { encodedRedirect } from "@/utils/utils";
 import { createClient } from "@/utils/supabase/server";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { createInfluencerProfile } from "@/utils/db";
 
 export const signUpAction = async (formData: FormData) => {
   const email = formData.get("email")?.toString();
   const password = formData.get("password")?.toString();
+  const name = formData.get("name")?.toString();
+  const slug = formData.get("slug")?.toString();
   const supabase = await createClient();
   const origin = (await headers()).get("origin");
 
@@ -19,13 +22,28 @@ export const signUpAction = async (formData: FormData) => {
     );
   }
 
-  const { error } = await supabase.auth.signUp({
+  const { data: { user }, error } = await supabase.auth.signUp({
     email,
     password,
     options: {
       emailRedirectTo: `${origin}/auth/callback`,
     },
   });
+
+  if (user)
+  {
+    // Generate handle from name
+    const handle = name?.toLowerCase().replace(/\s+/g, '_');
+    
+    // Create influencer profile
+    await createInfluencerProfile(user.id, {
+      name: name!,
+      slug: slug!,
+      handle: handle!,
+      profile_image: ''
+    });
+  }
+
 
   if (error) {
     console.error(error.code + " " + error.message);
@@ -53,7 +71,7 @@ export const signInAction = async (formData: FormData) => {
     return encodedRedirect("error", "/sign-in", error.message);
   }
 
-  return redirect("/protected");
+  return redirect("/dashboard");
 };
 
 export const forgotPasswordAction = async (formData: FormData) => {
@@ -130,5 +148,5 @@ export const resetPasswordAction = async (formData: FormData) => {
 export const signOutAction = async () => {
   const supabase = await createClient();
   await supabase.auth.signOut();
-  return redirect("/sign-in");
+  return redirect("/auth/sign-in");
 };

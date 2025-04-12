@@ -82,16 +82,15 @@ export default async function Header({ hideNav = false }: HeaderProps) {
                       >
                         Account settings
                       </Link>
-                      <Link
-                        href="#"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          signOutAction();
-                        }}
+                      <form>
+                      <button
+                        formAction={signOutAction}
                         className="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded transition cursor-pointer"
                       >
                         Sign out
-                      </Link>
+                      </button>
+
+                      </form>
                     </div>
                   </div>
               </div>
@@ -99,7 +98,7 @@ export default async function Header({ hideNav = false }: HeaderProps) {
           ) : (
             !hideNav && (
               <Link
-                href="/auth/signup"
+                href="/auth/sign-up"
                 className="inline-block bg-[#8d65e3] text-white px-4 py-2 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition brutal-shadow-all"
               >
                 Get Started

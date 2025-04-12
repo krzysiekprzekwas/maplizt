@@ -3,12 +3,9 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import { signUpAction } from "../actions";
 
 export default function SignupPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
   const [isCheckingSlug, setIsCheckingSlug] = useState(false);
@@ -84,8 +81,7 @@ export default function SignupPage() {
               <input
                 id="name"
                 type="text"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
+                name="name"
                 className="w-full px-4 py-3 rounded-lg border-2 border-[#19191b] focus:outline-none focus:ring-2 focus:ring-[#8d65e3]/50"
                 placeholder="Your full name"
                 required
@@ -100,10 +96,11 @@ export default function SignupPage() {
                 Profile URL
               </label>
               <div className="flex items-center">
-                <span className="text-gray-500 mr-2">maplizt.com/</span>
+                <span className="text-gray-500 mr-2">maplizt.vercel.app/</span>
                 <input
                   id="slug"
                   type="text"
+                  name="slug"
                   value={slug}
                   onChange={(e) => {
                     setIsManuallyEditingSlug(true);
@@ -143,8 +140,7 @@ export default function SignupPage() {
               <input
                 id="email"
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                name="email"
                 className="w-full px-4 py-3 rounded-lg border-2 border-[#19191b] focus:outline-none focus:ring-2 focus:ring-[#8d65e3]/50"
                 placeholder="your@email.com"
                 required
@@ -161,8 +157,7 @@ export default function SignupPage() {
               <input
                 id="new-password"
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                name="password"
                 className="w-full px-4 py-3 rounded-lg border-2 border-[#19191b] focus:outline-none focus:ring-2 focus:ring-[#8d65e3]/50"
                 placeholder="••••••••"
                 required
@@ -182,7 +177,7 @@ export default function SignupPage() {
             <p className="text-gray-600">
               Already have an account?
               <Link
-                href="/auth/login"
+                href="/auth/sign-in"
                 className="ml-2 text-[#8d65e3] hover:underline font-medium"
               >
                 Sign in

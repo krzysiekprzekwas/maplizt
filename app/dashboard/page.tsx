@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/utils/supabase/server";
 import { Influencer, Recommendation } from "@/types/database";
+import { getInfluencerByUserId } from "@/utils/db";
 
 export default async function Dashboard() {
 
@@ -16,22 +17,24 @@ export default async function Dashboard() {
   if (!user) {
     return redirect("/sign-in");
   }
-  
-  // Fetch influencer profile
-  const response = await fetch('/api/influencers/me');
-  if (!response.ok) {
-    throw new Error('Failed to fetch influencer profile');
-  }
-  const influencer: Influencer = await response.json();
 
-  // Function to fetch user's recommendations from the API
-  const response2 = await fetch('/api/user/recommendations');
-      
-  if (!response2.ok) {
-    throw new Error(`Error: ${response.status}`);
+  const influencer = await getInfluencerByUserId(user.id);
+
+  var recommendations: Recommendation[] = [];
+
+  if (influencer)
+  {
+    // Function to fetch user's recommendations from the API
+    // Fetch recommendations for this influencer
+    const { data, error } = await supabase
+      .from('recommendations')
+      .select('*')
+      .eq('influencer_id', influencer.id)
+      .order('created_at', { ascending: false });
+
+    if (data)
+    recommendations = data;
   }
-  
-  const recommendations: Recommendation[] = await response.json();
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#f8f5ed" }}>

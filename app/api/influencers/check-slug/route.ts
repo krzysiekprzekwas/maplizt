@@ -6,8 +6,8 @@ const supabase = createClient()
 // List of system pages that cannot be used as slugs
 const SYSTEM_PAGES = [
   'dashboard',
-  'signup',
-  'login',
+  'sign-up',
+  'sign-in',
   'reset-password',
   'api',
   'privacy',

@@ -1,14 +1,10 @@
-"use client";
-
-import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { signInAction } from "../actions";
+import { FormMessage, Message } from "@/components/form-message";
 
-export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
+export default async function SignInPage(props: { searchParams: Promise<Message> }) {
+  const searchParams = await props.searchParams;
   return (
     <main className="min-h-screen" style={{ backgroundColor: "#f8f5ed" }}>
       <div className="container mx-auto px-4 py-16 max-w-md">
@@ -36,8 +32,7 @@ export default function LoginPage() {
               <input
                 id="email"
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                name="email"
                 className="w-full px-4 py-3 rounded-lg border-2 border-[#19191b] focus:outline-none focus:ring-2 focus:ring-[#8d65e3]/50"
                 placeholder="your@email.com"
                 required
@@ -54,8 +49,7 @@ export default function LoginPage() {
               <input
                 id="password"
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                name="password"
                 className="w-full px-4 py-3 rounded-lg border-2 border-[#19191b] focus:outline-none focus:ring-2 focus:ring-[#8d65e3]/50"
                 placeholder="••••••••"
                 required
@@ -69,6 +63,8 @@ export default function LoginPage() {
               Sign in
             </button>
 
+            <FormMessage message={searchParams} />
+
             <div className="mt-4 text-center">
               <Link
                 href="/auth/forgot-password"
@@ -79,12 +75,11 @@ export default function LoginPage() {
             </div>
           </form>
 
-          // Sign up section
           <div className="mt-8 pt-6 border-t border-gray-200 text-center">
             <p className="text-gray-600">
               Don't have an account?
               <Link
-                href="/auth/signup"
+                href="/auth/sign-up"
                 className="ml-2 text-[#8d65e3] hover:underline font-medium"
               >
                 Sign up
