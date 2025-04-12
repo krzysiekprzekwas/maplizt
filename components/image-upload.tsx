@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { uploadImage } from '@/lib/storage';
+import { uploadImage } from '@/utils/storage';
 
 interface ImageUploadProps {
   images: string[];

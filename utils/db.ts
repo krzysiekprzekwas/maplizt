@@ -1,5 +1,7 @@
-import { supabase } from './supabase';
 import { Influencer, Recommendation, Order } from '../types/database';
+import { createClient } from './supabase/client';
+
+const supabase = createClient();
 
 export async function getInfluencers() {
   const { data, error } = await supabase

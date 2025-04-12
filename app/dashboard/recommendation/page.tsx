@@ -1,177 +1,16 @@
-"use client";
-
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/lib/auth-context";
+export default function CreateListPage() {
+  return (
+    <p>Dupa</p>
+  );
+} 
+/*
 import Header from "@/components/header";
-import LoadingMarker from "@/components/loading-marker";
 
 type RecommendationType = "Free" | "Paid" | "Premium";
 
 export default function CreateListPage() {
-  const { user, isLoading } = useAuth();
-  const router = useRouter();
-  
-  // Form state
-  const [title, setTitle] = useState("");
-  const [slug, setSlug] = useState("");
-  const [description, setDescription] = useState("");
-  const [type, setType] = useState<RecommendationType>("Free");
-  const [price, setPrice] = useState(0);
-  const [images, setImages] = useState<string[]>([]);
-  const [googleMapsLink, setGoogleMapsLink] = useState("");
-  
-  // UI state
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-  const [slugError, setSlugError] = useState<string | null>(null);
-  const [isCheckingSlug, setIsCheckingSlug] = useState(false);
 
-  // Redirect if not authenticated
-  useEffect(() => {
-    if (!isLoading && !user) {
-      router.push("/signup");
-    }
-  }, [user, isLoading, router]);
 
-  // Generate slug from title
-  useEffect(() => {
-    if (title && !slug) {
-      const generatedSlug = title
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/(^-|-$)/g, "");
-      setSlug(generatedSlug);
-    }
-  }, [title, slug]);
-
-  // Check if slug is available
-  useEffect(() => {
-    const checkSlugAvailability = async () => {
-      if (!slug || slug.length < 3) return;
-      
-      setIsCheckingSlug(true);
-      setSlugError(null);
-      
-      try {
-        const response = await fetch(`/api/check-slug?slug=${slug}`);
-        const data = await response.json();
-        
-        if (!response.ok) {
-          throw new Error(data.error || "Failed to check slug availability");
-        }
-        
-        if (!data.available) {
-          setSlugError("This URL is already taken. Please choose another one.");
-        }
-      } catch (error) {
-        console.error("Error checking slug:", error);
-        setSlugError("Failed to check URL availability");
-      } finally {
-        setIsCheckingSlug(false);
-      }
-    };
-    
-    const debounceTimer = setTimeout(checkSlugAvailability, 500);
-    return () => clearTimeout(debounceTimer);
-  }, [slug]);
-
-  // Handle price change based on type
-  useEffect(() => {
-    if (type === "Free") {
-      setPrice(0);
-    } else if (type === "Paid" && price === 0) {
-      setPrice(5);
-    } else if (type === "Premium" && price < 7) {
-      setPrice(7);
-    }
-  }, [type, price]);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setError(null);
-    setSuccess(null);
-    
-    // Validate form
-    if (!title.trim()) {
-      setError("Title is required");
-      setIsSubmitting(false);
-      return;
-    }
-    
-    if (!slug.trim()) {
-      setError("URL slug is required");
-      setIsSubmitting(false);
-      return;
-    }
-    
-    if (slugError) {
-      setError("Please fix the URL slug error before submitting");
-      setIsSubmitting(false);
-      return;
-    }
-    
-    if (!description.trim()) {
-      setError("Description is required");
-      setIsSubmitting(false);
-      return;
-    }
-    
-    if (!googleMapsLink.trim()) {
-      setError("Google Maps link is required");
-      setIsSubmitting(false);
-      return;
-    }
-    
-    try {
-      const response = await fetch("/api/recommendations", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          title,
-          slug,
-          description,
-          type,
-          numeric_price: price,
-          images: images.length > 0 ? images : ["/recommendation_image_placeholder.jpg"],
-          googleMapsLink,
-        }),
-      });
-      
-      const data = await response.json();
-      
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to create recommendation list");
-      }
-      
-      setSuccess("Recommendation list created successfully!");
-      
-      // Redirect to dashboard after a short delay
-      setTimeout(() => {
-        router.push("/dashboard");
-      }, 1500);
-    } catch (error) {
-      console.error("Error creating recommendation:", error);
-      setError(error instanceof Error ? error.message : "An unknown error occurred");
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen" style={{ backgroundColor: "#f8f5ed" }}>
-        <Header />
-        <LoadingMarker />
-      </div>
-    );
-  }
-
-  if (!user) return null;
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#f8f5ed" }}>
@@ -376,3 +215,4 @@ export default function CreateListPage() {
     </div>
   );
 } 
+*/

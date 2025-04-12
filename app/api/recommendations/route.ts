@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
-import { handleApiAuth, checkRecommendationSlugAvailability } from '@/lib/server-utils';
 
+import { handleApiAuth, checkRecommendationSlugAvailability } from '@/utils/server-utils';
+import { createClient } from '@/utils/supabase/client';
+
+const supabase = createClient();
 export async function POST(request: NextRequest) {
   return handleApiAuth(request, async (userId) => {
     try {

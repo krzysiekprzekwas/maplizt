@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -45,7 +44,7 @@ export default function ResetPasswordPage() {
 
       setSuccessMessage(data.message);
       setTimeout(() => {
-        router.push("/signup");
+        router.push("/auth/signup");
       }, 2000);
     } catch (err: any) {
       console.error("Error resetting password:", err);
@@ -137,7 +136,7 @@ export default function ResetPasswordPage() {
 
           <div className="mt-8 text-center">
             <Link
-              href="/signup"
+              href="/auth/signup"
               className="text-[#8d65e3] hover:underline font-medium"
             >
               Back to Sign In

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { handleApiAuth } from '@/lib/server-utils';
-import { getInfluencerByUserId, updateInfluencerProfile, createInfluencerProfile } from '@/lib/db';
+import { handleApiAuth } from '@/utils/server-utils';
+import { getInfluencerByUserId, updateInfluencerProfile, createInfluencerProfile } from '@/utils/db';
 
 export async function GET(request: NextRequest) {
   return handleApiAuth(request, async (userId) => {

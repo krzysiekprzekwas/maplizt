@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { handleApiAuth } from '@/lib/server-utils';
+import { handleApiAuth } from '@/utils/server-utils';
 import { createServerClient } from '@supabase/ssr';
 
 export async function PUT(request: NextRequest) {

@@ -1,94 +1,44 @@
-"use client";
+export default function CreateListPage() {
+  return (
+    <p>Dupa</p>
+  );
+} 
 
-import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/lib/auth-context";
+/*
 import Header from "@/components/header";
-import LoadingMarker from "@/components/loading-marker";
 import ImageUpload from "@/components/image-upload";
 
 type RecommendationType = "Free" | "Paid" | "Premium";
 
 export default function CreateListPage() {
-  const { user, isLoading } = useAuth();
-  const router = useRouter();
-  
-  // Form state
-  const [title, setTitle] = useState("");
-  const [slug, setSlug] = useState("");
-  const [description, setDescription] = useState("");
-  const [type, setType] = useState<RecommendationType>("Free");
-  const [price, setPrice] = useState(0);
-  const [images, setImages] = useState<string[]>([]);
-  const [googleMapsLink, setGoogleMapsLink] = useState("");
-  
-  // UI state
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState<string | null>(null);
-  const [slugError, setSlugError] = useState<string | null>(null);
-  const [isCheckingSlug, setIsCheckingSlug] = useState(false);
-  const [isManuallyEditingSlug, setIsManuallyEditingSlug] = useState(false);
 
-  // Redirect if not authenticated
-  useEffect(() => {
-    if (!isLoading && !user) {
-      router.push("/signup");
-    }
-  }, [user, isLoading, router]);
-
-  // Generate slug from title
-  useEffect(() => {
-    if (!isManuallyEditingSlug && title) {
-      const generatedSlug = title
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/(^-|-$)/g, "");
-      setSlug(generatedSlug);
-    }
-  }, [title, isManuallyEditingSlug]);
 
   // Check if slug is available
-  useEffect(() => {
-    const checkSlugAvailability = async () => {
-      if (!slug) return;
-      
-      setIsCheckingSlug(true);
-      setSlugError(null);
-      
-      try {
-        const response = await fetch(`/api/recommendations/check-slug?slug=${slug}`);
-        const data = await response.json();
-        
-        if (!response.ok) {
-          throw new Error(data.error || "Failed to check slug availability");
-        }
-        
-        if (!data.available) {
-          setSlugError(data.error || "This URL is already taken. Please choose another one.");
-        }
-      } catch (error) {
-        console.error("Error checking slug:", error);
-        setSlugError("Failed to check URL availability");
-      } finally {
-        setIsCheckingSlug(false);
-      }
-    };
+  const checkSlugAvailability = async () => {
+    if (!slug) return;
     
-    const debounceTimer = setTimeout(checkSlugAvailability, 500);
-    return () => clearTimeout(debounceTimer);
-  }, [slug]);
-
-  // Handle price change based on type
-  useEffect(() => {
-    if (type === "Free") {
-      setPrice(0);
-    } else if (type === "Paid" && price === 0) {
-      setPrice(5);
-    } else if (type === "Premium" && price < 7) {
-      setPrice(7);
+    setIsCheckingSlug(true);
+    setSlugError(null);
+    
+    try {
+      const response = await fetch(`/api/recommendations/check-slug?slug=${slug}`);
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to check slug availability");
+      }
+      
+      if (!data.available) {
+        setSlugError(data.error || "This URL is already taken. Please choose another one.");
+      }
+    } catch (error) {
+      console.error("Error checking slug:", error);
+      setSlugError("Failed to check URL availability");
+    } finally {
+      setIsCheckingSlug(false);
     }
-  }, [type, price]);
+  };
+
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -152,10 +102,6 @@ export default function CreateListPage() {
       
       setSuccess("Recommendation list created successfully!");
       
-      // Redirect to dashboard after a short delay
-      setTimeout(() => {
-        router.push("/dashboard");
-      }, 1500);
     } catch (error) {
       console.error("Error creating recommendation:", error);
       setError(error instanceof Error ? error.message : "An unknown error occurred");
@@ -163,17 +109,6 @@ export default function CreateListPage() {
       setIsSubmitting(false);
     }
   };
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen" style={{ backgroundColor: "#f8f5ed" }}>
-        <Header />
-        <LoadingMarker />
-      </div>
-    );
-  }
-
-  if (!user) return null;
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#f8f5ed" }}>
@@ -382,7 +317,6 @@ export default function CreateListPage() {
               <button
                 type="button"
                 className="px-6 py-3 bg-white text-[#19191b] rounded-lg border-2 border-[#19191b] font-medium hover:bg-gray-100 transition"
-                onClick={() => router.push("/dashboard")}
               >
                 Cancel
               </button>
@@ -400,3 +334,4 @@ export default function CreateListPage() {
     </div>
   );
 } 
+  */

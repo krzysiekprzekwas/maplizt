@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createOrder, getRecommendationById, getOrderDetails, getInfluencerById } from '@/lib/db';
+import { createOrder, getRecommendationById, getOrderDetails, getInfluencerById } from '@/utils/db';
 import { Order } from '@/types/database';
 import { Resend } from 'resend';
 import fs from 'fs';

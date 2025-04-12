@@ -1,23 +1,18 @@
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
-import { useAuth } from "@/lib/auth-context";
-import { useState } from "react";
-import LoadingMarker from "./loading-marker";
+import { createClient } from "@/utils/supabase/server";
+import { signOutAction } from "@/app/auth/actions";
 
 interface HeaderProps {
   hideNav?: boolean;
 }
 
-export default function Header({ hideNav = false }: HeaderProps) {
-  const { user, signOut, isLoading } = useAuth();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+export default async function Header({ hideNav = false }: HeaderProps) {
+  const supabase = await createClient();
 
-  const handleSignOut = async () => {
-    await signOut();
-    setIsMenuOpen(false);
-  };
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   return (
     <header className="border-b-2 border-[#19191b] bg-[#ffffff]">
@@ -50,13 +45,10 @@ export default function Header({ hideNav = false }: HeaderProps) {
         )}
 
         <div className="relative">
-          {isLoading ? (
-            <LoadingMarker />
-          ) : user ? (
+          {user ? (
             <div className="flex items-center gap-4">
               <div className="relative">
                 <button
-                  onClick={() => setIsMenuOpen(!isMenuOpen)}
                   className="flex brutal-shadow-all items-center justify-center h-10 w-10 rounded-full bg-[#8d65e3]/10 border-2 border-[#19191b] overflow-hidden"
                 >
                   {user.user_metadata.avatar_url ? (
@@ -73,7 +65,6 @@ export default function Header({ hideNav = false }: HeaderProps) {
                   )}
                 </button>
 
-                {isMenuOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg border-2 border-[#19191b] shadow-lg overflow-hidden z-50">
                     <div className="p-3 border-b border-gray-100">
                       <p className="text-sm font-medium">{user.user_metadata.full_name}</p>
@@ -82,14 +73,12 @@ export default function Header({ hideNav = false }: HeaderProps) {
                       <Link
                         href="/dashboard"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#f8f5ed] rounded transition"
-                        onClick={() => setIsMenuOpen(false)}
                       >
                         Dashboard
                       </Link>
                       <Link
                         href="/dashboard/account"
                         className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#f8f5ed] rounded transition"
-                        onClick={() => setIsMenuOpen(false)}
                       >
                         Account settings
                       </Link>
@@ -97,7 +86,7 @@ export default function Header({ hideNav = false }: HeaderProps) {
                         href="#"
                         onClick={(e) => {
                           e.preventDefault();
-                          handleSignOut();
+                          signOutAction();
                         }}
                         className="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded transition cursor-pointer"
                       >
@@ -105,13 +94,12 @@ export default function Header({ hideNav = false }: HeaderProps) {
                       </Link>
                     </div>
                   </div>
-                )}
               </div>
             </div>
           ) : (
             !hideNav && (
               <Link
-                href="/signup"
+                href="/auth/signup"
                 className="inline-block bg-[#8d65e3] text-white px-4 py-2 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition brutal-shadow-all"
               >
                 Get Started

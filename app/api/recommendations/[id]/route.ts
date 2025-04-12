@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { deleteRecommendationById, deleteStoredImageByPath, getInfluencerById, getInfluencerByUserId, getRecommendationById, updateRecommendation } from "@/lib/db";
-import { handleApiAuth } from "@/lib/server-utils";
+import { deleteRecommendationById, deleteStoredImageByPath, getInfluencerById, getInfluencerByUserId, getRecommendationById, updateRecommendation } from "@/utils/db";
+import { handleApiAuth } from "@/utils/server-utils";
 
 export async function PUT(
   request: NextRequest,

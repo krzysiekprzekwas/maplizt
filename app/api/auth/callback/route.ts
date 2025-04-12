@@ -1,6 +1,6 @@
 import { createServerClient } from '@supabase/ssr';
 import { NextRequest, NextResponse } from 'next/server';
-import { createInfluencerProfile } from '@/lib/db';
+import { createInfluencerProfile } from '@/utils/db';
 
 export async function GET(req: NextRequest) {
   const requestUrl = new URL(req.url);

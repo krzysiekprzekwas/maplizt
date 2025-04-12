@@ -1,16 +1,18 @@
-"use client";
+export default function AccountPage() {
+  return (
+    <p>Dupa</p>
+  );
+} 
+/*
 
 import { useEffect, useState, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useAuth } from "@/lib/auth-context";
 import Header from "@/components/header";
-import { supabase } from "@/lib/supabase";
 import { Influencer } from "@/types/database";
 import LoadingMarker from "@/components/loading-marker";
 import ImageUpload from "@/components/image-upload";
 
 function AccountPageContent() {
-  const { user, isLoading } = useAuth();
   const router = useRouter();
   const searchParams = useSearchParams();
   const [fullName, setFullName] = useState("");
@@ -36,7 +38,7 @@ function AccountPageContent() {
   // Redirect if not authenticated
   useEffect(() => {
     if (!isLoading && !user) {
-      router.push("/signup");
+      router.push("/auth/signup");
     } else if (user) {
       setFullName(user.user_metadata.full_name || "");
       
@@ -469,3 +471,4 @@ export default function AccountPage() {
     </Suspense>
   );
 } 
+*/

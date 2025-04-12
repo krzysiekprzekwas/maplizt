@@ -1,12 +1,15 @@
-"use client";
-
+export default function EditRecommendationPage() {
+  return (
+    <p>Dupa</p>
+  );
+} 
+/*
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/lib/auth-context";
 import Header from "@/components/header";
 import LoadingMarker from "@/components/loading-marker";
 import { RecommendationType } from "@/types/database";
-import { getInfluencerByUserId, getRecommendation } from "@/lib/db";
+import { getInfluencerByUserId, getRecommendation } from "@/utils/db";
 import ImageUpload from "@/components/image-upload";
 
 type Props = {
@@ -43,7 +46,7 @@ export default function EditRecommendationPage({ params }: Props) {
   // Redirect if not authenticated
   useEffect(() => {
     if (!authLoading && !user) {
-      router.push("/signup");
+      router.push("/auth/signup");
     }
   }, [user, authLoading, router]);
 
@@ -507,3 +510,4 @@ export default function EditRecommendationPage({ params }: Props) {
     </div>
   );
 } 
+*/

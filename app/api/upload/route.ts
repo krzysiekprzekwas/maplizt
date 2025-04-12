@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers'
 
 const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
@@ -7,19 +8,18 @@ const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
 export async function POST(request: NextRequest) {
   try {
     // Get the session to verify authentication
+
+    const cookieStore = await cookies()
+
     const supabase = createServerClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
       {
         cookies: {
-          get(name: string) {
-            return request.cookies.get(name)?.value;
+          getAll() {
+            return cookieStore.getAll()
           },
-          set(name: string, value: string, options: any) {
-            // This won't be used in this context
-          },
-          remove(name: string, options: any) {
-            // This won't be used in this context
+          setAll(cookiesToSet) {
           },
         },
       }

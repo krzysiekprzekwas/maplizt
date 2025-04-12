@@ -3,8 +3,8 @@ import Link from "next/link"
 import { notFound, redirect } from "next/navigation"
 import InfluencerHeader from "@/components/influencer-header"
 import Head from "next/head"
-import { getInfluencer } from "@/lib/db"
-import { getRecommendationTypeStyle } from "@/lib/utils"
+import { getInfluencer } from "@/utils/db"
+import { getRecommendationTypeStyle } from "@/utils/utils"
 
 type Props = {
   params: Promise<{ 
