@@ -1,59 +1,12 @@
-"use client";
-
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
+import { forgotPasswordAction } from "../actions";
+import { FormMessage, Message } from "@/components/form-message";
 
-export default function ResetPasswordPage() {
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
-  const router = useRouter();
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-    setSuccessMessage("");
-
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const response = await fetch('/api/user/password', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          password
-        })
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to reset password');
-      }
-
-      setSuccessMessage(data.message);
-      setTimeout(() => {
-        router.push("/auth/signup");
-      }, 2000);
-    } catch (err: any) {
-      console.error("Error resetting password:", err);
-      setError(err.message || "An error occurred while resetting your password");
-    } finally {
-      setLoading(false);
-    }
-  };
-
+export default async function ForgotPassword(props: {
+  searchParams: Promise<Message>;
+}) {
+  const searchParams = await props.searchParams;
   return (
     <main className="min-h-screen" style={{ backgroundColor: "#f8f5ed" }}>
       <div className="container mx-auto px-4 py-16 max-w-md">
@@ -70,69 +23,35 @@ export default function ResetPasswordPage() {
             </Link>
           </div>
 
-          <h1 className="text-2xl font-bold text-center mb-6">Reset Your Password</h1>
+          <h1 className="text-2xl font-bold text-center mb-6">Forgot Password</h1>
 
-          {error && (
-            <div className="mb-6 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-              {error}
-            </div>
-          )}
-
-          {successMessage && (
-            <div className="mb-6 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
-              {successMessage}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit}>
+          <form>
             <div className="mb-6">
               <label
-                htmlFor="password"
+                htmlFor="email"
                 className="block text-[#19191b] font-medium mb-2"
               >
-                New Password
+                Email
               </label>
               <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                id="email"
+                type="email"
+                name="email"
                 className="w-full px-4 py-3 rounded-lg border-2 border-[#19191b] focus:outline-none focus:ring-2 focus:ring-[#8d65e3]/50"
-                placeholder="••••••••"
+                placeholder="your@email.com"
                 required
-                minLength={6}
-              />
-            </div>
-
-            <div className="mb-8">
-              <label
-                htmlFor="confirmPassword"
-                className="block text-[#19191b] font-medium mb-2"
-              >
-                Confirm New Password
-              </label>
-              <input
-                id="confirmPassword"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-4 py-3 rounded-lg border-2 border-[#19191b] focus:outline-none focus:ring-2 focus:ring-[#8d65e3]/50"
-                placeholder="••••••••"
-                required
-                minLength={6}
               />
             </div>
 
             <button
               type="submit"
-              className={`w-full bg-[#8d65e3] text-white py-3 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition ${
-                loading ? "opacity-70 cursor-not-allowed" : ""
-              }`}
-              disabled={loading}
+              formAction={forgotPasswordAction}
+              className={`w-full bg-[#8d65e3] text-white py-3 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition`}
             >
-              {loading ? "Resetting..." : "Reset Password"}
+              Reset Password
             </button>
           </form>
+          <FormMessage message={searchParams} />
 
           <div className="mt-8 text-center">
             <Link
