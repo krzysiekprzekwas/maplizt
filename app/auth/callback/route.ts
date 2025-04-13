@@ -12,13 +12,15 @@ export async function GET(request: Request) {
 
   if (code) {
     const supabase = await createClient();
-    await supabase.auth.exchangeCodeForSession(code);
+    var res = await supabase.auth.exchangeCodeForSession(code);
   }
 
   if (redirectTo) {
     return NextResponse.redirect(`${origin}${redirectTo}`);
   }
 
+  var target = new URL("/dashboard", request.url);
+
   // URL to redirect to after sign up process completes
-  return NextResponse.redirect(`${origin}/dashboard`);
+  return NextResponse.redirect(target);
 }
