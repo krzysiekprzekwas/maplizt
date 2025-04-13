@@ -1,51 +1,24 @@
-import { createServerClient } from '@supabase/ssr';
-import { NextRequest, NextResponse } from 'next/server';
+import { createClient } from "@/utils/supabase/server";
+import { NextResponse } from "next/server";
 
-export async function GET(req: NextRequest) {
-  const requestUrl = new URL(req.url);
-  const code = requestUrl.searchParams.get('code');
-  
+export async function GET(request: Request) {
+  // The `/auth/callback` route is required for the server-side auth flow implemented
+  // by the SSR package. It exchanges an auth code for the user's session.
+  // https://supabase.com/docs/guides/auth/server-side/nextjs
+  const requestUrl = new URL(request.url);
+  const code = requestUrl.searchParams.get("code");
+  const origin = requestUrl.origin;
+  const redirectTo = requestUrl.searchParams.get("redirect_to")?.toString();
+
   if (code) {
-    // Get cookies from request headers
-    const cookieHeader = req.headers.get('cookie') || '';
-    const cookieMap: Record<string, string> = {};
-    
-    // Parse cookies from header
-    cookieHeader.split(';').forEach(cookie => {
-      const [name, ...rest] = cookie.split('=');
-      if (name) {
-        cookieMap[name.trim()] = rest.join('=').trim();
-      }
-    });
-    
-    // Create a response to store cookies
-    const res = NextResponse.redirect(new URL('/dashboard', requestUrl.origin));
-    
-    // Create Supabase client
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          get(name: string) {
-            return cookieMap[name];
-          },
-          set(name: string, value: string, options: any) {
-            res.cookies.set({ name, value, ...options });
-          },
-          remove(name: string, options: any) {
-            res.cookies.set({ name, value: '', ...options });
-          }
-        }
-      }
-    );
-    
-    // Exchange the code for a session
+    const supabase = await createClient();
     await supabase.auth.exchangeCodeForSession(code);
-    
-    return res;
   }
 
-  // If no code, redirect to dashboard
-  return NextResponse.redirect(new URL('/dashboard', requestUrl.origin));
-} 
+  if (redirectTo) {
+    return NextResponse.redirect(`${origin}${redirectTo}`);
+  }
+
+  // URL to redirect to after sign up process completes
+  return NextResponse.redirect(`${origin}/dashboard`);
+}

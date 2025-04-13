@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@supabase/ssr';
-import { createInfluencerProfile } from '@/lib/db';
+import { createInfluencerProfile } from '@/utils/db';
 
 export async function POST(request: NextRequest) {
   try {

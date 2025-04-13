@@ -1,4 +1,4 @@
-import { getInfluencer } from '@/lib/db';
+import { getInfluencer } from '@/utils/db';
 import { NextRequest, NextResponse } from 'next/server';
 
 export async function GET(

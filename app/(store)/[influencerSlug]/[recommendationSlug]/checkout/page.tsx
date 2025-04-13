@@ -9,7 +9,7 @@ import { useParams, useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
 import InfluencerHeader from "@/components/influencer-header"
 import { Influencer, Recommendation } from "@/types/database"
-import { getRecommendationTypeStyle } from "@/lib/utils"
+import { getRecommendationTypeStyle } from "@/utils/utils"
 import LoadingMarker from "@/components/loading-marker"
 
 export default function CheckoutPage() {

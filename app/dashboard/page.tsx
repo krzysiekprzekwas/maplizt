@@ -1,81 +1,42 @@
-"use client";
-
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { useAuth } from "@/lib/auth-context";
-import Header from "@/components/header";
+import { redirect } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { Influencer, Recommendation } from "@/types/database";
-import LoadingMarker from "@/components/loading-marker";
+import { createClient } from "@/utils/supabase/server";
+import { Recommendation } from "@/types/database";
+import { getInfluencerByUserId } from "@/utils/db";
 
-export default function Dashboard() {
-  const { user, isLoading } = useAuth();
-  const router = useRouter();
-  const [recommendations, setRecommendations] = useState<Recommendation[]>([]);
-  const [loadingRecommendations, setLoadingRecommendations] = useState(false);
-  const [influencer, setInfluencer] = useState<Influencer | null>(null);
+export default async function Dashboard() {
 
-  // Redirect if not authenticated
-  useEffect(() => {
-    if (!isLoading && !user) {
-      router.push("/signup");
-    } else if (user) {
-      // Fetch user's recommendations
-      fetchUserRecommendations();
+  const supabase = await createClient();
 
-      // Fetch influencer profile
-      fetchInfluencer();
-    }
-  }, [user, isLoading, router]);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
-      // Fetch influencer profile
-  const fetchInfluencer = async () => {
-      const response = await fetch('/api/influencers/me');
-      if (!response.ok) {
-        throw new Error('Failed to fetch influencer profile');
-      }
-      const data = await response.json();
-      setInfluencer(data);
+  if (!user) {
+    return redirect("/sign-in");
   }
 
-  // Function to fetch user's recommendations from the API
-  const fetchUserRecommendations = async () => {
-    if (!user) return;
-    
-    setLoadingRecommendations(true);
-    try {
-      // Use fetch to call our API endpoint
-      const response = await fetch('/api/user/recommendations');
-      
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status}`);
-      }
-      
-      const data = await response.json();
-      setRecommendations(data.recommendations || []);
-    } catch (error) {
-      console.error("Error fetching recommendations:", error);
-    } finally {
-      setLoadingRecommendations(false);
-    }
-  };
+  const influencer = await getInfluencerByUserId(user.id);
 
-  if (isLoading || loadingRecommendations) {
-    return (
-      <div className="min-h-screen" style={{ backgroundColor: "#f8f5ed" }}>
-        <Header />
-        <LoadingMarker />
-      </div>
-    );
+  var recommendations: Recommendation[] = [];
+
+  if (influencer)
+  {
+    // Function to fetch user's recommendations from the API
+    // Fetch recommendations for this influencer
+    const { data, error } = await supabase
+      .from('recommendations')
+      .select('*')
+      .eq('influencer_id', influencer.id)
+      .order('created_at', { ascending: false });
+
+    if (data)
+    recommendations = data;
   }
-
-  if (!user) return null; // This shouldn't show because of the redirect
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#f8f5ed" }}>
-      <Header />
-      
       <div className="container mx-auto px-4 py-16">
         <div className="bg-white rounded-lg border-4 border-[#19191b] p-8 brutal-shadow-hover mb-8">
           <h1 className="text-3xl font-bold mb-4">Welcome, {user.user_metadata.full_name || user.email}!</h1>
@@ -147,7 +108,7 @@ export default function Dashboard() {
               {recommendations.map((recommendation) => (
                 <Link 
                   key={recommendation.id} 
-                  href={`/dashboard/recommendation/edit/${recommendation.slug}`}
+                  href={`/dashboard/recommendation/edit/${recommendation.id}`}
                   className="block"
                 >
                   <div 

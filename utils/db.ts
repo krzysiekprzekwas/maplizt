@@ -1,5 +1,7 @@
-import { supabase } from './supabase';
 import { Influencer, Recommendation, Order } from '../types/database';
+import { createClient } from './supabase/client';
+
+const supabase = createClient();
 
 export async function getInfluencers() {
   const { data, error } = await supabase
@@ -78,6 +80,22 @@ export async function updateInfluencerProfile(
 
   if (error) throw error;
   return data as Influencer;
+}
+
+export async function updateInfluencerAvatar(
+  userId: string, 
+  profile_image?: string
+) {
+  const { data, error } = await supabase
+    .from('influencers')
+    .update({ profile_image: profile_image })
+    .eq('user_id', userId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data as Influencer;
+
 }
 
 export async function createInfluencerProfile(

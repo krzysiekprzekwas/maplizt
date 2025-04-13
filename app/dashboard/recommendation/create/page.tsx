@@ -1,16 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
-import { useAuth } from "@/lib/auth-context";
-import Header from "@/components/header";
-import LoadingMarker from "@/components/loading-marker";
-import ImageUpload from "@/components/image-upload";
+import Image from "next/image";
+import { uploadRecommendationImage } from "@/utils/storage";
 
 type RecommendationType = "Free" | "Paid" | "Premium";
 
 export default function CreateListPage() {
-  const { user, isLoading } = useAuth();
   const router = useRouter();
   
   // Form state
@@ -29,13 +26,9 @@ export default function CreateListPage() {
   const [slugError, setSlugError] = useState<string | null>(null);
   const [isCheckingSlug, setIsCheckingSlug] = useState(false);
   const [isManuallyEditingSlug, setIsManuallyEditingSlug] = useState(false);
-
-  // Redirect if not authenticated
-  useEffect(() => {
-    if (!isLoading && !user) {
-      router.push("/signup");
-    }
-  }, [user, isLoading, router]);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Generate slug from title
   useEffect(() => {
@@ -79,16 +72,33 @@ export default function CreateListPage() {
     return () => clearTimeout(debounceTimer);
   }, [slug]);
 
-  // Handle price change based on type
-  useEffect(() => {
-    if (type === "Free") {
-      setPrice(0);
-    } else if (type === "Paid" && price === 0) {
-      setPrice(5);
-    } else if (type === "Premium" && price < 7) {
-      setPrice(7);
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsUploading(true);
+      setUploadError(null);
+
+      // Upload the image
+      const imageUrl = await uploadRecommendationImage(file);
+      
+      // Add the image URL to the images array (max 3 images)
+      setImages(prev => {
+        const newImages = [...prev, imageUrl].slice(0, 3);
+        return newImages;
+      });
+    } catch (err) {
+      console.error("Error uploading image:", err);
+      setUploadError(err instanceof Error ? err.message : "Failed to upload image");
+    } finally {
+      setIsUploading(false);
     }
-  }, [type, price]);
+  };
+
+  const handleRemoveImage = (indexToRemove: number) => {
+    setImages(prev => prev.filter((_, index) => index !== indexToRemove));
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -164,21 +174,8 @@ export default function CreateListPage() {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen" style={{ backgroundColor: "#f8f5ed" }}>
-        <Header />
-        <LoadingMarker />
-      </div>
-    );
-  }
-
-  if (!user) return null;
-
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#f8f5ed" }}>
-      <Header />
-      
       <div className="container mx-auto px-4 py-16 max-w-3xl">
         <div className="bg-white rounded-lg border-4 border-[#19191b] p-8 brutal-shadow-hover">
           <h1 className="text-3xl font-bold mb-6">Create New Recommendation List</h1>
@@ -371,11 +368,68 @@ export default function CreateListPage() {
               <label className="block text-[#19191b] font-medium mb-2">
                 Images (Max 3)
               </label>
-              <ImageUpload 
-                images={images} 
-                setImages={setImages} 
-                maxImages={3} 
+              <div className="grid grid-cols-3 gap-4 mb-4">
+                {images.map((image, index) => (
+                  <div 
+                    key={index}
+                    className="relative h-40 border-2 border-[#19191b] rounded-lg overflow-hidden"
+                  >
+                    <Image 
+                      src={image} 
+                      alt={`Recommendation image ${index + 1}`}
+                      fill
+                      className="object-cover"
+                    />
+                    <button
+                      type="button"
+                      className="absolute top-2 right-2 bg-red-500 text-white w-6 h-6 rounded-full flex items-center justify-center"
+                      onClick={() => handleRemoveImage(index)}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+                
+                {images.length < 3 && (
+                  <div 
+                    className="h-40 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-[#8d65e3]"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <span className="text-3xl text-gray-400">+</span>
+                    <span className="text-gray-500 text-sm mt-2">Add image</span>
+                  </div>
+                )}
+                
+                {Array.from({ length: Math.max(0, 2 - images.length) }).map((_, index) => (
+                  <div 
+                    key={`placeholder-${index}`}
+                    className="h-40 border-2 border-dashed border-gray-200 rounded-lg flex items-center justify-center"
+                  >
+                    <span className="text-gray-300 text-sm">Empty slot</span>
+                  </div>
+                ))}
+              </div>
+              
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                onChange={handleFileChange}
+                disabled={isUploading || images.length >= 3}
+                className="hidden"
               />
+              
+              {isUploading && (
+                <p className="text-sm text-gray-500">Uploading image...</p>
+              )}
+              
+              {uploadError && (
+                <p className="text-sm text-red-500">{uploadError}</p>
+              )}
+              
+              <p className="text-sm text-gray-500">
+                Upload JPG, PNG, or WebP images (max 5MB each). You can upload up to 3 images.
+              </p>
             </div>
             
             <div className="flex justify-end gap-4 mt-8">
@@ -389,7 +443,7 @@ export default function CreateListPage() {
               <button
                 type="submit"
                 className="px-6 py-3 bg-[#19191b] text-white rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition"
-                disabled={isSubmitting || !!slugError}
+                disabled={isSubmitting || !!slugError || isUploading}
               >
                 {isSubmitting ? "Creating..." : "Create List"}
               </button>

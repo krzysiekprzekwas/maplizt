@@ -1,7 +1,9 @@
-import { getInfluencerByUserId } from '@/lib/db';
+import { getInfluencerByUserId } from '@/utils/db';
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
-import { handleApiAuth } from '@/lib/server-utils';
+import { handleApiAuth } from '@/utils/server-utils';
+import { createClient } from '@/utils/supabase/client';
+
+const supabase = createClient();
 
 export async function GET(request: NextRequest) {
   return handleApiAuth(request, async (userId) => {

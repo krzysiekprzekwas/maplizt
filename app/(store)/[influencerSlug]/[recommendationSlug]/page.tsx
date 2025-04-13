@@ -2,8 +2,8 @@ import Image from "next/image"
 import Link from "next/link"
 import { redirect } from "next/navigation"
 import InfluencerHeader from "@/components/influencer-header"
-import { getRecommendationTypeStyle } from "@/lib/utils"
-import { getRecommendation } from "@/lib/db"
+import { getRecommendationTypeStyle } from "@/utils/utils"
+import { getRecommendation } from "@/utils/db"
 
 type Props = {
   params: Promise<{

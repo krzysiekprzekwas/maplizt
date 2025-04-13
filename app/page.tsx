@@ -21,7 +21,7 @@ export default function HomePage() {
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link 
-                  href="/signup" 
+                  href="/auth/sign-up" 
                   className="bg-[#19191b] text-white px-6 py-3 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition text-center"
                 >
                   Start For Free
@@ -252,7 +252,7 @@ export default function HomePage() {
               </ul>
               
               <Link 
-                href="/signup" 
+                href="/auth/sign-up" 
                 className="block w-full bg-white text-center py-3 rounded-lg border-2 border-[#19191b] font-medium hover:bg-[#f8f5ed] transition"
               >
                 Get Started
@@ -312,7 +312,7 @@ export default function HomePage() {
             <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Start Monetizing Your Recommendations?</h2>
             <p className="text-lg mb-8">Join thousands of influencers already using Maplizt to share their favorite places and earn from their recommendations.</p>
             <Link 
-              href="/signup" 
+              href="/auth/sign-up" 
               className="inline-block bg-[#19191b] text-white px-8 py-4 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition text-lg"
             >
               Get Started For Free

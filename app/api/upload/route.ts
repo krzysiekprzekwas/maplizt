@@ -1,39 +1,24 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@supabase/ssr';
+import { createClient } from '@/utils/supabase/server';
 
 const ALLOWED_FILE_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
 const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB in bytes
 
 export async function POST(request: NextRequest) {
   try {
-    // Get the session to verify authentication
-    const supabase = createServerClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-      {
-        cookies: {
-          get(name: string) {
-            return request.cookies.get(name)?.value;
-          },
-          set(name: string, value: string, options: any) {
-            // This won't be used in this context
-          },
-          remove(name: string, options: any) {
-            // This won't be used in this context
-          },
-        },
-      }
-    );
+    const supabase = await createClient()
 
-
-    // Get authenticated user data
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 401 });
     }
 
     const formData = await request.formData();
     const file = formData.get('file') as File;
+    const type = formData.get('type') as string;
     
     if (!file) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 });
@@ -63,15 +48,37 @@ export async function POST(request: NextRequest) {
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
 
-    // Upload to Supabase storage
-    const { data, error } = await supabase.storage
-      .from('recommendation-images')
-      .upload(fileName, buffer, {
-        contentType: file.type,
-        cacheControl: '3600',
-      });
+    let publicUrl: string = '';
+    let uploadError: any = '';
 
-    if (error) {
+    try {
+      switch(type){
+
+        case 'avatar':
+          ({ error: uploadError } = await supabase.storage
+            .from('influencer-avatars')
+            .upload(fileName, buffer, {
+            contentType: file.type,
+            cacheControl: '3600',
+          }));
+          ({ data: { publicUrl } } = supabase.storage
+          .from('influencer-avatars')
+          .getPublicUrl(fileName));
+          break;
+    
+        case 'recommendation':
+          ({ error: uploadError } = await supabase.storage
+            .from('recommendation-images')
+            .upload(fileName, buffer, {
+            contentType: file.type,
+            cacheControl: '3600',
+          }));
+          ({ data: { publicUrl } } = supabase.storage
+          .from('recommendation-images')
+          .getPublicUrl(fileName));
+          break;
+        }
+    } catch(error) {
       console.error('Storage error:', error);
       return NextResponse.json(
         { error: 'Failed to upload file' },
@@ -79,10 +86,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get public URL
-    const { data: { publicUrl } } = supabase.storage
-      .from('recommendation-images')
-      .getPublicUrl(fileName);
+    if(uploadError)
+      throw new Error('Failed to upload file');
+
 
     return NextResponse.json({ url: publicUrl });
   } catch (error) {

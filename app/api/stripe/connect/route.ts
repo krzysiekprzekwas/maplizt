@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { handleApiAuth } from '@/lib/server-utils';
-import { getInfluencerByUserId, updateInfluencerProfile } from '@/lib/db';
+import { handleApiAuth } from '@/utils/server-utils';
+import { getInfluencerByUserId, updateInfluencerProfile } from '@/utils/db';
 import Stripe from 'stripe';
 
 if (!process.env.STRIPE_SECRET_KEY) {

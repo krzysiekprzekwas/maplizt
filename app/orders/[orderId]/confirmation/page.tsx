@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import InfluencerHeader from "@/components/influencer-header"
-import { getOrderDetails } from "@/lib/db"
+import { getOrderDetails } from "@/utils/db"
 
 type Props = {
   params: Promise<{

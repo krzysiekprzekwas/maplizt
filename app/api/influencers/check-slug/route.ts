@@ -1,11 +1,13 @@
+import { createClient } from '@/utils/supabase/client';
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+
+const supabase = createClient()
 
 // List of system pages that cannot be used as slugs
 const SYSTEM_PAGES = [
   'dashboard',
-  'signup',
-  'login',
+  'sign-up',
+  'sign-in',
   'reset-password',
   'api',
   'privacy',
