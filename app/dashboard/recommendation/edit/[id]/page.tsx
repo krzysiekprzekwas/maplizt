@@ -1,10 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import LoadingMarker from "@/components/loading-marker";
 import { Influencer, RecommendationType } from "@/types/database";
 import { createClient } from "@/utils/supabase/client";
+import Image from "next/image";
+import { uploadRecommendationImage } from "@/utils/storage";
 
 type Props = {
   params: Promise<{ 
@@ -15,6 +17,7 @@ type Props = {
 export default function EditRecommendationPage({ params }: Props) {
   const router = useRouter();
   const supabase = createClient();
+  const fileInputRef = useRef<HTMLInputElement>(null);
   
   // Form state
   const [title, setTitle] = useState("");
@@ -38,6 +41,8 @@ export default function EditRecommendationPage({ params }: Props) {
   const [isManuallyEditingSlug, setIsManuallyEditingSlug] = useState(false);
   const [userId, setUserId] = useState<string | null>(null)
   const [influencer, setInfluencer] = useState<Influencer | null>(null)
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
 
   useEffect(() => {
     const getUser = async () => {
@@ -274,6 +279,34 @@ export default function EditRecommendationPage({ params }: Props) {
     }
   };
 
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      setIsUploading(true);
+      setUploadError(null);
+
+      // Upload the image
+      const imageUrl = await uploadRecommendationImage(file);
+      
+      // Add the image URL to the images array (max 3 images)
+      setImages(prev => {
+        const newImages = [...prev, imageUrl].slice(0, 3);
+        return newImages;
+      });
+    } catch (err) {
+      console.error("Error uploading image:", err);
+      setUploadError(err instanceof Error ? err.message : "Failed to upload image");
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  const handleRemoveImage = (indexToRemove: number) => {
+    setImages(prev => prev.filter((_, index) => index !== indexToRemove));
+  };
+
   if (isLoadingData) {
     return (
       <div className="min-h-screen" style={{ backgroundColor: "#f8f5ed" }}>
@@ -477,7 +510,68 @@ export default function EditRecommendationPage({ params }: Props) {
               <label className="block text-[#19191b] font-medium mb-2">
                 Images (Max 3)
               </label>
-              Soon
+              <div className="grid grid-cols-3 gap-4 mb-4">
+                {images.map((image, index) => (
+                  <div 
+                    key={index}
+                    className="relative h-40 border-2 border-[#19191b] rounded-lg overflow-hidden"
+                  >
+                    <Image 
+                      src={image} 
+                      alt={`Recommendation image ${index + 1}`}
+                      fill
+                      className="object-cover"
+                    />
+                    <button
+                      type="button"
+                      className="absolute top-2 right-2 bg-red-500 text-white w-6 h-6 rounded-full flex items-center justify-center"
+                      onClick={() => handleRemoveImage(index)}
+                    >
+                      ×
+                    </button>
+                  </div>
+                ))}
+                
+                {images.length < 3 && (
+                  <div 
+                    className="h-40 border-2 border-dashed border-gray-300 rounded-lg flex flex-col items-center justify-center cursor-pointer hover:border-[#8d65e3]"
+                    onClick={() => fileInputRef.current?.click()}
+                  >
+                    <span className="text-3xl text-gray-400">+</span>
+                    <span className="text-gray-500 text-sm mt-2">Add image</span>
+                  </div>
+                )}
+                
+                {Array.from({ length: Math.max(0, 2 - images.length) }).map((_, index) => (
+                  <div 
+                    key={`placeholder-${index}`}
+                    className="h-40 border-2 border-dashed border-gray-200 rounded-lg flex items-center justify-center"
+                  >
+                    <span className="text-gray-300 text-sm">Empty slot</span>
+                  </div>
+                ))}
+              </div>
+              
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/jpeg,image/png,image/webp"
+                onChange={handleFileChange}
+                disabled={isUploading || images.length >= 3}
+                className="hidden"
+              />
+              
+              {isUploading && (
+                <p className="text-sm text-gray-500">Uploading image...</p>
+              )}
+              
+              {uploadError && (
+                <p className="text-sm text-red-500">{uploadError}</p>
+              )}
+              
+              <p className="text-sm text-gray-500">
+                Upload JPG, PNG, or WebP images (max 5MB each). You can upload up to 3 images.
+              </p>
             </div>
             
             <div className="flex justify-between gap-4 mt-8">
@@ -501,7 +595,7 @@ export default function EditRecommendationPage({ params }: Props) {
                 <button
                   type="submit"
                   className="px-6 py-3 bg-[#19191b] text-white rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition"
-                  disabled={isSubmitting || !!slugError}
+                  disabled={isSubmitting || !!slugError || isUploading}
                 >
                   {isSubmitting ? "Saving..." : "Update List"}
                 </button>
