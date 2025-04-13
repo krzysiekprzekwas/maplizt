@@ -82,6 +82,22 @@ export async function updateInfluencerProfile(
   return data as Influencer;
 }
 
+export async function updateInfluencerAvatar(
+  userId: string, 
+  profile_image?: string
+) {
+  const { data, error } = await supabase
+    .from('influencers')
+    .update({ profile_image: profile_image })
+    .eq('user_id', userId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data as Influencer;
+
+}
+
 export async function createInfluencerProfile(
   userId: string, 
   profileData: { name: string; slug: string; handle: string; profile_image?: string }

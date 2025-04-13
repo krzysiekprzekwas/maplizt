@@ -1,44 +1,71 @@
-export default function CreateListPage() {
-  return (
-    <p>Dupa</p>
-  );
-} 
+"use client";
 
-/*
-import Header from "@/components/header";
-import ImageUpload from "@/components/image-upload";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 type RecommendationType = "Free" | "Paid" | "Premium";
 
 export default function CreateListPage() {
+  const router = useRouter();
+  
+  // Form state
+  const [title, setTitle] = useState("");
+  const [slug, setSlug] = useState("");
+  const [description, setDescription] = useState("");
+  const [type, setType] = useState<RecommendationType>("Free");
+  const [price, setPrice] = useState(0);
+  const [images, setImages] = useState<string[]>([]);
+  const [googleMapsLink, setGoogleMapsLink] = useState("");
+  
+  // UI state
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
+  const [slugError, setSlugError] = useState<string | null>(null);
+  const [isCheckingSlug, setIsCheckingSlug] = useState(false);
+  const [isManuallyEditingSlug, setIsManuallyEditingSlug] = useState(false);
 
+  // Generate slug from title
+  useEffect(() => {
+    if (!isManuallyEditingSlug && title) {
+      const generatedSlug = title
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "");
+      setSlug(generatedSlug);
+    }
+  }, [title, isManuallyEditingSlug]);
 
   // Check if slug is available
-  const checkSlugAvailability = async () => {
-    if (!slug) return;
-    
-    setIsCheckingSlug(true);
-    setSlugError(null);
-    
-    try {
-      const response = await fetch(`/api/recommendations/check-slug?slug=${slug}`);
-      const data = await response.json();
+  useEffect(() => {
+    const checkSlugAvailability = async () => {
+      if (!slug) return;
       
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to check slug availability");
-      }
+      setIsCheckingSlug(true);
+      setSlugError(null);
       
-      if (!data.available) {
-        setSlugError(data.error || "This URL is already taken. Please choose another one.");
+      try {
+        const response = await fetch(`/api/recommendations/check-slug?slug=${slug}`);
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.error || "Failed to check slug availability");
+        }
+        
+        if (!data.available) {
+          setSlugError(data.error || "This URL is already taken. Please choose another one.");
+        }
+      } catch (error) {
+        console.error("Error checking slug:", error);
+        setSlugError("Failed to check URL availability");
+      } finally {
+        setIsCheckingSlug(false);
       }
-    } catch (error) {
-      console.error("Error checking slug:", error);
-      setSlugError("Failed to check URL availability");
-    } finally {
-      setIsCheckingSlug(false);
-    }
-  };
-
+    };
+    
+    const debounceTimer = setTimeout(checkSlugAvailability, 500);
+    return () => clearTimeout(debounceTimer);
+  }, [slug]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -102,6 +129,10 @@ export default function CreateListPage() {
       
       setSuccess("Recommendation list created successfully!");
       
+      // Redirect to dashboard after a short delay
+      setTimeout(() => {
+        router.push("/dashboard");
+      }, 1500);
     } catch (error) {
       console.error("Error creating recommendation:", error);
       setError(error instanceof Error ? error.message : "An unknown error occurred");
@@ -112,8 +143,6 @@ export default function CreateListPage() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#f8f5ed" }}>
-      <Header />
-      
       <div className="container mx-auto px-4 py-16 max-w-3xl">
         <div className="bg-white rounded-lg border-4 border-[#19191b] p-8 brutal-shadow-hover">
           <h1 className="text-3xl font-bold mb-6">Create New Recommendation List</h1>
@@ -306,17 +335,14 @@ export default function CreateListPage() {
               <label className="block text-[#19191b] font-medium mb-2">
                 Images (Max 3)
               </label>
-              <ImageUpload 
-                images={images} 
-                setImages={setImages} 
-                maxImages={3} 
-              />
+              Soon
             </div>
             
             <div className="flex justify-end gap-4 mt-8">
               <button
                 type="button"
                 className="px-6 py-3 bg-white text-[#19191b] rounded-lg border-2 border-[#19191b] font-medium hover:bg-gray-100 transition"
+                onClick={() => router.push("/dashboard")}
               >
                 Cancel
               </button>
@@ -334,4 +360,3 @@ export default function CreateListPage() {
     </div>
   );
 } 
-  */

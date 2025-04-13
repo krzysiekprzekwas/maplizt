@@ -1,9 +1,8 @@
 import { redirect } from "next/navigation";
-import Header from "@/components/header";
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/utils/supabase/server";
-import { Influencer, Recommendation } from "@/types/database";
+import { Recommendation } from "@/types/database";
 import { getInfluencerByUserId } from "@/utils/db";
 
 export default async function Dashboard() {
@@ -38,8 +37,6 @@ export default async function Dashboard() {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#f8f5ed" }}>
-      <Header />
-      
       <div className="container mx-auto px-4 py-16">
         <div className="bg-white rounded-lg border-4 border-[#19191b] p-8 brutal-shadow-hover mb-8">
           <h1 className="text-3xl font-bold mb-4">Welcome, {user.user_metadata.full_name || user.email}!</h1>
@@ -111,7 +108,7 @@ export default async function Dashboard() {
               {recommendations.map((recommendation) => (
                 <Link 
                   key={recommendation.id} 
-                  href={`/dashboard/recommendation/edit/${recommendation.slug}`}
+                  href={`/dashboard/recommendation/edit/${recommendation.id}`}
                   className="block"
                 >
                   <div 

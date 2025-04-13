@@ -1,90 +1,106 @@
-export default function EditRecommendationPage() {
-  return (
-    <p>Dupa</p>
-  );
-} 
-/*
+"use client";
+
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import Header from "@/components/header";
 import LoadingMarker from "@/components/loading-marker";
-import { RecommendationType } from "@/types/database";
-import { getInfluencerByUserId, getRecommendation } from "@/utils/db";
-import ImageUpload from "@/components/image-upload";
+import { Influencer, RecommendationType } from "@/types/database";
+import { createClient } from "@/utils/supabase/client";
 
 type Props = {
   params: Promise<{ 
-    recommendationSlug: string,
+    id: string,
   }>
 }
 
 export default function EditRecommendationPage({ params }: Props) {
-  const { user, isLoading: authLoading } = useAuth();
   const router = useRouter();
+  const supabase = createClient();
   
   // Form state
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
-  const [originalSlug, setOriginalSlug] = useState("");
   const [description, setDescription] = useState("");
   const [type, setType] = useState<RecommendationType>("Free");
   const [price, setPrice] = useState(0);
   const [images, setImages] = useState<string[]>([]);
   const [googleMapsLink, setGoogleMapsLink] = useState("");
+  const [recommendationId, setRecommendationId] = useState<string | null>(null);
   
   // UI state
+  const [originalSlug, setOriginalSlug] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [slugError, setSlugError] = useState<string | null>(null);
   const [isCheckingSlug, setIsCheckingSlug] = useState(false);
   const [isLoadingData, setIsLoadingData] = useState(true);
-  const [recommendationId, setRecommendationId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [isManuallyEditingSlug, setIsManuallyEditingSlug] = useState(false);
+  const [userId, setUserId] = useState<string | null>(null)
+  const [influencer, setInfluencer] = useState<Influencer | null>(null)
 
-  // Redirect if not authenticated
   useEffect(() => {
-    if (!authLoading && !user) {
-      router.push("/auth/signup");
+    const getUser = async () => {
+      const { data: { user }, error } = await supabase.auth.getUser()
+      if (error) {
+        console.error('Error getting user:', error)
+      } else {
+        setUserId(user?.id || null)
+      }
     }
-  }, [user, authLoading, router]);
+
+    getUser()
+  }, [])
 
   // Load recommendation data
   useEffect(() => {
-    const loadRecommendationData = async () => {
-      if (!user) return;
-      
+    const loadRecommendationData = async () => {      
       try {
         setIsLoadingData(true);
         
-        // Get the influencer profile for the current user
-        const influencer = await getInfluencerByUserId(user.id);
-        if (!influencer) {
-          setError("Influencer profile not found");
-          return;
-        }
+        // Fetch influencer profile
+        const fetchInfluencer = async () => {
+          try {
+            const response = await fetch('/api/influencers/me');
+            if (!response.ok) {
+              throw new Error('Failed to fetch influencer profile');
+            }
+            const data = await response.json();
+            setInfluencer(data);
+          } catch (error) {
+            console.error("Error fetching influencer profile:", error);
+          }
+        };
+        
+        await fetchInfluencer();
+
+        const fetchRecommendation = async (id: string) => {
+          try {
+            const response = await fetch(`/api/recommendations/${id}`);
+            if (!response.ok) {
+              throw new Error('Failed to fetch recommendation');
+            }
+            const data = await response.json();
+            
+            // Update all form state with fetched data
+            setTitle(data.title || "");
+            setSlug(data.slug || "");
+            setOriginalSlug(data.slug || "");
+            setDescription(data.description || "");
+            setType(data.type || "Free");
+            setPrice(data.numeric_price || 0);
+            setImages(data.images || []);
+            setGoogleMapsLink(data.googleMapsLink || "");
+            setRecommendationId(data.id);
+          } catch (error) {
+            console.error("Error fetching recommendation:", error);
+          }
+        };
         
         // Get the recommendation data
         const resolvedParams = await params;
-        const recommendation = await getRecommendation(influencer.slug, resolvedParams.recommendationSlug);
-        
-        if (!recommendation) {
-          setError("Recommendation not found");
-          return;
-        }
-        
-        // Populate form fields with recommendation data
-        setTitle(recommendation.title);
-        setSlug(recommendation.slug);
-        setOriginalSlug(recommendation.slug);
-        setDescription(recommendation.description);
-        setType(recommendation.type);
-        setPrice(recommendation.numeric_price);
-        setImages(recommendation.images || []);
-        // Handle googleMapsLink which might not be in the type definition
-        setGoogleMapsLink((recommendation as any).googleMapsLink || "");
-        setRecommendationId(recommendation.id);
+        await fetchRecommendation(resolvedParams.id);
+      
       } catch (error) {
         console.error("Error loading recommendation:", error);
         setError("Failed to load recommendation data");
@@ -94,7 +110,7 @@ export default function EditRecommendationPage({ params }: Props) {
     };
     
     loadRecommendationData();
-  }, [user, params]);
+  }, [userId, params]);
 
   // Generate slug from title
   useEffect(() => {
@@ -110,7 +126,7 @@ export default function EditRecommendationPage({ params }: Props) {
   // Check if slug is available
   useEffect(() => {
     const checkSlugAvailability = async () => {
-      if (!slug || slug.length < 3 || slug === originalSlug) return;
+      if (!slug || slug === originalSlug) return;
       
       setIsCheckingSlug(true);
       setSlugError(null);
@@ -187,9 +203,6 @@ export default function EditRecommendationPage({ params }: Props) {
     }
     
     try {
-      if (!recommendationId) {
-        throw new Error("Recommendation ID not found");
-      }
       
       const response = await fetch(`/api/recommendations/${recommendationId}`, {
         method: "PUT",
@@ -202,8 +215,8 @@ export default function EditRecommendationPage({ params }: Props) {
           description,
           type,
           numeric_price: price,
-          images: images.length > 0 ? images : ["/recommendation_image_placeholder.jpg"],
           googleMapsLink,
+          images: images.length > 0 ? images : ["/recommendation_image_placeholder.jpg"],
         }),
       });
       
@@ -229,8 +242,6 @@ export default function EditRecommendationPage({ params }: Props) {
 
   // Add delete handler
   const handleDelete = async () => {
-    if (!recommendationId) return;
-    
     if (!confirm("Are you sure you want to delete this recommendation? This action cannot be undone.")) {
       return;
     }
@@ -266,18 +277,13 @@ export default function EditRecommendationPage({ params }: Props) {
   if (isLoadingData) {
     return (
       <div className="min-h-screen" style={{ backgroundColor: "#f8f5ed" }}>
-        <Header />
         <LoadingMarker />
       </div>
     );
   }
 
-  if (!user) return null;
-
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#f8f5ed" }}>
-      <Header />
-      
       <div className="container mx-auto px-4 py-16 max-w-3xl">
         <div className="bg-white rounded-lg border-4 border-[#19191b] p-8 brutal-shadow-hover">
           <h1 className="text-3xl font-bold mb-6">Edit Recommendation List</h1>
@@ -410,7 +416,7 @@ export default function EditRecommendationPage({ params }: Props) {
                   <div className="text-sm">No cost</div>
                 </button>
                 
-                <button
+                 <button
                   type="button"
                   className={`p-4 rounded-lg border-2 ${
                     type === "Paid"
@@ -434,47 +440,44 @@ export default function EditRecommendationPage({ params }: Props) {
                 >
                   <div className="font-bold">Premium</div>
                   <div className="text-sm">High value</div>
-                </button>
+                </button>  
+                
               </div>
-            </div>
-            
-            {type !== "Free" && (
-              <div className="mb-6">
-                <label
-                  htmlFor="price"
-                  className="block text-[#19191b] font-medium mb-2"
-                >
-                  Price (in PLN)
-                </label>
-                <div className="flex items-center">
-                  <input
-                    id="price"
-                    type="number"
-                    min={type === "Premium" ? 7 : 1}
-                    className="w-full px-4 py-3 rounded-lg border-2 border-[#19191b] focus:outline-none focus:ring-2 focus:ring-[#8d65e3]/50"
-                    value={price}
-                    onChange={(e) => setPrice(parseInt(e.target.value) || 0)}
-                    required
-                  />
-                  <span className="ml-2 text-gray-500">PLN</span>
+              
+              {type !== "Free" && (
+                <div className="mt-4">
+                  <label
+                    htmlFor="price"
+                    className="block text-[#19191b] font-medium mb-2"
+                  >
+                    Price (in PLN)
+                  </label>
+                  <div className="flex items-center">
+                    <input
+                      id="price"
+                      type="number"
+                      min={type === "Premium" ? 7 : 1}
+                      className="w-full px-4 py-3 rounded-lg border-2 border-[#19191b] focus:outline-none focus:ring-2 focus:ring-[#8d65e3]/50"
+                      value={price}
+                      onChange={(e) => setPrice(parseInt(e.target.value) || 0)}
+                      required
+                    />
+                    <span className="ml-2 text-gray-500">PLN</span>
+                  </div>
+                  <p className="mt-2 text-sm text-gray-500">
+                    {type === "Premium" 
+                      ? "Premium lists must cost at least 7 PLN" 
+                      : "Paid lists must cost at least 1 PLN"}
+                  </p>
                 </div>
-                <p className="mt-2 text-sm text-gray-500">
-                  {type === "Premium" 
-                    ? "Premium lists must cost at least 7 PLN" 
-                    : "Paid lists must cost at least 1 PLN"}
-                </p>
-              </div>
-            )}
+              )}
+            </div>
             
             <div className="mb-6">
               <label className="block text-[#19191b] font-medium mb-2">
                 Images (Max 3)
               </label>
-              <ImageUpload 
-                images={images} 
-                setImages={setImages} 
-                maxImages={3} 
-              />
+              Soon
             </div>
             
             <div className="flex justify-between gap-4 mt-8">
@@ -509,5 +512,4 @@ export default function EditRecommendationPage({ params }: Props) {
       </div>
     </div>
   );
-} 
-*/
+}

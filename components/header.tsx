@@ -1,10 +1,26 @@
+'use server'
+
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/utils/supabase/server";
-import { signOutAction } from "@/app/auth/actions";
+import { User } from "@supabase/supabase-js";
 
 interface HeaderProps {
   hideNav?: boolean;
+}
+
+interface SafeUser {
+  email: string | undefined;
+  avatar_url: string | undefined;
+}
+
+function getSafeUser(user: User | null): SafeUser | null {
+  if (!user) return null;
+  
+  return {
+    email: user.email,
+    avatar_url: user.user_metadata?.avatar_url
+  };
 }
 
 export default async function Header({ hideNav = false }: HeaderProps) {
@@ -14,14 +30,16 @@ export default async function Header({ hideNav = false }: HeaderProps) {
     data: { user },
   } = await supabase.auth.getUser();
 
+  const safeUser = getSafeUser(user);
+
   return (
     <header className="border-b-2 border-[#19191b] bg-[#ffffff]">
       <div className="container mx-auto flex justify-between items-center py-4 px-4 md:px-6">
-        <Link href={user ? "/dashboard" : "/"} className="flex items-center gap-2">
+        <Link href={safeUser ? "/dashboard" : "/"} className="flex items-center gap-2">
           <Image src="/maplizt-logo-full.svg" alt="Maplizt Logo" width={128} height={64} className="rounded-lg border-2 border-[#19191b] brutal-shadow-all" />
         </Link>
 
-        {!user && !hideNav && (
+        {!safeUser && !hideNav && (
           <nav className="hidden md:flex items-center gap-8">
             <Link
               href="#features"
@@ -45,54 +63,28 @@ export default async function Header({ hideNav = false }: HeaderProps) {
         )}
 
         <div className="relative">
-          {user ? (
+          {safeUser ? (
             <div className="flex items-center gap-4">
               <div className="relative">
-                <button
-                  className="flex brutal-shadow-all items-center justify-center h-10 w-10 rounded-full bg-[#8d65e3]/10 border-2 border-[#19191b] overflow-hidden"
-                >
-                  {user.user_metadata.avatar_url ? (
-                    <Image
-                      src={user.user_metadata.avatar_url}
-                      alt="User avatar"
-                      fill
-                      className="object-cover"
-                    />
-                  ) : (
-                    <span className="text-[#8d65e3] font-bold">
-                      {user.email?.[0].toUpperCase() || "U"}
-                    </span>
-                  )}
-                </button>
-
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg border-2 border-[#19191b] shadow-lg overflow-hidden z-50">
-                    <div className="p-3 border-b border-gray-100">
-                      <p className="text-sm font-medium">{user.user_metadata.full_name}</p>
-                    </div>
-                    <div className="p-2">
-                      <Link
-                        href="/dashboard"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#f8f5ed] rounded transition"
-                      >
-                        Dashboard
-                      </Link>
-                      <Link
-                        href="/dashboard/account"
-                        className="block px-4 py-2 text-sm text-gray-700 hover:bg-[#f8f5ed] rounded transition"
-                      >
-                        Account settings
-                      </Link>
-                      <form>
-                      <button
-                        formAction={signOutAction}
-                        className="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded transition cursor-pointer"
-                      >
-                        Sign out
-                      </button>
-
-                      </form>
-                    </div>
-                  </div>
+                <Link 
+                  href="/dashboard/account">
+                  <button
+                    className="flex brutal-shadow-all items-center justify-center h-10 w-10 rounded-full bg-[#8d65e3]/10 border-2 border-[#19191b] overflow-hidden"
+                  >
+                    {safeUser?.avatar_url ? (
+                      <Image
+                        src={safeUser?.avatar_url}
+                        alt="User avatar"
+                        fill
+                        className="object-cover"
+                      />
+                    ) : (
+                      <span className="text-[#8d65e3] font-bold">
+                        {safeUser?.email?.[0].toUpperCase() || "U"}
+                      </span>
+                    )}
+                  </button>
+                </Link>
               </div>
             </div>
           ) : (

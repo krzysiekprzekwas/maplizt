@@ -169,7 +169,7 @@ export default function SignupPage() {
               formAction={signUpAction}
               className={`w-full bg-[#8d65e3] text-white py-3 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition`}
             >
-              "Create account"
+              Create account
             </button>
           </form>
 
