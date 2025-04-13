@@ -61,7 +61,7 @@ export default function HomePage() {
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
             {/* Step 1 */}
-            <div className="bg-white p-6 rounded-lg border-2 border-[#19191b] brutal-shadow-all">
+            <div className="bg-[#f8f5ed] p-6 rounded-lg border-2 border-[#19191b] brutal-shadow-all">
               <div className="w-12 h-12 bg-[#8d65e3]/20 rounded-lg flex items-center justify-center mb-4">
                 <span className="text-2xl font-bold text-[#8d65e3]">1</span>
               </div>
@@ -70,7 +70,7 @@ export default function HomePage() {
             </div>
             
             {/* Step 2 */}
-            <div className="bg-white p-6 rounded-lg border-2 border-[#19191b] brutal-shadow-all">
+            <div className="bg-[#f8f5ed] p-6 rounded-lg border-2 border-[#19191b] brutal-shadow-all">
               <div className="w-12 h-12 bg-[#8d65e3]/20 rounded-lg flex items-center justify-center mb-4">
                 <span className="text-2xl font-bold text-[#8d65e3]">2</span>
               </div>
@@ -79,7 +79,7 @@ export default function HomePage() {
             </div>
             
             {/* Step 3 */}
-            <div className="bg-white p-6 rounded-lg border-2 border-[#19191b] brutal-shadow-all">
+            <div className="bg-[#f8f5ed] p-6 rounded-lg border-2 border-[#19191b] brutal-shadow-all">
               <div className="w-12 h-12 bg-[#8d65e3]/20 rounded-lg flex items-center justify-center mb-4">
                 <span className="text-2xl font-bold text-[#8d65e3]">3</span>
               </div>
@@ -109,7 +109,7 @@ export default function HomePage() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Feature 1 */}
-            <div className="bg-[#f8f5ed] p-6 rounded-lg border-2 border-[#19191b] brutal-shadow-all">
+            <div className="bg-white p-6 rounded-lg border-2 border-[#19191b] brutal-shadow-all">
               <div className="w-12 h-12 bg-[#8d65e3]/20 rounded-lg flex items-center justify-center mb-4">
                 <Image src="/maplizt-logo-icon.svg" alt="Map Feature" width={24} height={24} />
               </div>
@@ -118,7 +118,7 @@ export default function HomePage() {
             </div>
             
             {/* Feature 2 */}
-            <div className="bg-[#f8f5ed] p-6 rounded-lg border-2 border-[#19191b] brutal-shadow-all">
+            <div className="bg-white p-6 rounded-lg border-2 border-[#19191b] brutal-shadow-all">
               <div className="w-12 h-12 bg-[#7db48f]/20 rounded-lg flex items-center justify-center mb-4">
                 <Image src="/window.svg" alt="Monetize Feature" width={24} height={24} />
               </div>
@@ -127,7 +127,7 @@ export default function HomePage() {
             </div>
             
             {/* Feature 3 */}
-            <div className="bg-[#f8f5ed] p-6 rounded-lg border-2 border-[#19191b] brutal-shadow-all">
+            <div className="bg-white p-6 rounded-lg border-2 border-[#19191b] brutal-shadow-all">
               <div className="w-12 h-12 bg-[#97b5ec]/20 rounded-lg flex items-center justify-center mb-4">
                 <Image src="/file.svg" alt="Analytics Feature" width={24} height={24} />
               </div>
@@ -150,7 +150,7 @@ export default function HomePage() {
       </section>
 
       {/* Testimonials Section */}
-      <section id="testimonials" className="py-16 bg-white">
+      <section id="testimonials" className="py-16 bg-[#97b5ec]/20">
         <div className="container mx-auto px-4 md:px-6">
           <div className="text-center mb-12">
             <h2 className="text-3xl md:text-4xl font-bold mb-4">What Our Users Say</h2>
@@ -213,7 +213,7 @@ export default function HomePage() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {/* Free Plan */}
-            <div className="bg-[#f8f5ed] p-8 rounded-lg border-2 border-[#19191b] brutal-shadow-all">
+            <div className="bg-white p-8 rounded-lg border-2 border-[#19191b] brutal-shadow-all">
               <h3 className="text-2xl font-bold mb-2">Free</h3>
               <p className="text-lg mb-6">Perfect for getting started</p>
               <p className="text-4xl font-bold mb-6">$0<span className="text-lg font-normal">/month</span></p>
@@ -253,7 +253,7 @@ export default function HomePage() {
               
               <Link 
                 href="/auth/sign-up" 
-                className="block w-full bg-white text-center py-3 rounded-lg border-2 border-[#19191b] font-medium hover:bg-[#f8f5ed] transition"
+                className="block w-full bg-white text-center py-3 rounded-lg border-2 border-[#19191b] font-medium hover:bg-[#8d65e3]/10 transition"
               >
                 Get Started
               </Link>
