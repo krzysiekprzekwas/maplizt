@@ -1,6 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { FormMessage, Message } from "@/components/form-message";
+import { resetPasswordAction } from "../actions";
 
 export default async function ResetPasswordPage(props: { searchParams: Promise<Message> }) {
   const searchParams = await props.searchParams;
@@ -61,6 +62,7 @@ export default async function ResetPasswordPage(props: { searchParams: Promise<M
 
             <button
               type="submit"
+              formAction={resetPasswordAction}
               className={`w-full bg-[#8d65e3] text-white py-3 brutal-shadow-all rounded-lg border-2 border-[#19191b] font-medium`}
             >
               Reset Password
