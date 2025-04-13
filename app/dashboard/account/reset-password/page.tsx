@@ -1,7 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
+import { FormMessage, Message } from "@/components/form-message";
 
-export default function ResetPasswordPage() {
+export default async function ResetPasswordPage(props: { searchParams: Promise<Message> }) {
+  const searchParams = await props.searchParams;
   return (
     <main className="min-h-screen" style={{ backgroundColor: "#f8f5ed" }}>
       <div className="container mx-auto px-4 py-16 max-w-md">
@@ -64,6 +66,8 @@ export default function ResetPasswordPage() {
               Reset Password
             </button>
           </form>
+
+          <FormMessage message={searchParams} />
 
           <div className="mt-8 text-center">
             <Link

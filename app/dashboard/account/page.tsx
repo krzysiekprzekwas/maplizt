@@ -187,9 +187,7 @@ export default async function AccountPage(props: { searchParams: Promise<Message
               </button>
             </div>
           </div>
-
-
-          
+=  
           <div className="border-t border-gray-200 pt-8 mb-8">
             <h2 className="text-xl font-bold mb-4">Sign out</h2>
             <form>
