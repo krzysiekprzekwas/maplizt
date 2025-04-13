@@ -1,59 +1,7 @@
-"use client";
-
-import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 
 export default function ResetPasswordPage() {
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
-  const router = useRouter();
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-    setSuccessMessage("");
-
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      setLoading(false);
-      return;
-    }
-
-    try {
-      const response = await fetch('/api/user/password', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          password
-        })
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to reset password');
-      }
-
-      setSuccessMessage(data.message);
-      setTimeout(() => {
-        router.push("/auth/signup");
-      }, 2000);
-    } catch (err: any) {
-      console.error("Error resetting password:", err);
-      setError(err.message || "An error occurred while resetting your password");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   return (
     <main className="min-h-screen" style={{ backgroundColor: "#f8f5ed" }}>
       <div className="container mx-auto px-4 py-16 max-w-md">
@@ -72,19 +20,7 @@ export default function ResetPasswordPage() {
 
           <h1 className="text-2xl font-bold text-center mb-6">Reset Your Password</h1>
 
-          {error && (
-            <div className="mb-6 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
-              {error}
-            </div>
-          )}
-
-          {successMessage && (
-            <div className="mb-6 p-3 bg-green-100 border border-green-400 text-green-700 rounded">
-              {successMessage}
-            </div>
-          )}
-
-          <form onSubmit={handleSubmit}>
+          <form>
             <div className="mb-6">
               <label
                 htmlFor="password"
@@ -95,8 +31,7 @@ export default function ResetPasswordPage() {
               <input
                 id="password"
                 type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                name="password"
                 className="w-full px-4 py-3 rounded-lg border-2 border-[#19191b] focus:outline-none focus:ring-2 focus:ring-[#8d65e3]/50"
                 placeholder="••••••••"
                 required
@@ -114,8 +49,7 @@ export default function ResetPasswordPage() {
               <input
                 id="confirmPassword"
                 type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
+                name="confirmPassword"
                 className="w-full px-4 py-3 rounded-lg border-2 border-[#19191b] focus:outline-none focus:ring-2 focus:ring-[#8d65e3]/50"
                 placeholder="••••••••"
                 required
@@ -125,18 +59,15 @@ export default function ResetPasswordPage() {
 
             <button
               type="submit"
-              className={`w-full bg-[#8d65e3] text-white py-3 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition ${
-                loading ? "opacity-70 cursor-not-allowed" : ""
-              }`}
-              disabled={loading}
+              className={`w-full bg-[#8d65e3] text-white py-3 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition`}
             >
-              {loading ? "Resetting..." : "Reset Password"}
+              Reset Password
             </button>
           </form>
 
           <div className="mt-8 text-center">
             <Link
-              href="/auth/signup"
+              href="/auth/sign-up"
               className="text-[#8d65e3] hover:underline font-medium"
             >
               Back to Sign In

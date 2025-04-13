@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { handleApiAuth } from '@/utils/server-utils';
-import { createServerClient } from '@supabase/ssr';
+import { createClient } from '@/utils/supabase/server';
 
 export async function PUT(request: NextRequest) {
   return handleApiAuth(request, async (userId) => {
@@ -16,23 +16,7 @@ export async function PUT(request: NextRequest) {
       }
 
       // Create server-side Supabase client
-      const supabase = createServerClient(
-        process.env.NEXT_PUBLIC_SUPABASE_URL!,
-        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-        {
-          cookies: {
-            get(name: string) {
-              return request.cookies.get(name)?.value;
-            },
-            set(name: string, value: string, options: any) {
-              // Not needed for this context
-            },
-            remove(name: string, options: any) {
-              // Not needed for this context
-            },
-          },
-        }
-      );
+      const supabase = await createClient();
 
       const { error } = await supabase.auth.updateUser({
         data: { full_name: fullName }
