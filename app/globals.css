@@ -121,6 +121,8 @@
   }
 }
 
+button { cursor:pointer; }
+
 .brutal-shadow-hover {
   box-shadow: 4px 4px 0 0 #19191b;
   transition: all 0.15s ease-in-out;

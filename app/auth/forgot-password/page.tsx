@@ -46,7 +46,7 @@ export default async function ForgotPassword(props: {
             <button
               type="submit"
               formAction={forgotPasswordAction}
-              className={`w-full bg-[#8d65e3] text-white py-3 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition`}
+              className={`w-full bg-[#8d65e3] text-white py-3 brutal-shadow-all rounded-lg border-2 border-[#19191b] font-medium`}
             >
               Reset Password
             </button>
