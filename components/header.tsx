@@ -3,24 +3,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import { createClient } from "@/utils/supabase/server";
-import { User } from "@supabase/supabase-js";
 
 interface HeaderProps {
   hideNav?: boolean;
-}
-
-interface SafeUser {
-  email: string | undefined;
-  avatar_url: string | undefined;
-}
-
-function getSafeUser(user: User | null): SafeUser | null {
-  if (!user) return null;
-  
-  return {
-    email: user.email,
-    avatar_url: user.user_metadata?.avatar_url
-  };
 }
 
 export default async function Header({ hideNav = false }: HeaderProps) {
@@ -30,16 +15,14 @@ export default async function Header({ hideNav = false }: HeaderProps) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const safeUser = getSafeUser(user);
-
   return (
     <header className="border-b-2 border-[#19191b] bg-[#ffffff]">
       <div className="container mx-auto flex justify-between items-center py-4 px-4 md:px-6">
-        <Link href={safeUser ? "/dashboard" : "/"} className="flex items-center gap-2">
+        <Link href={user ? "/dashboard" : "/"} className="flex items-center gap-2">
           <Image src="/maplizt-logo-full.svg" alt="Maplizt Logo" width={128} height={64} className="rounded-lg border-2 border-[#19191b] brutal-shadow-all" />
         </Link>
 
-        {!safeUser && !hideNav && (
+        {!user && !hideNav && (
           <nav className="hidden md:flex items-center gap-8">
             <Link
               href="#features"
@@ -63,7 +46,7 @@ export default async function Header({ hideNav = false }: HeaderProps) {
         )}
 
         <div className="relative">
-          {safeUser ? (
+          {user ? (
             <div className="flex items-center gap-4">
               <div className="relative">
                 <Link 
@@ -71,16 +54,16 @@ export default async function Header({ hideNav = false }: HeaderProps) {
                   <button
                     className="flex brutal-shadow-all items-center justify-center h-10 w-10 rounded-full bg-[#8d65e3]/10 border-2 border-[#19191b] overflow-hidden"
                   >
-                    {safeUser?.avatar_url ? (
+                    {user?.user_metadata.avatar_url ? (
                       <Image
-                        src={safeUser?.avatar_url}
+                        src={user?.user_metadata.avatar_url}
                         alt="User avatar"
                         fill
                         className="object-cover"
                       />
                     ) : (
                       <span className="text-[#8d65e3] font-bold">
-                        {safeUser?.email?.[0].toUpperCase() || "U"}
+                        {user?.email?.[0].toUpperCase() || "U"}
                       </span>
                     )}
                   </button>
@@ -89,12 +72,20 @@ export default async function Header({ hideNav = false }: HeaderProps) {
             </div>
           ) : (
             !hideNav && (
-              <Link
-                href="/auth/sign-up"
-                className="inline-block bg-[#8d65e3] text-white px-4 py-2 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition brutal-shadow-all"
-              >
-                Get Started
-              </Link>
+              <div className="flex gap-4">
+                <Link
+                  href="/auth/sign-in"
+                  className="inline-block bg-[#f8f5ed] px-4 py-2 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition brutal-shadow-all"
+                >
+                  Log in
+                </Link>
+                <Link
+                  href="/auth/sign-up"
+                  className="inline-block bg-[#8d65e3] text-white px-4 py-2 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition brutal-shadow-all"
+                >
+                  Get Started
+                </Link>
+              </div>
             )
           )}
         </div>
