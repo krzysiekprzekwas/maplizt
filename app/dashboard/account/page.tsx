@@ -179,21 +179,23 @@ export default async function AccountPage(props: { searchParams: Promise<Message
                   : "Connect your Stripe account to receive payments for your recommendations."}
               </p>
               
-              <button
-                onClick={handleStripeConnect}
-                className={`bg-[#8d65e3] text-white px-6 py-3 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition`}
-              >
-                Connect Stripe Account
-              </button>
+              <form>
+                <button
+                  formAction={handleStripeConnect}
+                  className={`bg-[#8d65e3] text-white px-6 py-3 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition`}
+                >
+                  Connect Stripe Account
+                </button>
+              </form>
             </div>
           </div>
-=  
+  
           <div className="border-t border-gray-200 pt-8 mb-8">
             <h2 className="text-xl font-bold mb-4">Sign out</h2>
             <form>
               <button
                 formAction={signOutAction}
-                className="block px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded transition cursor-pointer"
+                className="bg-[#19191b] text-white px-6 py-3 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition"
               >
                 Sign out
               </button>

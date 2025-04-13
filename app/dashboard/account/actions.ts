@@ -3,6 +3,7 @@
 import { updateInfluencerProfile } from "@/utils/db";
 import { createClient } from "@/utils/supabase/server";
 import { encodedRedirect } from "@/utils/utils";
+import { redirect } from "next/navigation";
 
 export const handleUpdateProfile = async (formData: FormData) => {
     const name = formData.get("name")?.toString();
@@ -105,15 +106,22 @@ export const handleStripeConnect = async () => {
         });
       
         if (!response.ok) {
-          throw new Error('Failed to create Stripe Connect account');
+          return encodedRedirect(
+            "error",
+            "/dashboard/account",
+            "Failed to create Stripe Connect account"
+          );
         }
 
         const { url } = await response.json();
-        window.location.href = url;
+        return redirect(url);
     } catch (error: any) {
       console.error('Stripe Connect error:', error);
-    } finally {
-
+      return encodedRedirect(
+        "error",
+        "/dashboard/account",
+        "An error occurred while connecting to Stripe"
+      );
     }
   };
 
