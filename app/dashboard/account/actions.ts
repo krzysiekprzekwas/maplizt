@@ -157,14 +157,12 @@ export const handleStripeConnect = async () => {
           },
         });
 
+        const updatedInfluencer = {...influencer}
+        // Just update the stripe_account_id field
+        updatedInfluencer.stripe_account_id = account.id;
+
         // Update the influencer profile with the Stripe account ID
-        await updateInfluencerProfile(user.id, {
-          name: influencer.name,
-          slug: influencer.slug,
-          handle: influencer.handle,
-          profile_image: influencer.profile_image,
-          stripe_account_id: account.id,
-        });
+        await updateInfluencerProfile(user.id, updatedInfluencer);
 
         // Create an account link for onboarding
         const accountLink = await stripe.accountLinks.create({

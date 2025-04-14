@@ -1,9 +1,8 @@
 import { Influencer, Recommendation, Order } from '../types/database';
-import { createClient } from './supabase/client';
-
-const supabase = createClient();
+import { createClient } from './supabase/server';
 
 export async function getInfluencers() {
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from('influencers')
     .select('*')
@@ -14,6 +13,7 @@ export async function getInfluencers() {
 }
 
 export async function getInfluencer(slug: string) {
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from('influencers')
     .select('*, recommendations(*)')
@@ -25,6 +25,7 @@ export async function getInfluencer(slug: string) {
 }
 
 export async function getInfluencerByUserId(userId: string) {
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from('influencers')
     .select('*')
@@ -36,6 +37,7 @@ export async function getInfluencerByUserId(userId: string) {
 }
 
 export async function getInfluencerById(influencer_id: string) {
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from('influencers')
     .select('*')
@@ -57,6 +59,7 @@ export async function updateInfluencerProfile(
     stripe_account_status?: 'active' | 'pending';
   }
 ) {
+  const supabase = await createClient();
   // First check if slug is already taken (except by the current user)
   if (profileData.slug) {
     const { data: existingSlug, error: slugError } = await supabase
@@ -86,6 +89,7 @@ export async function updateInfluencerAvatar(
   userId: string, 
   profile_image?: string
 ) {
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from('influencers')
     .update({ profile_image: profile_image })
@@ -102,6 +106,7 @@ export async function createInfluencerProfile(
   userId: string, 
   profileData: { name: string; slug: string; handle: string; profile_image?: string }
 ) {
+  const supabase = await createClient();
   // Check if slug is already taken
   const { data: existingSlug, error: slugError } = await supabase
     .from('influencers')
@@ -127,6 +132,7 @@ export async function createInfluencerProfile(
 }
 
 export async function incrementRecommendationViewCount(recommendationId: string) {
+  const supabase = await createClient();
   const { error } = await supabase
     .rpc('increment_recommendation_view_count', { recommendation_id: recommendationId });
   
@@ -134,6 +140,7 @@ export async function incrementRecommendationViewCount(recommendationId: string)
 }
 
 export async function getRecommendation(influencerSlug: string, recommendationSlug: string) {
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from('recommendations')
     .select('*, influencers(*)')
@@ -152,6 +159,7 @@ export async function getRecommendation(influencerSlug: string, recommendationSl
 }
 
 export async function createOrder(orderData: Omit<Order, 'id' | 'created_at' | 'updated_at'>) {
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from('orders')
     .insert(orderData)
@@ -163,6 +171,7 @@ export async function createOrder(orderData: Omit<Order, 'id' | 'created_at' | '
 }
 
 export async function getOrderDetails(orderId: string) {
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from('orders')
     .select('*, recommendations(*, influencers(*))')
@@ -181,6 +190,7 @@ export async function getOrderDetails(orderId: string) {
 }
 
 export async function getRecommendationById(id: string) {
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from('recommendations')
     .select('*')
@@ -192,6 +202,7 @@ export async function getRecommendationById(id: string) {
 }
 
 export async function updateRecommendation(recommendation: Partial<Recommendation> & { id: string }) {
+  const supabase = await createClient();
   const { data, error } = await supabase
     .from('recommendations')
     .update({
@@ -213,6 +224,7 @@ export async function updateRecommendation(recommendation: Partial<Recommendatio
 }
 
 export async function deleteRecommendationById(id: string) {
+  const supabase = await createClient();
   // Delete the recommendation
   const { error: deleteError } = await supabase
     .from('recommendations')
@@ -224,6 +236,7 @@ export async function deleteRecommendationById(id: string) {
 }
 
 export async function deleteStoredImageByPath(filePath: string) {
+  const supabase = await createClient();
   // Delete the object
   const { error: deleteError } = await supabase.storage
   .from('recommendation-images')

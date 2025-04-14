@@ -171,14 +171,14 @@ export default async function AccountPage(props: { searchParams: Promise<Message
           <div className="border-t border-gray-200 pt-8 mb-8">
             <h2 className="text-xl font-bold mb-4">Payment Settings</h2>
             
-            <div className="bg-gray-50 p-6 rounded-lg border-2 border-[#19191b] mb-6">
-              <h3 className="text-lg font-medium mb-2">Stripe Connect Account</h3>
-              <p className="text-gray-600 mb-4">
-                {influencer?.stripe_account_id 
-                  ? "Your Stripe account is connected. You can receive payments for your recommendations."
-                  : "Connect your Stripe account to receive payments for your recommendations."}
-              </p>
-              
+            <h3 className="text-lg font-medium mb-2">Stripe Connect Account</h3>
+            <p className="text-gray-600 mb-4">
+              {influencer?.stripe_account_id 
+                ? "Your Stripe account is connected. You can receive payments for your recommendations."
+                : "Connect your Stripe account to receive payments for your recommendations."}
+            </p>
+            
+            {!influencer?.stripe_account_id && (
               <form>
                 <button
                   formAction={handleStripeConnect}
@@ -187,7 +187,7 @@ export default async function AccountPage(props: { searchParams: Promise<Message
                   Connect Stripe Account
                 </button>
               </form>
-            </div>
+            )}
           </div>
   
           <div className="border-t border-gray-200 pt-8 mb-8">

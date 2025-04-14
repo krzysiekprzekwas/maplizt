@@ -4,7 +4,6 @@ export type Influencer = {
   slug: string;
   name: string;
   handle: string;
-  description: string;
   profile_image: string;
   stripe_account_id?: string;
   stripe_account_status?: 'active' | 'pending';
