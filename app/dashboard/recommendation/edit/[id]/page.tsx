@@ -170,6 +170,20 @@ export default function EditRecommendationPage({ params }: Props) {
     }
   }, [type, price]);
 
+  // Check if user has Stripe connected
+  const hasStripeConnected = influencer?.stripe_account_id && 
+    influencer?.stripe_account_status === 'active';
+
+  // Reset to Free type if Stripe is not connected and user tries to select Paid/Premium
+  useEffect(() => {
+    // Only apply this if we're not initially loading the data
+    if (!isLoadingData && !hasStripeConnected && (type === "Paid" || type === "Premium")) {
+      setType("Free");
+      setPrice(0);
+      setError("You must connect your Stripe account to create paid recommendations. Your recommendation type has been set to Free.");
+    }
+  }, [hasStripeConnected, type, isLoadingData]);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
@@ -203,6 +217,13 @@ export default function EditRecommendationPage({ params }: Props) {
     
     if (!googleMapsLink.trim()) {
       setError("Google Maps link is required");
+      setIsSubmitting(false);
+      return;
+    }
+    
+    // Validate Stripe connection for Paid/Premium types
+    if ((type === "Paid" || type === "Premium") && !hasStripeConnected) {
+      setError("You must connect your Stripe account to create paid recommendations");
       setIsSubmitting(false);
       return;
     }
@@ -454,12 +475,15 @@ export default function EditRecommendationPage({ params }: Props) {
                   className={`p-4 rounded-lg border-2 ${
                     type === "Paid"
                       ? "bg-[#7db48f] border-[#19191b]"
-                      : "bg-white border-gray-300"
+                      : hasStripeConnected ? "bg-white border-gray-300" : "bg-gray-100 border-gray-300 opacity-60 cursor-not-allowed"
                   }`}
-                  onClick={() => setType("Paid")}
+                  onClick={() => hasStripeConnected ? setType("Paid") : null}
+                  disabled={!hasStripeConnected}
+                  title={!hasStripeConnected ? "Connect Stripe account to enable paid recommendations" : ""}
                 >
                   <div className="font-bold">Paid</div>
                   <div className="text-sm">Low cost</div>
+                  {!hasStripeConnected && <div className="text-xs text-red-500 mt-1">Requires Stripe</div>}
                 </button>
                 
                 <button
@@ -467,15 +491,33 @@ export default function EditRecommendationPage({ params }: Props) {
                   className={`p-4 rounded-lg border-2 ${
                     type === "Premium"
                       ? "bg-[#f7bdf6] border-[#19191b]"
-                      : "bg-white border-gray-300"
+                      : hasStripeConnected ? "bg-white border-gray-300" : "bg-gray-100 border-gray-300 opacity-60 cursor-not-allowed"
                   }`}
-                  onClick={() => setType("Premium")}
+                  onClick={() => hasStripeConnected ? setType("Premium") : null}
+                  disabled={!hasStripeConnected}
+                  title={!hasStripeConnected ? "Connect Stripe account to enable premium recommendations" : ""}
                 >
                   <div className="font-bold">Premium</div>
                   <div className="text-sm">High value</div>
+                  {!hasStripeConnected && <div className="text-xs text-red-500 mt-1">Requires Stripe</div>}
                 </button>  
                 
               </div>
+              
+              {!hasStripeConnected && (
+                <div className="mt-3 p-3 bg-yellow-100 border border-yellow-400 text-yellow-800 rounded">
+                  <p>
+                    To create paid recommendations, you need to connect your Stripe account.
+                    <button
+                      type="button"
+                      className="ml-2 underline font-medium"
+                      onClick={() => router.push('/dashboard/account')}
+                    >
+                      Go to Account Settings
+                    </button>
+                  </p>
+                </div>
+              )}
               
               {type !== "Free" && (
                 <div className="mt-4">

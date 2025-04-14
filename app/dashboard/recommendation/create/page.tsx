@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { uploadRecommendationImage } from "@/utils/storage";
+import { Influencer } from "@/types/database";
 
 type RecommendationType = "Free" | "Paid" | "Premium";
 
@@ -28,7 +29,42 @@ export default function CreateListPage() {
   const [isManuallyEditingSlug, setIsManuallyEditingSlug] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [influencer, setInfluencer] = useState<Influencer | null>(null);
+  const [isLoadingInfluencer, setIsLoadingInfluencer] = useState(true);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  // Fetch influencer profile to check Stripe connection
+  useEffect(() => {
+    const fetchInfluencer = async () => {
+      try {
+        setIsLoadingInfluencer(true);
+        const response = await fetch('/api/influencers/me');
+        if (!response.ok) {
+          throw new Error('Failed to fetch influencer profile');
+        }
+        const data = await response.json();
+        setInfluencer(data);
+      } catch (error) {
+        console.error("Error fetching influencer profile:", error);
+      } finally {
+        setIsLoadingInfluencer(false);
+      }
+    };
+    
+    fetchInfluencer();
+  }, []);
+
+  // Check if user has Stripe connected
+  const hasStripeConnected = influencer?.stripe_account_id && 
+    influencer?.stripe_account_status === 'active';
+
+  // Reset to Free type if Stripe is not connected and user tries to select Paid/Premium
+  useEffect(() => {
+    if (!hasStripeConnected && (type === "Paid" || type === "Premium")) {
+      setType("Free");
+      setPrice(0);
+    }
+  }, [hasStripeConnected, type]);
 
   // Generate slug from title
   useEffect(() => {
@@ -133,6 +169,13 @@ export default function CreateListPage() {
     
     if (!googleMapsLink.trim()) {
       setError("Google Maps link is required");
+      setIsSubmitting(false);
+      return;
+    }
+    
+    // Validate Stripe connection for Paid/Premium types
+    if ((type === "Paid" || type === "Premium") && !hasStripeConnected) {
+      setError("You must connect your Stripe account to create paid recommendations");
       setIsSubmitting(false);
       return;
     }
@@ -313,12 +356,15 @@ export default function CreateListPage() {
                   className={`p-4 rounded-lg border-2 ${
                     type === "Paid"
                       ? "bg-[#7db48f] border-[#19191b]"
-                      : "bg-white border-gray-300"
+                      : hasStripeConnected ? "bg-white border-gray-300" : "bg-gray-100 border-gray-300 opacity-60 cursor-not-allowed"
                   }`}
-                  onClick={() => setType("Paid")}
+                  onClick={() => hasStripeConnected ? setType("Paid") : null}
+                  disabled={!hasStripeConnected}
+                  title={!hasStripeConnected ? "Connect Stripe account to enable paid recommendations" : ""}
                 >
                   <div className="font-bold">Paid</div>
                   <div className="text-sm">Low cost</div>
+                  {!hasStripeConnected && <div className="text-xs text-red-500 mt-1">Requires Stripe</div>}
                 </button>
                 
                 <button
@@ -326,14 +372,32 @@ export default function CreateListPage() {
                   className={`p-4 rounded-lg border-2 ${
                     type === "Premium"
                       ? "bg-[#f7bdf6] border-[#19191b]"
-                      : "bg-white border-gray-300"
+                      : hasStripeConnected ? "bg-white border-gray-300" : "bg-gray-100 border-gray-300 opacity-60 cursor-not-allowed"
                   }`}
-                  onClick={() => setType("Premium")}
+                  onClick={() => hasStripeConnected ? setType("Premium") : null}
+                  disabled={!hasStripeConnected}
+                  title={!hasStripeConnected ? "Connect Stripe account to enable premium recommendations" : ""}
                 >
                   <div className="font-bold">Premium</div>
                   <div className="text-sm">High value</div>
+                  {!hasStripeConnected && <div className="text-xs text-red-500 mt-1">Requires Stripe</div>}
                 </button>
               </div>
+              
+              {!hasStripeConnected && (
+                <div className="mt-3 p-3 bg-yellow-100 border border-yellow-400 text-yellow-800 rounded">
+                  <p>
+                    To create paid recommendations, you need to connect your Stripe account.
+                    <button
+                      type="button"
+                      className="ml-2 underline font-medium"
+                      onClick={() => router.push('/dashboard/account')}
+                    >
+                      Go to Account Settings
+                    </button>
+                  </p>
+                </div>
+              )}
             </div>
             
             {type !== "Free" && (
