@@ -8,9 +8,10 @@ import { updateInfluencerAvatar } from "@/utils/db";
 interface AvatarUploadProps {
   currentImage: string | null;
   userId: string;
+  large?: boolean;
 }
 
-export default function AvatarUpload({ currentImage, userId }: AvatarUploadProps) {
+export default function AvatarUpload({ currentImage, userId, large = false }: AvatarUploadProps) {
   const [isUploading, setIsUploading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -44,18 +45,20 @@ export default function AvatarUpload({ currentImage, userId }: AvatarUploadProps
   };
 
   return (
-    <div className="flex items-center gap-4">
+    <div className={`flex ${large ? 'flex-col' : 'items-center gap-4'}`}>
       <div 
-        className="w-24 h-24 rounded-lg overflow-hidden border-2 border-[#19191b] brutal-shadow-all relative cursor-pointer group"
+        className={`${large ? 'w-full h-64 mb-4' : 'w-24 h-24'} rounded-lg overflow-hidden border-2 border-[#19191b] brutal-shadow-all relative cursor-pointer group`}
         onClick={handleImageClick}
       >
         <Image
           src={currentImage || "/avatar_placeholder.jpeg"}
           alt="Profile image"
-          width={96}
-          height={96}
+          fill
           className="object-cover"
         />
+        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all flex items-center justify-center">
+          <span className="text-white opacity-0 group-hover:opacity-100 font-medium">Change Image</span>
+        </div>
       </div>
       <div className="flex-1">
         <input
@@ -75,7 +78,7 @@ export default function AvatarUpload({ currentImage, userId }: AvatarUploadProps
         )}
         {!isUploading && !error && (
           <p className="mt-2 text-sm text-gray-500">
-            Upload a JPG, PNG, or WebP image (max 5MB)
+            {large ? 'Click to upload a new profile image (JPG, PNG, or WebP, max 5MB)' : 'Upload a JPG, PNG, or WebP image (max 5MB)'}
           </p>
         )}
       </div>

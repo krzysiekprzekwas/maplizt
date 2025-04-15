@@ -57,12 +57,12 @@ export const handleUploadProfileImage = async (images: string[]) => {
         console.error("Error updating profile image:", error);
         return encodedRedirect(
             "error",
-            "/dashboard/account",
+            "/dashboard/account/influencer",
             "Failed to update influencer profile image");
     } finally {
         return encodedRedirect(
           "success",
-          "/dashboard/account",
+          "/dashboard/account/influencer",
           "Influencer profile image updated successfully!.",
         );
     }
@@ -88,12 +88,12 @@ export const handleUpdateInfluencer = async (formData: FormData) => {
         console.error("Error updating profile:", error);
         return encodedRedirect(
             "error",
-            "/dashboard/account",
+            "/dashboard/account/influencer",
             "Failed to update influencer profile");
     } finally {
         return encodedRedirect(
           "success",
-          "/dashboard/account",
+          "/dashboard/account/influencer",
           "Influencer profile updated successfully!.",
         );
     }
@@ -110,7 +110,7 @@ export const handleStripeConnect = async () => {
         if(!user)
           return encodedRedirect(
             "error",
-            "/dashboard/account",
+            "/dashboard/account/payments",
             "An error occurred while connecting to Stripe"
           );
         
@@ -119,7 +119,7 @@ export const handleStripeConnect = async () => {
         if(!influencer)
           return encodedRedirect(
             "error",
-            "/dashboard/account",
+            "/dashboard/account/payments",
             "An error occurred while connecting to Stripe"
           );
 
@@ -127,8 +127,8 @@ export const handleStripeConnect = async () => {
         if (influencer!.stripe_account_id) {
           const accountLink = await stripe.accountLinks.create({
             account: influencer!.stripe_account_id,
-            refresh_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/account?stripe_refresh=true`,
-            return_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/account?stripe_success=true`,
+            refresh_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/account/payments?stripe_refresh=true`,
+            return_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/account/payments?stripe_success=true`,
             type: 'account_onboarding',
           });
 
@@ -167,8 +167,8 @@ export const handleStripeConnect = async () => {
         // Create an account link for onboarding
         const accountLink = await stripe.accountLinks.create({
           account: account.id,
-          refresh_url: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/account?stripe_refresh=true`,
-          return_url: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/account?stripe_success=true`,
+          refresh_url: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/account/payments?stripe_refresh=true`,
+          return_url: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/account/payments?stripe_success=true`,
           type: 'account_onboarding',
         });
 
@@ -177,7 +177,7 @@ export const handleStripeConnect = async () => {
       console.error('Stripe Connect error:', error);
       return encodedRedirect(
         "error",
-        "/dashboard/account",
+        "/dashboard/account/payments",
         "An error occurred while connecting to Stripe"
       );
     }
