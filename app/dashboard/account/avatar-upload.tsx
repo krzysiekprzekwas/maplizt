@@ -47,7 +47,7 @@ export default function AvatarUpload({ currentImage, userId, large = false }: Av
   return (
     <div className={`flex ${large ? 'flex-col' : 'items-center gap-4'}`}>
       <div 
-        className={`${large ? 'w-full h-64 mb-4' : 'w-24 h-24'} rounded-lg overflow-hidden border-2 border-[#19191b] brutal-shadow-all relative cursor-pointer group`}
+        className={`${large ? 'w-64 h-64 mb-4' : 'w-24 h-24'} rounded-lg overflow-hidden border-2 border-[#19191b] brutal-shadow-all relative cursor-pointer group`}
         onClick={handleImageClick}
       >
         <Image
@@ -56,9 +56,6 @@ export default function AvatarUpload({ currentImage, userId, large = false }: Av
           fill
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all flex items-center justify-center">
-          <span className="text-white opacity-0 group-hover:opacity-100 font-medium">Change Image</span>
-        </div>
       </div>
       <div className="flex-1">
         <input

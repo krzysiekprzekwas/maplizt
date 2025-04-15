@@ -145,7 +145,7 @@ export default function InfluencerProfilePage() {
         <h2 className="text-xl font-bold mb-4">Influencer Profile</h2>
         
         <form onSubmit={handleSubmit}>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             {/* Profile Image Column */}
             <div className="md:col-span-1">
               <label className="block text-[#19191b] font-medium mb-2">
@@ -161,7 +161,7 @@ export default function InfluencerProfilePage() {
             </div>
             
             {/* Form Fields Column */}
-            <div className="md:col-span-2 space-y-6">
+            <div className="md:col-span-1 space-y-6">
               <div>
                 <label
                   htmlFor="name"
