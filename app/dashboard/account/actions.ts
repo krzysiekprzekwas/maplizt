@@ -167,8 +167,8 @@ export const handleStripeConnect = async () => {
         // Create an account link for onboarding
         const accountLink = await stripe.accountLinks.create({
           account: account.id,
-          refresh_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/account?stripe_refresh=true`,
-          return_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/account?stripe_success=true`,
+          refresh_url: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/account?stripe_refresh=true`,
+          return_url: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/account?stripe_success=true`,
           type: 'account_onboarding',
         });
 
