@@ -45,11 +45,17 @@ export async function POST(request: NextRequest) {
             { status: 400 }
           );
         }
-        // Update the influencer's Stripe account status
-        await updateInfluencerProfile(account.metadata.user_id, {
+
+        const updatedStatus = {
           stripe_account_id: account.id,
-          stripe_account_status: 'active'
-        });
+          stripe_onboarding_complete: account.details_submitted,
+          stripe_charges_enabled: account.charges_enabled,
+          stripe_payouts_enabled: account.payouts_enabled,
+          stripe_last_checked: new Date().toISOString(),
+        };
+
+        // Update the influencer's Stripe account status
+        await updateInfluencerProfile(account.metadata.user_id, updatedStatus);
         break;
       // Add more event types as needed
     }

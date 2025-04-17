@@ -8,6 +8,10 @@ import { FormMessage } from "@/components/form-message";
 interface InfluencerProfile {
   id?: string;
   stripe_account_id?: string;
+  stripe_onboarding_complete?: boolean;
+  stripe_charges_enabled?: boolean;
+  stripe_payouts_enabled?: boolean;
+  stripe_last_checked?: string;
 }
 
 export default function PaymentsContent() {
@@ -141,6 +145,72 @@ export default function PaymentsContent() {
           >
             {connecting ? "Connecting..." : "Connect Stripe Account"}
           </button>
+        )}
+
+        {influencer?.stripe_account_id && (
+          <div className="mt-4 space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className={`p-4 rounded-lg border-2 ${
+                influencer.stripe_onboarding_complete 
+                  ? "bg-green-100 border-green-500" 
+                  : "bg-red-100 border-red-500"
+              }`}>
+                <div className="font-medium">Onboarding</div>
+                <div className="text-sm mt-1">
+                  {influencer.stripe_onboarding_complete 
+                    ? "Complete" 
+                    : "Incomplete"}
+                </div>
+              </div>
+              
+              <div className={`p-4 rounded-lg border-2 ${
+                influencer.stripe_charges_enabled 
+                  ? "bg-green-100 border-green-500" 
+                  : "bg-red-100 border-red-500"
+              }`}>
+                <div className="font-medium">Charges</div>
+                <div className="text-sm mt-1">
+                  {influencer.stripe_charges_enabled 
+                    ? "Enabled" 
+                    : "Disabled"}
+                </div>
+              </div>
+              
+              <div className={`p-4 rounded-lg border-2 ${
+                influencer.stripe_payouts_enabled 
+                  ? "bg-green-100 border-green-500" 
+                  : "bg-red-100 border-red-500"
+              }`}>
+                <div className="font-medium">Payouts</div>
+                <div className="text-sm mt-1">
+                  {influencer.stripe_payouts_enabled 
+                    ? "Enabled" 
+                    : "Disabled"}
+                </div>
+              </div>
+            </div>
+            
+            {influencer.stripe_last_checked && (
+              <p className="text-sm text-gray-500">
+                Last updated: {new Date(influencer.stripe_last_checked).toLocaleString()}
+              </p>
+            )}
+            
+            {(!influencer.stripe_onboarding_complete || !influencer.stripe_charges_enabled || !influencer.stripe_payouts_enabled) && (
+              <div className="p-4 bg-yellow-50 border border-yellow-300 rounded-lg mt-4">
+                <p className="text-sm">
+                  <strong>Some features of your Stripe account are not fully set up.</strong> This may prevent you from receiving payments.
+                  Please complete your Stripe onboarding process to enable all features.
+                </p>
+                <button
+                  onClick={handleConnectStripe}
+                  className="mt-2 text-[#8d65e3] font-medium underline"
+                >
+                  Complete Stripe Setup
+                </button>
+              </div>
+            )}
+          </div>
         )}
       </div>
     </>
