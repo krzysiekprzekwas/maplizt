@@ -55,8 +55,7 @@ export default function CreateListPage() {
   }, []);
 
   // Check if user has Stripe connected
-  const hasStripeConnected = influencer?.stripe_account_id && 
-    influencer?.stripe_account_status === 'active';
+  const hasStripeConnected = influencer?.stripe_account_id
 
   // Reset to Free type if Stripe is not connected and user tries to select Paid/Premium
   useEffect(() => {

@@ -56,7 +56,10 @@ export async function updateInfluencerProfile(
     handle?: string; 
     profile_image?: string; 
     stripe_account_id?: string;
-    stripe_account_status?: 'active' | 'pending';
+    stripe_onboarding_complete?: boolean;
+    stripe_charges_enabled?: boolean;
+    stripe_payouts_enabled?: boolean;
+    stripe_last_checked?: string;
   }
 ) {
   const supabase = await createClient();
