@@ -34,7 +34,6 @@ export async function POST(request: NextRequest) {
       process.env.STRIPE_WEBHOOK_SECRET!
     );
 
-    // Handle the event
     switch (event.type) {
       case 'account.updated':
         const account = event.data.object as Stripe.Account;
@@ -54,10 +53,8 @@ export async function POST(request: NextRequest) {
           stripe_last_checked: new Date().toISOString(),
         };
 
-        // Update the influencer's Stripe account status
         await updateInfluencerProfile(account.metadata.user_id, updatedStatus);
         break;
-      // Add more event types as needed
     }
 
     return NextResponse.json({ received: true });

@@ -34,8 +34,8 @@ export async function POST(request: NextRequest) {
         if (influencer.stripe_account_id) {
             const accountLink = await stripe.accountLinks.create({
             account: influencer.stripe_account_id,
-            refresh_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/account/payments?stripe_refresh=true`,
-            return_url: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/account/payments?stripe_success=true`,
+            refresh_url: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/account/payments?stripe_refresh=true`,
+            return_url: `${process.env.NEXT_PUBLIC_BASE_URL}/dashboard/account/payments?stripe_success=true`,
             type: 'account_onboarding',
             });
 
@@ -45,21 +45,20 @@ export async function POST(request: NextRequest) {
         // Create a new Stripe Connect account
         const account = await stripe.accounts.create({
             type: 'express',
-            country: 'PL', // Change this based on your target market
+            country: 'PL',
             email: user?.email, 
             capabilities: {
-            card_payments: { requested: true },
-            transfers: { requested: true },
+              card_payments: { requested: true },
+              transfers: { requested: true },
             },
-            business_type: 'individual',
             metadata: {
-            user_id: userId,
+              user_id: userId,
             },
             settings: {
-            payouts: {
-                schedule: {
-                interval: 'manual',
-                },
+              payouts: {
+                  schedule: {
+                    interval: 'manual',
+                  },
             },
             },
         });
