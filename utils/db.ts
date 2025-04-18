@@ -173,6 +173,21 @@ export async function createOrder(orderData: Omit<Order, 'id' | 'created_at' | '
   return data as Order;
 }
 
+export async function updateOrder(orderId: string, orderData: { 
+  status?: string;
+}) {
+  const supabase = await createClient();
+  const { data, error } = await supabase
+    .from('orders')
+    .update(orderData)
+    .eq('order_id', orderId)
+    .select()
+    .single();
+
+  if (error) throw error;
+  return data as Order;
+}
+
 export async function getOrderDetails(orderId: string) {
   const supabase = await createClient();
   const { data, error } = await supabase

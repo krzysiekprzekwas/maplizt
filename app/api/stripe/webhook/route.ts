@@ -1,7 +1,10 @@
 import { headers } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
-import { updateInfluencerProfile } from '@/utils/db';
+import { getInfluencerById, getRecommendationById, updateInfluencerProfile, updateOrder } from '@/utils/db';
+import { Resend } from 'resend';
+import path from 'path';
+import fs from 'fs';
 
 if (!process.env.STRIPE_SECRET_KEY) {
   throw new Error('STRIPE_SECRET_KEY is not set in environment variables');
@@ -14,6 +17,8 @@ if (!process.env.STRIPE_WEBHOOK_SECRET) {
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
   apiVersion: '2025-03-31.basil',
 });
+
+const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: NextRequest) {
   try {
@@ -54,6 +59,62 @@ export async function POST(request: NextRequest) {
         };
 
         await updateInfluencerProfile(account.metadata.user_id, updatedStatus);
+        break;
+      case 'checkout.session.completed':
+          const session = event.data.object as Stripe.Checkout.Session;
+          const recommendationId = session.metadata?.recommendation_id;
+          const orderId = session.metadata?.order_id;
+          const customerEmail = session.customer_email;
+
+          if (orderId && recommendationId && customerEmail)
+          {
+            const orderData = {
+              status: 'completed'
+            };
+            
+            await updateOrder(orderId, orderData);
+
+            const recommendation = await getRecommendationById(recommendationId);
+
+            const influencer = await getInfluencerById(recommendation.influencer_id);
+
+            // Read the email template
+            const templatePath = path.join(process.cwd(), 'email-templates', 'order-confirmation.html');
+            let emailHtml = fs.readFileSync(templatePath, 'utf8');
+            
+            // Get the first image from the recommendation or use a default
+            const recommendationImage = recommendation.images && recommendation.images.length > 0 
+              ? recommendation.images[0] 
+              : 'https://maplizt.com/default-recommendation.jpg';
+            
+            // Format the date
+            const orderDate = new Date().toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric'
+            });
+            
+            emailHtml = emailHtml
+            .replace(/{{name}}/g, 'there')
+            .replace(/{{email}}/g, customerEmail)
+            .replace(/{{recommendationTitle}}/g, recommendation.title)
+            .replace(/{{recommendationImage}}/g, recommendationImage)
+            .replace(/{{recommendationDescription}}/g, recommendation.description)
+            .replace(/{{googleMapsLink}}/g, recommendation.googleMapsLink)
+            .replace(/{{orderId}}/g, orderId)
+            .replace(/{{orderDate}}/g, orderDate)
+            .replace(/{{orderAmount}}/g, recommendation.numeric_price.toString())
+            .replace(/{{creatorName}}/g, influencer ? influencer.name : 'Maplizt Creator');
+
+            // Send the email
+            resend.emails.send({
+              from: 'order@maplizt.kristof.pro',
+              to: customerEmail,
+              subject: `Your Maplizt Purchase: ${recommendation.title}`,
+              html: emailHtml
+            });
+          }
+
         break;
     }
 

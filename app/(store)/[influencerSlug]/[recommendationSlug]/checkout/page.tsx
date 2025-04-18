@@ -4,7 +4,7 @@ import type React from "react"
 
 import Image from "next/image"
 import Link from "next/link"
-import { Mail, MapPin, CreditCard, Trash2 } from "lucide-react"
+import { Mail } from "lucide-react"
 import { useParams, useRouter } from "next/navigation"
 import { useState, useEffect } from "react"
 import InfluencerHeader from "@/components/influencer-header"
@@ -24,10 +24,7 @@ export default function CheckoutPage() {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [formData, setFormData] = useState({
-    email: '',
-    card_number: '',
-    card_expiry: '',
-    card_cvc: ''
+    email: ''
   })
 
   // Calculate isFree from recommendation data
@@ -80,49 +77,29 @@ export default function CheckoutPage() {
 
   const typeStyle = getRecommendationTypeStyle(isFree ? 'free' : 'paid');
 
-  // Handle form input changes
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  };
-
-  // Handle form submission
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitting(true);
     setError(null);
-
+  
     try {
-      const orderData = {
-        recommendation_id: recommendation.id,
-        email: formData.email,
-        price: recommendation.numeric_price,
-        ...(isFree ? {} : {
-          card_number: formData.card_number,
-          card_expiry: formData.card_expiry,
-          card_cvc: formData.card_cvc
-        })
-      };
-
-      const res = await fetch('/api/orders', {
+      const res = await fetch('/api/stripe/checkout', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(orderData),
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          email: formData.email,
+          price: recommendation.numeric_price,
+          recommendation_id: recommendation.id,
+          influencer_stripe_account_id: influencer.stripe_account_id
+        }),
       });
-
-      const result = await res.json();
-
-      if (!res.ok) {
-        throw new Error(result.error || 'Failed to process order');
-      }
-
-      // Redirect to confirmation page
-      router.push(result.redirect_url);
+  
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to create checkout session');
+  
+      window.location.href = data.url;
     } catch (error) {
-      console.error('Error submitting order:', error);
-      setError(error instanceof Error ? error.message : 'An unknown error occurred');
+      setError(error instanceof Error ? error.message : 'Unexpected error');
       setSubmitting(false);
     }
   };
@@ -180,53 +157,11 @@ export default function CheckoutPage() {
                 name="email"
                 placeholder="Email"
                 className="flex-1 bg-transparent outline-none"
-                value={formData.email}
-                onChange={handleInputChange}
                 required
+                value={formData.email}
+                onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               />
             </div>
-
-            {!isFree && (
-              <>
-                <div className="flex items-center gap-2 border-2 border-[#19191b] p-3 rounded-lg">
-                  <CreditCard className="w-5 h-5" />
-                  <input
-                    type="text"
-                    name="card_number"
-                    placeholder="Card number"
-                    className="flex-1 bg-transparent outline-none"
-                    value={formData.card_number}
-                    onChange={handleInputChange}
-                    required
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="flex items-center gap-2 border-2 border-[#19191b] p-3 rounded-lg">
-                    <input
-                      type="text"
-                      name="card_expiry"
-                      placeholder="MM/YY"
-                      className="flex-1 bg-transparent outline-none"
-                      value={formData.card_expiry}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-                  <div className="flex items-center gap-2 border-2 border-[#19191b] p-3 rounded-lg">
-                    <input
-                      type="text"
-                      name="card_cvc"
-                      placeholder="CVC"
-                      className="flex-1 bg-transparent outline-none"
-                      value={formData.card_cvc}
-                      onChange={handleInputChange}
-                      required
-                    />
-                  </div>
-                </div>
-              </>
-            )}
           </div>
           <div className="max-w-2xl mx-auto flex gap-4">
             <Link href={`/${influencer?.slug}`}>
@@ -245,7 +180,6 @@ export default function CheckoutPage() {
         </form>
       </div>
       
-      {/* Decorative circles */}
       <div className="fixed bottom-6 right-4 w-40 h-40 opacity-80 z-10">
         <div className="absolute bottom-0 right-0 w-20 h-20 bg-[#e47a5e] rounded-full"></div>
         <div className="absolute bottom-20 right-0 w-20 h-20 bg-[#e47a5e] rounded-full"></div>
