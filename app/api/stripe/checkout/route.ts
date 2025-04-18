@@ -13,6 +13,7 @@ export async function POST(req: Request) {
   const {
     price,
     recommendation_id,
+    recommendation_title,
     influencer_id,
     email
   } = body;
@@ -40,7 +41,7 @@ export async function POST(req: Request) {
               currency: 'pln',
               unit_amount: price * 100,
               product_data: {
-                name: `Recommendation ${recommendation_id}`,
+                name: `${recommendation_title}`,
               },
             },
             quantity: 1,
@@ -54,7 +55,12 @@ export async function POST(req: Request) {
         success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/orders/${order.id}/confirmation`,
         cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/orders/${order.id}/cancelation`,
         payment_intent_data: {
-          application_fee_amount: price * 100 * 0.2, // platform fee 20% 
+          application_fee_amount: price * 100 * 0.2, // platform fee 20%
+          metadata: {
+            recommendation_id,
+            influencer_id,
+            user_email: email,
+          }
         },
       },
       {

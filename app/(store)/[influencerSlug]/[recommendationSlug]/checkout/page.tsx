@@ -90,6 +90,7 @@ export default function CheckoutPage() {
           email: formData.email,
           price: recommendation.numeric_price,
           recommendation_id: recommendation.id,
+          recommendation_title: recommendation.title,
           influencer_id: influencer.id
         }),
       });
@@ -140,7 +141,7 @@ export default function CheckoutPage() {
           <p className=" mb-6">
             {isFree
               ? "Please enter your email to receive this free recommendation."
-              : "Please enter your payment details to purchase this recommendation."}
+              : "Please enter your email to start checkout."}
           </p>
 
           {error && (
