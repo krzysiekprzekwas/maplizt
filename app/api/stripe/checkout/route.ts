@@ -1,5 +1,5 @@
 import { Order } from "@/types/database";
-import { createOrder } from "@/utils/db";
+import { createOrder, getInfluencerById } from "@/utils/db";
 import { NextResponse } from "next/server";
 import Stripe from "stripe";
 
@@ -13,7 +13,7 @@ export async function POST(req: Request) {
   const {
     price,
     recommendation_id,
-    influencer_stripe_account_id,
+    influencer_id,
     email
   } = body;
 
@@ -27,6 +27,8 @@ export async function POST(req: Request) {
         };
         
     var order = await createOrder(orderData);
+
+    var influencer = await getInfluencerById(influencer_id);
 
     const session = await stripe.checkout.sessions.create(
       {
@@ -51,9 +53,12 @@ export async function POST(req: Request) {
         },
         success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/orders/${order.id}/confirmation`,
         cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/orders/${order.id}/cancelation`,
+        payment_intent_data: {
+          application_fee_amount: price * 100 * 0.2, // platform fee 20% 
+        },
       },
       {
-        stripeAccount: influencer_stripe_account_id,
+        stripeAccount: influencer?.stripe_account_id,
       }
     );
 

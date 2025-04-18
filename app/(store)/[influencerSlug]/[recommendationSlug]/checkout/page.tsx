@@ -90,7 +90,7 @@ export default function CheckoutPage() {
           email: formData.email,
           price: recommendation.numeric_price,
           recommendation_id: recommendation.id,
-          influencer_stripe_account_id: influencer.stripe_account_id
+          influencer_id: influencer.id
         }),
       });
   
