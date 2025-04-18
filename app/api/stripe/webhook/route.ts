@@ -106,15 +106,16 @@ export async function POST(request: NextRequest) {
             .replace(/{{orderAmount}}/g, recommendation.numeric_price.toString())
             .replace(/{{creatorName}}/g, influencer ? influencer.name : 'Maplizt Creator');
 
-            // Send the email
-            resend.emails.send({
+            await resend.emails.send({
               from: 'order@maplizt.kristof.pro',
               to: customerEmail,
               subject: `Your Maplizt Purchase: ${recommendation.title}`,
               html: emailHtml
             });
           }
-
+          else{
+            throw new Error('Data missing in webhook call');
+          }
         break;
     }
 

@@ -56,7 +56,7 @@ export default async function OrderConfirmationPage({ params }: Props) {
         </div>
 
           <div className="space-y-4">
-            <Link href="https://maps.google.com" target="_blank" className="block">
+            <Link href={recommendation.googleMapsLink} target="_blank" className="block">
               <button
                 className={`w-full font-bold text-xl py-4 rounded-lg border-4 border-[#19191b] bg-[#c5bdf7] brutal-shadow-all`}
               >
