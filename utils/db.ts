@@ -180,7 +180,7 @@ export async function updateOrder(orderId: string, orderData: {
   const { data, error } = await supabase
     .from('orders')
     .update(orderData)
-    .eq('order_id', orderId)
+    .eq('id', orderId)
     .select()
     .single();
 
