@@ -1,12 +1,38 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { handleApiAuth } from '@/utils/server-utils';
 import { getInfluencerByUserId, updateInfluencerProfile, createInfluencerProfile } from '@/utils/db';
+import { Stripe } from 'stripe';
+
+if (!process.env.STRIPE_SECRET_KEY) {
+  throw new Error('STRIPE_SECRET_KEY is not set in environment variables');
+}
+
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
+  apiVersion: '2025-03-31.basil',
+});
 
 export async function GET(request: NextRequest) {
   return handleApiAuth(request, async (userId) => {
     try {
       const influencer = await getInfluencerByUserId(userId);
-      return NextResponse.json(influencer);
+
+      if (!influencer) {
+        return NextResponse.json(
+          { error: 'Influencer profile not found' },
+          { status: 404 }
+        );
+      }
+
+      let stripeDashboardLink: string | null = null;
+      if (influencer.stripe_account_id) {
+        const loginLink = await stripe.accounts.createLoginLink(influencer.stripe_account_id);
+        stripeDashboardLink = loginLink.url;
+      }
+
+      return NextResponse.json({
+        ...influencer,
+        stripe_dashboard_link: stripeDashboardLink
+      });
     } catch (error) {
       console.error('Error fetching influencer:', error);
       return NextResponse.json(

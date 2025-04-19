@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { createClient } from "@/utils/supabase/client";
 import { FormMessage } from "@/components/form-message";
+import Link from "next/link";
 
 interface InfluencerProfile {
   id?: string;
@@ -12,6 +13,7 @@ interface InfluencerProfile {
   stripe_charges_enabled?: boolean;
   stripe_payouts_enabled?: boolean;
   stripe_last_checked?: string;
+  stripe_dashboard_link?: string;
 }
 
 export default function PaymentsContent() {
@@ -190,12 +192,6 @@ export default function PaymentsContent() {
               </div>
             </div>
             
-            {influencer.stripe_last_checked && (
-              <p className="text-sm text-gray-500">
-                Last updated: {new Date(influencer.stripe_last_checked).toLocaleString()}
-              </p>
-            )}
-            
             {(!influencer.stripe_onboarding_complete || !influencer.stripe_charges_enabled || !influencer.stripe_payouts_enabled) && (
               <div className="p-4 bg-yellow-50 border border-yellow-300 rounded-lg mt-4">
                 <p className="text-sm">
@@ -209,6 +205,23 @@ export default function PaymentsContent() {
                   Complete Stripe Setup
                 </button>
               </div>
+            )}
+
+            {(influencer.stripe_onboarding_complete && influencer.stripe_charges_enabled && influencer.stripe_payouts_enabled) && (
+              <div className="p-4 border rounded-lg mt-4">
+                <Link 
+                  href={influencer.stripe_dashboard_link!} 
+                  className="inline-block bg-[#19191b] text-white px-8 py-4 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition text-lg"
+                >
+                  See Stripe dashboard
+                </Link>
+              </div>
+            )}
+            
+            {influencer.stripe_last_checked && (
+              <p className="text-sm text-gray-500">
+                Last updated: {new Date(influencer.stripe_last_checked).toLocaleString()}
+              </p>
             )}
           </div>
         )}

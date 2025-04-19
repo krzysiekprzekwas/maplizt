@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
             // Get the first image from the recommendation or use a default
             const recommendationImage = recommendation.images && recommendation.images.length > 0 
               ? recommendation.images[0] 
-              : 'https://maplizt.com/default-recommendation.jpg';
+              : 'https://maplizt.vercel.app/recommendation_image_placeholder.jpg';
             
             // Format the date
             const orderDate = new Date().toLocaleDateString('en-US', {

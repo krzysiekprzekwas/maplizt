@@ -78,7 +78,7 @@ export default async function Dashboard() {
             
             <div className="bg-[#7db48f]/10 p-6 rounded-lg border-2 border-[#19191b]">
               <h3 className="font-bold mb-2">Earnings</h3>
-              <p className="text-3xl font-bold">$0.00</p>
+              <p className="text-3xl font-bold">0.00 zł</p>
               <p className="text-sm text-gray-500">Total earnings to date</p>
             </div>
             
@@ -138,7 +138,7 @@ export default async function Dashboard() {
                             : 'bg-[#97b5ec]'
                       }`}>
                         {recommendation.type}
-                        {recommendation.numeric_price > 0 && ` $${recommendation.numeric_price}`}
+                        {recommendation.numeric_price > 0 && ` ${recommendation.numeric_price} zł`}
                       </div>
                     </div>
                     <div className="p-4">
