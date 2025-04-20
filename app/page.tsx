@@ -17,7 +17,7 @@ export default function HomePage() {
                 Share Your Maps, <span className="text-[#8d65e3]">Monetize</span> Your Recommendations
               </h1>
               <p className="text-lg mb-8 max-w-lg">
-                Create and share Google Maps lists easily with your audience. Turn your travel and local recommendations into revenue.
+                Share and sell Google Maps lists easily with your audience. Turn your travel and local recommendations into revenue.
               </p>
               <div className="flex flex-col sm:flex-row gap-4">
                 <Link 
@@ -40,8 +40,8 @@ export default function HomePage() {
                   <div className="bg-white p-4 rounded-lg border-2 border-[#19191b] shadow-lg w-full max-w-xs brutal-shadow-all">
                     <h3 className="font-bold mb-2">Munich's Best Cafés</h3>
                     <p className="text-sm mb-3">Discover 8 perfect spots to work & enjoy breakfast</p>
-                    <div className="h-24 bg-[#97b5ec]/20 rounded border border-[#19191b]/30 flex items-center justify-center">
-                      <Image src="/maplizt-logo-icon.svg" alt="Map" width={48} height={48} className="opacity-70" />
+                    <div className="h-32 relative bg-[#97b5ec]/20 rounded border border-[#19191b]/30 flex items-center justify-center">
+                      <Image src="/munich-demo.png" alt="Map" fill className="opacity-70 object-cover" />
                     </div>
                   </div>
                 </div>
@@ -346,8 +346,7 @@ export default function HomePage() {
             <div>
               <h4 className="font-bold mb-4">Company</h4>
               <ul className="space-y-2">
-                <li><Link href="#" className="text-gray-300 hover:text-white transition">About</Link></li>
-                <li><Link href="#" className="text-gray-300 hover:text-white transition">Contact</Link></li>
+                <li><Link href="https://kristof.pro" className="text-gray-300 hover:text-white transition">About</Link></li>
               </ul>
             </div>
             
