@@ -353,7 +353,7 @@ export default function HomePage() {
             <div>
               <h4 className="font-bold mb-4">Legal</h4>
               <ul className="space-y-2">
-                <li><Link href="#" className="text-gray-300 hover:text-white transition">Privacy Policy</Link></li>
+                <li><Link href="https://www.freeprivacypolicy.com/live/659b2d7e-aa8d-49d1-8054-3d7e698d2e1d" className="text-gray-300 hover:text-white transition">Privacy Policy</Link></li>
                 <li><Link href="#" className="text-gray-300 hover:text-white transition">Terms of Service</Link></li>
                 <li><Link href="#" className="text-gray-300 hover:text-white transition">Cookie Policy</Link></li>
               </ul>
