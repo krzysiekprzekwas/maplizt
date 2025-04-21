@@ -19,7 +19,7 @@ export default function InfluencerHeader({ influencer }: InfluencerHeaderProps) 
           <Link href={`/${influencer.slug}`}>
             <div className="w-[80px] h-[80px] rounded-lg overflow-hidden border-2 border-[#19191b] brutal-shadow-all">
               <Image
-                src={influencer.profile_image || "/avatar_placeholder.jpeg"}
+                src={influencer.profile_image || "/avatar_placeholder.png"}
                 alt={influencer.name}
                 width={80}
                 height={80}

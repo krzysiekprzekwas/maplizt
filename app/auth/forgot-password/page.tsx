@@ -18,7 +18,7 @@ export default async function ForgotPassword(props: {
                 alt="Maplizt Logo" 
                 width={128} 
                 height={64} 
-                className="rounded-lg border-2 border-[#19191b] brutal-shadow-all" 
+                className="px-4 py-2 rounded-lg border-2 border-[#19191b] brutal-shadow-all" 
               />
             </Link>
           </div>
@@ -55,7 +55,7 @@ export default async function ForgotPassword(props: {
 
           <div className="mt-8 text-center">
             <Link
-              href="/auth/sign-up"
+              href="/auth/sign-in"
               className="text-[#8d65e3] hover:underline font-medium"
             >
               Back to Sign In

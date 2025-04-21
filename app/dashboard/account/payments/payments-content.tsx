@@ -209,11 +209,14 @@ export default function PaymentsContent() {
 
             {(influencer.stripe_onboarding_complete && influencer.stripe_charges_enabled && influencer.stripe_payouts_enabled) && (
               <div className="p-4 border rounded-lg mt-4">
-                <Link 
-                  href={influencer.stripe_dashboard_link!} 
-                  className="inline-block bg-[#19191b] text-white px-8 py-4 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition text-lg"
-                >
-                  See Stripe dashboard
+                <Link href={influencer.stripe_dashboard_link!} passHref>
+                  <a 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="inline-block bg-[#19191b] text-white px-8 py-4 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition text-lg"
+                  >
+                    See Stripe dashboard
+                  </a>
                 </Link>
               </div>
             )}

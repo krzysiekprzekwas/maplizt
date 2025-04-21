@@ -65,7 +65,7 @@ export default function SignupPage() {
                 alt="Maplizt Logo" 
                 width={128} 
                 height={64} 
-                className="rounded-lg border-2 border-[#19191b] brutal-shadow-all" 
+                className="px-4 py-2 rounded-lg border-2 border-[#19191b] brutal-shadow-all" 
               />
             </Link>
           </div>

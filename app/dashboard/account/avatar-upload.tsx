@@ -51,7 +51,7 @@ export default function AvatarUpload({ currentImage, userId, large = false }: Av
         onClick={handleImageClick}
       >
         <Image
-          src={currentImage || "/avatar_placeholder.jpeg"}
+          src={currentImage || "/avatar_placeholder.png"}
           alt="Profile image"
           fill
           className="object-cover"
