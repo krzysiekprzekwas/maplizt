@@ -328,7 +328,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <Image src="/maplizt-logo-icon.svg" alt="Maplizt Logo" width={24} height={24} className="invert" />
+                <Image src="/maplizt-logo-icon.svg" alt="Maplizt Logo" width={24} height={24} />
                 <span className="text-xl font-bold">Maplizt</span>
               </div>
               <p className="text-sm text-gray-300 mb-4">The easiest way to monetize your location-based recommendations.</p>
