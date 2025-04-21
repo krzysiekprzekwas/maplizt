@@ -111,7 +111,7 @@ export default function HomePage() {
             {/* Feature 1 */}
             <div className="bg-white p-6 rounded-lg border-2 border-[#19191b] brutal-shadow-all">
               <div className="w-12 h-12 bg-[#8d65e3]/20 rounded-lg flex items-center justify-center mb-4">
-                <Image src="/maplizt-logo-icon.svg" alt="Map Feature" width={24} height={24} />
+                <Image src="/globe.svg" alt="Map Feature" width={24} height={24} />
               </div>
               <h3 className="text-xl font-bold mb-3">Easy Map Integration</h3>
               <p>Connect your Google Maps lists and create beautiful, shareable recommendation pages in minutes.</p>
@@ -138,7 +138,7 @@ export default function HomePage() {
             {/* Feature 4 */}
             <div className="md:col-span-2 lg:col-span-3 bg-[#f7bdf6]/20 p-6 rounded-lg border-2 border-[#19191b] mt-4 brutal-shadow-all">
               <div className="flex flex-col lg:flex-row items-center gap-6">
-                <Image src="/maplizt-logo-icon.svg" alt="No Technical Skills" width={64} height={64} className="bg-white p-3 rounded-lg border-2 border-[#19191b]" />
+                <Image src="/maplizt-logo-icon-dark.svg" alt="No Technical Skills" width={64} height={64} className="bg-white p-3 rounded-lg border-2 border-[#19191b]" />
                 <div>
                   <h3 className="text-xl font-bold mb-2">No Technical Skills Required</h3>
                   <p className="text-lg">Start sharing and earning in minutes with our intuitive platform. Perfect for influencers of all technical abilities.</p>
