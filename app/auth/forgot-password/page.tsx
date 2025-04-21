@@ -16,8 +16,7 @@ export default async function ForgotPassword(props: {
               <Image 
                 src="/maplizt-logo-full.svg" 
                 alt="Maplizt Logo" 
-                width={128} 
-                height={64} 
+                width={158} height={80}
                 className="px-4 py-2 rounded-lg border-2 border-[#19191b] brutal-shadow-all" 
               />
             </Link>

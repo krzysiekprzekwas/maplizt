@@ -21,7 +21,7 @@ export default function AccountContent() {
       const { data, error } = await supabase.auth.getUser();
       
       if (error || !data.user) {
-        router.push("/sign-in");
+        router.push("/auth/sign-in");
         return;
       }
       
@@ -94,7 +94,7 @@ export default function AccountContent() {
   const handleSignOut = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
-    router.push("/sign-in");
+    router.push("/auth/sign-in");
   };
   
   if (loading && !user) {

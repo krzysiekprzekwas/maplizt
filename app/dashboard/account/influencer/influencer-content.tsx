@@ -37,7 +37,7 @@ export default function InfluencerContent() {
       const { data, error } = await supabase.auth.getUser();
       
       if (error || !data.user) {
-        router.push("/sign-in");
+        router.push("/auth/sign-in");
         return;
       }
       

@@ -19,7 +19,7 @@ export default async function Header({ hideNav = false }: HeaderProps) {
     <header className="border-b-2 border-[#19191b] bg-[#ffffff]">
       <div className="container mx-auto flex justify-between items-center py-4 px-4 md:px-6">
         <Link href={user ? "/dashboard" : "/"} className="flex items-center gap-2">
-          <Image src="/maplizt-logo-full.svg" alt="Maplizt Logo" width={128} height={64} className="px-4 py-2 rounded-lg border-2 border-[#19191b] brutal-shadow-all" />
+          <Image src="/maplizt-logo-full.svg" alt="Maplizt Logo" width={158} height={80} className="px-4 py-2 rounded-lg border-2 border-[#19191b] brutal-shadow-all" />
         </Link>
 
         {!user && !hideNav && (

@@ -17,7 +17,7 @@ export const signUpAction = async (formData: FormData) => {
   if (!email || !password) {
     return encodedRedirect(
       "error",
-      "/sign-up",
+      "/auth/sign-up",
       "Email and password are required",
     );
   }

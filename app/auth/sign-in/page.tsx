@@ -14,8 +14,7 @@ export default async function SignInPage(props: { searchParams: Promise<Message>
               <Image 
                 src="/maplizt-logo-full.svg" 
                 alt="Maplizt Logo" 
-                width={128} 
-                height={64} 
+                width={158} height={80}
                 className="px-4 py-2 rounded-lg border-2 border-[#19191b] brutal-shadow-all" 
               />
             </Link>
@@ -94,7 +93,7 @@ export default async function SignInPage(props: { searchParams: Promise<Message>
             Terms of Service
           </Link>{" "}
           and{" "}
-          <Link href="#" className="text-[#8d65e3] hover:underline">
+          <Link href="https://www.freeprivacypolicy.com/live/659b2d7e-aa8d-49d1-8054-3d7e698d2e1d" className="text-[#8d65e3] hover:underline">
             Privacy Policy
           </Link>
           .

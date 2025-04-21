@@ -14,7 +14,7 @@ export default async function Dashboard() {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    return redirect("/sign-in");
+    return redirect("/auth/sign-in");
   }
 
   const influencer = await getInfluencerByUserId(user.id);

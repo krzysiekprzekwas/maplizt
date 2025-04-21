@@ -14,8 +14,7 @@ export default async function ResetPasswordPage(props: { searchParams: Promise<M
               <Image 
                 src="/maplizt-logo-full.svg" 
                 alt="Maplizt Logo" 
-                width={128} 
-                height={64} 
+                width={158} height={80}
                 className="rounded-lg border-2 border-[#19191b] brutal-shadow-all" 
               />
             </Link>
