@@ -27,10 +27,21 @@ export default function AvatarUpload({ currentImage, userId, large = false }: Av
       // Upload the image
       const imageUrl = await uploadAvatar(file);
 
-      // Update the influencer profile with the new image URL
-      await updateInfluencerAvatar(userId, imageUrl);
+      const response = await fetch('/api/influencers/set-avatar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ avatar_url: imageUrl }),
+      });
 
-      // Refresh the page to show the new image
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to upload image');
+      }
+
+      const data = await response.json();
+
       window.location.reload();
     } catch (err) {
       console.error("Error uploading image:", err);

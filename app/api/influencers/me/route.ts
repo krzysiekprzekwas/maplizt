@@ -47,7 +47,7 @@ export async function PUT(request: NextRequest) {
   return handleApiAuth(request, async (userId) => {
     try {
       const body = await request.json();
-      const { name, slug, handle, description, profile_image } = body;
+      const { name, slug, handle, profile_image } = body;
 
       // Validate required fields
       if (!name || !slug || !handle) {
