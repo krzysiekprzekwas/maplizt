@@ -51,46 +51,6 @@ export default function AccountContent() {
     }
   }, [router, searchParams]);
   
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    
-    try {
-      setLoading(true);
-      const response = await fetch("/api/user/profile", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ fullName }),
-      });
-      
-      const data = await response.json();
-      
-      if (!response.ok) {
-        setError(data.error || "Failed to update profile");
-        setSuccess(null);
-      } else {
-        setSuccess("Profile updated successfully!");
-        setError(null);
-        
-        // Update local user state
-        if (user) {
-          const updatedUser = { ...user };
-          updatedUser.user_metadata = {
-            ...updatedUser.user_metadata,
-            full_name: fullName,
-          };
-          setUser(updatedUser);
-        }
-      }
-    } catch (error) {
-      setError("An error occurred while updating your profile");
-      setSuccess(null);
-    } finally {
-      setLoading(false);
-    }
-  };
-  
   const handleSignOut = async () => {
     const supabase = createClient();
     await supabase.auth.signOut();
@@ -108,7 +68,6 @@ export default function AccountContent() {
 
       <div className="mb-8">
         <h2 className="text-xl font-bold mb-4">Profile Information</h2>
-        <form onSubmit={handleSubmit}>
           <div className="mb-6">
             <label
               htmlFor="email"
@@ -128,33 +87,6 @@ export default function AccountContent() {
               Your email cannot be changed
             </p>
           </div>
-          
-          <div className="mb-6">
-            <label
-              htmlFor="name"
-              className="block text-[#19191b] font-medium mb-2"
-            >
-              Full Name
-            </label>
-            <input
-              id="name"
-              name="name"
-              type="text"
-              className="w-full px-4 py-3 rounded-lg border-2 border-[#19191b] focus:outline-none focus:ring-2 focus:ring-[#8d65e3]/50"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              placeholder="Your full name"
-            />
-          </div>
-          
-          <button
-            type="submit"
-            disabled={loading}
-            className={`bg-[#8d65e3] text-white px-6 py-3 rounded-lg border-2 border-[#19191b] font-medium hover:bg-opacity-90 transition ${loading ? "opacity-70 cursor-not-allowed" : ""}`}
-          >
-            {loading ? "Updating..." : "Update Profile"}
-          </button>
-        </form>
       </div>
       
       <div className="border-t border-gray-200 pt-8 mb-8">
